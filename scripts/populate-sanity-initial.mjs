@@ -41,6 +41,11 @@ const client = createClient({
   token,
 })
 
+function randomKey() {
+  return Math.random().toString(36).slice(2, 11)
+}
+
+/** 上传图片并返回 Sanity image 结构（用于 heroSlide.image 等） */
 async function uploadImage(filename, alt = '') {
   const filePath = path.join(imagesDir, filename)
   if (!fs.existsSync(filePath)) {
@@ -60,13 +65,18 @@ async function main() {
 
   const uploaded = {}
 
-  // 上传 Hero 轮播图
-  const heroFiles = ['hero-model.png', 'hero-model-2.png', 'hero-model-3.png', 'hero-model-4.png']
+  // 上传 Hero 轮播图（结构须为 heroSlide：含 image + alt，且每项有 _key）
+  const heroFiles = [
+    { file: 'hero-model.png', alt: 'Model wearing cream open-knit cardigan with gold buttons' },
+    { file: 'hero-model-2.png', alt: 'Model wearing ivory ruffle-front V-neck knit sweater' },
+    { file: 'hero-model-3.png', alt: 'Model wearing brown and pink ombre textured knit sweater' },
+    { file: 'hero-model-4.png', alt: 'Model wearing blue lace-trimmed knit turtleneck' },
+  ]
   console.log('上传 Hero 轮播图…')
   const heroSlides = []
-  for (const f of heroFiles) {
-    const img = await uploadImage(f, `Hero ${f}`)
-    if (img) heroSlides.push(img)
+  for (const { file, alt } of heroFiles) {
+    const img = await uploadImage(file, alt)
+    if (img) heroSlides.push({ _type: 'heroSlide', _key: randomKey(), image: img, alt })
   }
   uploaded.heroSlides = heroSlides
 
@@ -82,7 +92,7 @@ async function main() {
     if (img) uploaded[key] = img
   }
 
-  // 创建首页设置（单例）
+  // 创建首页设置（单例；stats 每项需带 _key 避免 Studio 报 Missing keys）
   if (uploaded.heroSlides?.length) {
     console.log('创建首页设置…')
     await client.createOrReplace({
@@ -90,9 +100,9 @@ async function main() {
       _type: 'homepage',
       heroSlides: uploaded.heroSlides,
       stats: [
-        { value: '30+', label: 'Years Experience' },
-        { value: '500+', label: 'Styles per Year' },
-        { value: '30+', label: 'Export Countries' },
+        { _key: randomKey(), value: '30+', label: 'Years Experience' },
+        { _key: randomKey(), value: '500+', label: 'Styles per Year' },
+        { _key: randomKey(), value: '30+', label: 'Export Countries' },
       ],
     })
   }

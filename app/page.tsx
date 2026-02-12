@@ -6,6 +6,8 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { HeroCarousel } from "@/components/hero-carousel"
+import { client } from "@/sanity/lib/client"
+import { urlFor } from "@/sanity/lib/image"
 
 const stats = [
   { value: "20+", label: "Years Experience", icon: Calendar },
@@ -61,7 +63,33 @@ const certifications = [
   { name: "ISO 45001", description: "Occupational Health & Safety" },
 ]
 
-export default function HomePage() {
+const HERO_FALLBACK = [
+  { src: "/images/hero-model.png", alt: "Model wearing cream open-knit cardigan with gold buttons" },
+  { src: "/images/hero-model-2.png", alt: "Model wearing ivory ruffle-front V-neck knit sweater" },
+  { src: "/images/hero-model-3.png", alt: "Model wearing brown and pink ombre textured knit sweater" },
+  { src: "/images/hero-model-4.png", alt: "Model wearing blue lace-trimmed knit turtleneck" },
+]
+
+export default async function HomePage() {
+  let heroSlides: { src: string; alt: string }[] = HERO_FALLBACK
+  try {
+    const homepage = await client.fetch<{
+      heroSlides?: Array<{ image?: unknown; alt?: string | null } | null>
+    } | null>(
+      `*[_type == "homepage"][0]{ heroSlides[] { image, alt } }`
+    )
+    if (homepage?.heroSlides?.length) {
+      heroSlides = homepage.heroSlides
+        .filter((s): s is { image: unknown; alt?: string | null } => s != null && s.image != null)
+        .map((s) => ({
+          src: urlFor(s.image).width(1200).url(),
+          alt: s.alt ?? "",
+        }))
+    }
+  } catch {
+    // 无 Sanity 或未配置时用静态图
+  }
+
   return (
     <div className="min-h-screen">
       <Header />
@@ -114,7 +142,7 @@ export default function HomePage() {
             {/* Right column - Model image, no card frame for seamless blend with left */}
             <div className="relative lg:-ml-12 animate-slide-in-right">
               <div className="animate-float-slow relative min-h-[520px] sm:min-h-[600px] lg:min-h-[640px]">
-                <HeroCarousel />
+                <HeroCarousel slides={heroSlides} />
               </div>
 
               {/* Capacity badge - bottom-right corner of the card */}
