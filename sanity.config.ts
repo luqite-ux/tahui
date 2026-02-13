@@ -21,6 +21,7 @@ export default defineConfig({
               .title('首页')
               .child(S.document().schemaType('homepage').documentId('homepage')),
             S.listItem().id('patent').title('专利').child(S.documentTypeList('patent')),
+            S.listItem().id('honor').title('资质与荣誉').child(S.documentTypeList('honor')),
             S.listItem().id('siteSettings').title('站点设置').child(S.documentTypeList('siteSettings')),
             S.listItem().id('productCategory').title('产品分类').child(S.documentTypeList('productCategory')),
             S.listItem().id('product').title('产品').child(S.documentTypeList('product')),

@@ -7,6 +7,7 @@ import { product } from './product'
 import { caseDocument } from './case'
 import { video } from './video'
 import { inquiry } from './inquiry'
+import { honor } from './honor'
 
 export const schemaTypes = [
   homepage,
@@ -20,4 +21,5 @@ export const schemaTypes = [
   caseDocument,
   video,
   inquiry,
+  honor,
 ]

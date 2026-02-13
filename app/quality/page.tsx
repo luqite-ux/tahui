@@ -1,15 +1,19 @@
 import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowRight, Award, Shield, Leaf, Users, CheckCircle } from "lucide-react"
+import { SITE_URL } from "@/lib/seo"
+import { ArrowRight, Award, Shield, Leaf, Users, CheckCircle, FileDown } from "lucide-react"
+import { client } from "@/sanity/lib/client"
+import { urlFor } from "@/sanity/lib/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 
 export const metadata: Metadata = {
-  title: "Quality & Certifications | Tahui Sweater Factory - ISO Certified Manufacturer",
-  description: "Learn about our ISO 9001, ISO 14001, and ISO 45001 certifications.",
+  title: "Quality & Certifications - ISO Certified Manufacturer",
+  description: "Learn about our ISO 9001, ISO 14001, and ISO 45001 certifications. Quality management, environmental and occupational health systems.",
+  alternates: { canonical: `${SITE_URL}/quality` },
 }
 
 const certifications = [
@@ -34,7 +38,31 @@ const qualityCommitments = [
   { title: "Client Standards", description: "We adapt our quality protocols to meet specific client requirements and brand-specific QC manuals." },
 ]
 
-export default function QualityPage() {
+const HONORS_QUERY = `*[_type == "honor"] | order(order asc, title asc) {
+  _id,
+  title,
+  "titleEn": coalesce(titleEn, title),
+  description,
+  category,
+  image,
+  "pdfUrl": pdfFile.asset->url
+}`
+
+export default async function QualityPage() {
+  let honors: Array<{
+    _id: string
+    title: string
+    titleEn: string
+    description?: string | null
+    category?: string | null
+    image?: { asset?: { _ref?: string }; alt?: string | null } | null
+    pdfUrl?: string | null
+  }> = []
+  try {
+    honors = await client.fetch(HONORS_QUERY)
+  } catch {
+    // 无 Sanity 或未配置时忽略
+  }
   return (
     <div className="min-h-screen">
       <Header />
@@ -111,6 +139,59 @@ export default function QualityPage() {
           </div>
         </div>
       </section>
+
+      {/* Honors & Qualifications Gallery - 从 Sanity 后台管理 */}
+      {honors.length > 0 && (
+        <section className="py-24 lg:py-32">
+          <div className="mx-auto max-w-7xl px-6 lg:px-8">
+            <div className="text-center max-w-3xl mx-auto mb-20">
+              <p className="text-sm font-semibold text-accent tracking-wider uppercase mb-4">Honors & Qualifications</p>
+              <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">Our Certificates & Honors</h2>
+              <p className="mt-5 text-lg text-muted-foreground leading-relaxed">Awards, certifications, and qualifications that demonstrate our commitment to excellence.</p>
+            </div>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {honors.map((honor) => (
+                <div
+                  key={honor._id}
+                  className="group bg-card rounded-xl overflow-hidden border border-border/60 hover:border-accent/30 hover:shadow-lg transition-all duration-500"
+                >
+                  <div className="aspect-[4/3] bg-muted relative">
+                    {honor.image?.asset ? (
+                      <Image
+                        src={urlFor(honor.image).width(600).height(450).url()}
+                        alt={honor.image?.alt ?? honor.titleEn}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                      />
+                    ) : honor.pdfUrl ? (
+                      <a href={honor.pdfUrl} target="_blank" rel="noopener noreferrer" className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-muted text-muted-foreground hover:text-accent transition-colors">
+                        <FileDown className="h-16 w-16" />
+                        <span className="text-sm font-medium px-4 text-center">{honor.titleEn}</span>
+                        <span className="text-xs">Click to download PDF</span>
+                      </a>
+                    ) : null}
+                  </div>
+                  <div className="p-4">
+                    <h3 className="font-bold text-foreground">{honor.titleEn}</h3>
+                    {honor.description && <p className="mt-1 text-sm text-muted-foreground line-clamp-2">{honor.description}</p>}
+                    {honor.pdfUrl && honor.image?.asset && (
+                      <a
+                        href={honor.pdfUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-3 inline-flex items-center gap-2 text-sm text-accent hover:underline"
+                      >
+                        <FileDown className="h-4 w-4" /> Download PDF
+                      </a>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Quality Process */}
       <section className="py-24 lg:py-32 bg-secondary">

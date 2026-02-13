@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint .",
     "download-images": "node scripts/download-images-from-vercel.js",
-    "sanity:populate": "node scripts/populate-sanity-initial.mjs"
+    "sanity:populate": "node scripts/populate-sanity-initial.mjs",
+    "sanity:populate-honors": "node scripts/populate-honors.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
