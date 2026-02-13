@@ -1,17 +1,34 @@
 import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
+import { SITE_URL } from "@/lib/seo"
 import { ArrowRight, CheckCircle, Sparkles, Palette, Scissors } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
+import { client } from "@/sanity/lib/client"
+import { urlFor } from "@/sanity/lib/image"
 
 export const metadata: Metadata = {
-  title: "Products | Tahui Sweater Factory - Seamless Knitwear Manufacturer",
+  title: "Products - Seamless Knitwear Manufacturer",
   description:
     "Explore our product range: seamless knitwear, multi-material collections, and advanced craftsmanship. OEM & ODM knitwear manufacturing from Shanghai, China.",
+  alternates: { canonical: `${SITE_URL}/products` },
 }
+
+/** 产品页定时重新拉取 Sanity 数据，便于后台更新后前台更新 */
+export const revalidate = 60
+
+const PRODUCTS_QUERY = `*[_type == "product"] | order(order asc, name asc) {
+  _id,
+  name,
+  "slug": slug.current,
+  description,
+  "categoryId": category->id,
+  "categoryTitle": category->title,
+  images
+}`
 
 /* ─── Category Data ─── */
 
@@ -21,32 +38,26 @@ const categoryNav = [
   { id: "craftsmanship", label: "Advanced Craftsmanship", icon: Scissors },
 ]
 
-/** 将子分类名称转为 URL 锚点用的 slug */
-function subCategorySlug(name: string): string {
-  return name
-    .toLowerCase()
-    .replace(/\s*&\s*/g, "-")
-    .replace(/\s+/g, "-")
-    .replace(/[^a-z0-9-]/g, "")
-}
-
-interface SubCategory {
+type SanityProduct = {
+  _id: string
   name: string
-  description: string
-  image: string
+  slug?: string | null
+  description?: string | null
+  categoryId?: string | null
+  categoryTitle?: string | null
+  images?: Array<{ asset?: { _ref?: string }; alt?: string | null } | null>
 }
 
-interface Category {
+interface CategoryConfig {
   id: string
   number: string
   title: string
   description: string
   image: string
   icon: typeof Sparkles
-  items: SubCategory[]
 }
 
-const categories: Category[] = [
+const categoryConfigs: CategoryConfig[] = [
   {
     id: "seamless",
     number: "01",
@@ -55,26 +66,6 @@ const categories: Category[] = [
       "Innovative seamless sweaters and base layers produced using advanced fully automatic seamless knitting technology for ultimate comfort and fit.",
     image: "/images/category-seamless.jpg",
     icon: Sparkles,
-    items: [
-      {
-        name: "Seamless Sweaters",
-        description:
-          "Premium WholeGarment sweaters with zero side-seams for superior comfort and clean silhouettes.",
-        image: "/images/product-seamless-sweaters.jpg",
-      },
-      {
-        name: "Seamless Underwear",
-        description:
-          "Next-to-skin base layers with body-mapped construction and ultra-smooth bonded edges.",
-        image: "/images/product-seamless-underwear.jpg",
-      },
-      {
-        name: "Vests",
-        description:
-          "Sleeveless knit vests in seamless and fully fashioned construction, available in wool, cotton, and blends.",
-        image: "/images/product-vests.jpg",
-      },
-    ],
   },
   {
     id: "multi-material",
@@ -84,56 +75,6 @@ const categories: Category[] = [
       "A wide range of premium knitwear and blankets crafted from diverse materials including wool, silk, cotton, linen, and specialized fancy yarns.",
     image: "/images/category-materials.jpg",
     icon: Palette,
-    items: [
-      {
-        name: "Sweaters",
-        description:
-          "Classic pullovers in merino wool, cashmere, cotton, silk, and custom blends with jacquard, intarsia, and cable patterns.",
-        image: "/images/product-sweaters.jpg",
-      },
-      {
-        name: "Cardigans",
-        description:
-          "Button-front and open-front cardigans in lightweight to chunky weights with premium hardware options.",
-        image: "/images/product-cardigans.jpg",
-      },
-      {
-        name: "Hoodies & Sweatshirts",
-        description:
-          "Knitted hoodies with seamless hood construction in cotton, wool, and luxury blends.",
-        image: "/images/product-hoodies.jpg",
-      },
-      {
-        name: "Dresses",
-        description:
-          "Elegant knitwear dresses from body-contouring seamless styles to flowing midi lengths.",
-        image: "/images/product-dresses.jpg",
-      },
-      {
-        name: "Skirts & Pants",
-        description:
-          "Pencil skirts, A-line, pleated knit skirts, and knitted trousers, available as coordinating sets.",
-        image: "/images/product-skirts.jpg",
-      },
-      {
-        name: "Scarves & Shawls",
-        description:
-          "Lightweight summer wraps to luxurious winter scarves in wool, cashmere, silk, and linen.",
-        image: "/images/product-scarves.jpg",
-      },
-      {
-        name: "Accessories",
-        description:
-          "Beanies, gloves, mittens, socks, and leg warmers for gift collections and seasonal drops.",
-        image: "/images/product-accessories.jpg",
-      },
-      {
-        name: "Blankets",
-        description:
-          "Premium knitted throws and blankets with cable, waffle, and textured patterns.",
-        image: "/images/product-blankets.jpg",
-      },
-    ],
   },
   {
     id: "craftsmanship",
@@ -143,26 +84,6 @@ const categories: Category[] = [
       "Showcasing our diverse processing capabilities, from jacquard and hand-knitting to embroidery, beading, and custom dyeing techniques.",
     image: "/images/category-craftsmanship.jpg",
     icon: Scissors,
-    items: [
-      {
-        name: "Jacquard",
-        description:
-          "Intricate multi-colour jacquard patterns and Fair Isle designs on computerised flat-bed machines.",
-        image: "/images/product-jacquard.jpg",
-      },
-      {
-        name: "Embroidery & Beading",
-        description:
-          "Hand and machine embroidery, sequin application, bead work, and mixed-media embellishments.",
-        image: "/images/product-embroidery.jpg",
-      },
-      {
-        name: "Custom Dyeing",
-        description:
-          "Garment dyeing, tie-dye, ombre, and gradient effects with lab-dip matching and small-batch colour development.",
-        image: "/images/product-dyeing.jpg",
-      },
-    ],
   },
 ]
 
@@ -179,13 +100,15 @@ const materials = [
 
 function CategorySection({
   category,
+  products,
   bgClass,
 }: {
-  category: Category
+  category: CategoryConfig
+  products: SanityProduct[]
   bgClass?: string
 }) {
   const Icon = category.icon
-  const hasMultipleItems = category.items.length > 1
+  const categoryHref = `/products/category/${category.id}`
 
   return (
     <section id={category.id} className={`scroll-mt-20 py-20 lg:py-28 ${bgClass || ""}`}>
@@ -198,15 +121,13 @@ function CategorySection({
               Category {category.number}
             </span>
           </div>
-          {hasMultipleItems && (
-            <Link
-              href={`/products#${category.id}`}
-              className="group/more inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-accent transition-colors duration-300 shrink-0"
-            >
-              View More
-              <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover/more:translate-x-0.5" />
-            </Link>
-          )}
+          <Link
+            href={categoryHref}
+            className="group/more inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-accent transition-colors duration-300 shrink-0"
+          >
+            View More
+            <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover/more:translate-x-0.5" />
+          </Link>
         </div>
 
         {/* Title */}
@@ -219,8 +140,8 @@ function CategorySection({
           {category.description}
         </p>
 
-        {/* Representative product image */}
-        <div className="group relative mb-14 lg:mb-16">
+        {/* 分类主图：点击进入该分类全部产品 */}
+        <Link href={categoryHref} className="group block relative mb-14 lg:mb-16">
           <div className="aspect-[16/9] lg:aspect-[21/9] rounded-2xl overflow-hidden bg-warm/40 shadow-md ring-1 ring-border/20 relative">
             <Image
               src={category.image || "/placeholder.svg"}
@@ -230,50 +151,57 @@ function CategorySection({
             />
             <div className="absolute inset-0 bg-gradient-to-t from-foreground/10 via-transparent to-transparent" />
           </div>
-        </div>
+        </Link>
 
-        {/* Sub-category grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6">
-          {category.items.map((item) => {
-            const itemSlug = subCategorySlug(item.name)
-            const anchorId = `${category.id}-${itemSlug}`
-            return (
-              <Card
-                key={item.name}
-                id={anchorId}
-                className="group/card bg-card rounded-2xl border-border/40 shadow-sm hover:shadow-lg hover:shadow-accent/[0.04] hover:-translate-y-0.5 transition-all duration-500 ease-out overflow-hidden relative scroll-mt-24"
-              >
-                {/* Product image */}
-                <div className="relative aspect-[4/3] overflow-hidden bg-warm/30">
-                  <Image
-                    src={item.image || "/placeholder.svg"}
-                    alt={item.name}
-                    fill
-                    className="object-cover transition-transform duration-700 ease-out group-hover/card:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-foreground/5 via-transparent to-transparent" />
-                </div>
-                {/* Top accent line on hover */}
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 h-[2px] w-0 group-hover/card:w-2/3 bg-gradient-to-r from-transparent via-accent to-transparent rounded-b-full transition-all duration-500" />
-                <CardContent className="p-5">
-                  <h3 className="font-bold text-foreground group-hover/card:text-primary transition-colors duration-300 leading-tight text-base">
-                    {item.name}
-                  </h3>
-                  <p className="mt-2 text-sm text-muted-foreground leading-relaxed line-clamp-2">
-                    {item.description}
-                  </p>
-                  <Link
-                    href={`/products#${anchorId}`}
-                    className="inline-flex items-center gap-1 mt-3 text-xs font-medium text-accent/70 hover:text-accent transition-colors duration-300"
-                  >
-                    View
-                    <ArrowRight className="h-3 w-3" />
-                  </Link>
-                </CardContent>
-              </Card>
-            )
-          })}
-        </div>
+        {/* 该分类下前几个产品（最多 6 个），样式与原来一致 */}
+        {products.length > 0 && (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6">
+            {products.map((product) => {
+              const firstImage = product.images?.[0]
+              return (
+                <Card
+                  key={product._id}
+                  className="group/card bg-card rounded-2xl border-border/40 shadow-sm hover:shadow-lg hover:shadow-accent/[0.04] hover:-translate-y-0.5 transition-all duration-500 ease-out overflow-hidden relative"
+                >
+                  <div className="relative aspect-[4/3] overflow-hidden bg-warm/30">
+                    {firstImage?.asset ? (
+                      <Image
+                        src={urlFor(firstImage).width(800).height(600).url()}
+                        alt={firstImage?.alt ?? product.name}
+                        fill
+                        className="object-cover transition-transform duration-700 ease-out group-hover/card:scale-105"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center text-muted-foreground/50 text-sm">
+                        No image
+                      </div>
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-foreground/5 via-transparent to-transparent" />
+                  </div>
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 h-[2px] w-0 group-hover/card:w-2/3 bg-gradient-to-r from-transparent via-accent to-transparent rounded-b-full transition-all duration-500" />
+                  <CardContent className="p-5">
+                    <h3 className="font-bold text-foreground group-hover/card:text-primary transition-colors duration-300 leading-tight text-base">
+                      {product.name}
+                    </h3>
+                    {product.description && (
+                      <p className="mt-2 text-sm text-muted-foreground leading-relaxed line-clamp-2">
+                        {product.description}
+                      </p>
+                    )}
+                    <Link
+                      href={categoryHref}
+                      className="inline-flex items-center gap-1 mt-3 text-xs font-medium text-accent/70 hover:text-accent transition-colors duration-300"
+                    >
+                      View More
+                      <ArrowRight className="h-3 w-3" />
+                    </Link>
+                  </CardContent>
+                </Card>
+              )
+            })}
+          </div>
+        )}
       </div>
     </section>
   )
@@ -281,13 +209,34 @@ function CategorySection({
 
 /* ─── Page ─── */
 
-export default function ProductsPage() {
+export default async function ProductsPage() {
+  let sanityProducts: Array<{
+    _id: string
+    name: string
+    slug?: string | null
+    description?: string | null
+    categoryId?: string | null
+    categoryTitle?: string | null
+    images?: Array<{ asset?: { _ref?: string }; alt?: string | null } | null>
+  }> = []
+  try {
+    sanityProducts = await client.fetch(PRODUCTS_QUERY)
+  } catch {
+    // 无 Sanity 或未配置时使用空列表
+  }
+
+  // 按分类分组，每个分类最多取前 6 个产品
+  const productsByCategory = categoryConfigs.map((cat) => ({
+    category: cat,
+    products: sanityProducts.filter((p) => p.categoryId === cat.id).slice(0, 6),
+  }))
+
   return (
     <div className="min-h-screen">
       <Header />
 
       {/* ── Hero ── */}
-      <section className="pt-28 pb-16 lg:pt-36 lg:pb-20 bg-gradient-to-br from-secondary via-background to-warm/30 relative overflow-hidden">
+      <section className="pt-16 pb-16 lg:pt-24 lg:pb-20 bg-gradient-to-br from-secondary via-background to-warm/30 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
         <div className="absolute bottom-0 left-0 w-72 h-72 bg-primary/[0.03] rounded-full blur-3xl" />
         <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
@@ -322,16 +271,17 @@ export default function ProductsPage() {
         </div>
       </section>
 
-      {/* ── Category Sections ── */}
-      {categories.map((cat, i) => (
-        <div key={cat.id}>
+      {/* ── Category Sections：每类展示前几个产品，主图与「更多」进入分类产品集 ── */}
+      {productsByCategory.map(({ category, products }, i) => (
+        <div key={category.id}>
           {i > 0 && (
             <div className="mx-auto max-w-7xl px-6 lg:px-8">
               <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
             </div>
           )}
           <CategorySection
-            category={cat}
+            category={category}
+            products={products}
             bgClass={i % 2 === 1 ? "bg-secondary/50" : ""}
           />
         </div>
