@@ -9,7 +9,8 @@
     "lint": "eslint .",
     "download-images": "node scripts/download-images-from-vercel.js",
     "sanity:populate": "node scripts/populate-sanity-initial.mjs",
-    "sanity:populate-honors": "node scripts/populate-honors.mjs"
+    "sanity:populate-honors": "node scripts/populate-honors.mjs",
+    "sanity:fix-honor-titles": "node scripts/fix-honor-uuid-titles.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",

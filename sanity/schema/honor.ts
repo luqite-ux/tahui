@@ -10,7 +10,7 @@ export const honor = defineType({
       name: 'title',
       title: '名称',
       type: 'string',
-      description: '证书/资质名称，如 ISO 9001、高新技术企业认定',
+      description: '证书名称（勿填 UUID，否则会显示异常）如：绿色低碳信用评价AAA级企业',
       validation: (r) => r.required(),
     }),
     defineField({

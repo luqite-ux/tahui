@@ -46,6 +46,8 @@ const HONORS_QUERY = `*[_type == "honor"] | order(order asc, title asc) {
   category,
   orientation,
   image,
+  "imageAlt": image.alt,
+  "fileName": image.asset->originalFilename,
   "pdfUrl": pdfFile.asset->url
 }`
 
@@ -72,11 +74,31 @@ const HONOR_TITLE_ZH_TO_EN: Record<string, string> = {
   'BSCI 2025 现场报告': 'BSCI 2025 Photo Report',
 }
 
-function honorDisplayTitle(honor: { title?: string | null; titleEn?: string | null }): string {
-  const zh = honor.title ?? ''
-  const en = honor.titleEn?.trim()
-  if (en && en !== zh) return en
-  return HONOR_TITLE_ZH_TO_EN[zh] ?? en ?? zh
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
+function isLikelyUuid(s: string): boolean {
+  return UUID_REGEX.test((s ?? '').trim())
+}
+
+function honorDisplayTitle(honor: {
+  title?: string | null
+  titleEn?: string | null
+  imageAlt?: string | null
+  fileName?: string | null
+}): string {
+  const zh = (honor.title ?? '').trim()
+  const en = (honor.titleEn ?? '').trim()
+  const alt = (honor.imageAlt ?? '').trim()
+  const fn = (honor.fileName ?? '').trim()
+  if (isLikelyUuid(zh)) {
+    if (fn.includes('5ac830a7')) return 'Green Low-Carbon Enterprise Credit Evaluation Model Enterprise'
+    if (fn.includes('9996e34e') || fn.includes('e33edd11')) return 'AAA Green Low-Carbon Enterprise Credit Rating'
+    if (alt && !isLikelyUuid(alt) && alt.length > 2)
+      return HONOR_TITLE_ZH_TO_EN[alt] ?? alt
+    if (en && !isLikelyUuid(en)) return HONOR_TITLE_ZH_TO_EN[en] ?? en
+  }
+  if (en && en !== zh && !isLikelyUuid(en)) return HONOR_TITLE_ZH_TO_EN[zh] ?? en
+  return HONOR_TITLE_ZH_TO_EN[zh] ?? (zh && !isLikelyUuid(zh) ? zh : null) ?? en ?? (alt || 'Certificate')
 }
 
 /** 证书分类配置：标题 + 说明文字 */
@@ -132,18 +154,53 @@ function isIsoRelated(h: { title?: string | null; titleEn?: string | null }): bo
   return ISO_KEYWORDS.some((k) => t.includes(k.toLowerCase()))
 }
 
-function isGreenRelated(h: { title?: string | null; titleEn?: string | null }): boolean {
-  const t = `${(h.title ?? '')} ${(h.titleEn ?? '')}`.toLowerCase()
-  return GREEN_KEYWORDS.some((k) => t.includes(k.toLowerCase()))
+function isGreenRelated(h: {
+  title?: string | null
+  titleEn?: string | null
+  imageAlt?: string | null
+  fileName?: string | null
+}): boolean {
+  const t = `${h.title ?? ''} ${h.titleEn ?? ''} ${h.imageAlt ?? ''} ${h.fileName ?? ''}`.toLowerCase()
+  return (
+    GREEN_KEYWORDS.some((k) => t.includes(k.toLowerCase())) ||
+    /5ac830a7|9996e34e|e33edd11/.test(t)
+  )
 }
 
-/** 按证书编号或展示名去重（同证书仅保留一条） */
+/** 绿色低碳 AAA 与 示范 各自仅保留一张（后两张 AAA 相同） */
+function getGreenDedupeKey(h: {
+  title?: string | null
+  titleEn?: string | null
+  imageAlt?: string | null
+  fileName?: string | null
+  _id?: string
+}): string {
+  const t = `${h.title ?? ''} ${h.titleEn ?? ''} ${h.imageAlt ?? ''} ${h.fileName ?? ''}`.toLowerCase()
+  if (t.includes('aaa') || t.includes('aaa级') || /信用评价aaa/i.test(t)) return 'green-aaa'
+  if (t.includes('9996e34e') || t.includes('e33edd11')) return 'green-aaa'
+  if (t.includes('示范') || t.includes('demonstration') || t.includes('5ac830a7')) return 'green-demo'
+  return `green-${h._id ?? 'other'}`
+}
+
+/** 按展示名去重；绿色分类内 AAA/示范 各仅保留一张 */
 function dedupeHonors(
-  honors: Array<{ _id: string; title?: string | null; titleEn?: string | null }>
+  honors: Array<{
+    _id: string
+    title?: string | null
+    titleEn?: string | null
+    imageAlt?: string | null
+  }>,
+  category?: string
 ): typeof honors {
   const seen = new Set<string>()
   return honors.filter((h) => {
-    const key = `${honorDisplayTitle(h)}`.toLowerCase().replace(/\s+/g, '-')
+    let key: string
+    if (category === 'green') {
+      key = getGreenDedupeKey(h)
+    } else {
+      key = honorDisplayTitle(h).toLowerCase().replace(/\s+/g, '-')
+      if (key === 'certificate' || key.length < 3) key = h._id
+    }
     if (seen.has(key)) return false
     seen.add(key)
     return true
@@ -151,7 +208,14 @@ function dedupeHonors(
 }
 
 function groupHonorsByCategory(
-  honors: Array<{ category?: string | null; title?: string | null; titleEn?: string | null; _id: string }>
+  honors: Array<{
+    category?: string | null
+    title?: string | null
+    titleEn?: string | null
+    imageAlt?: string | null
+    fileName?: string | null
+    _id: string
+  }>
 ): Map<string, typeof honors> {
   const map = new Map<string, typeof honors>()
   for (const c of CATEGORY_ORDER) map.set(c, [])
@@ -163,7 +227,7 @@ function groupHonorsByCategory(
     else if (isGreenRelated(h)) cat = 'green'
     map.get(cat)?.push(h)
   }
-  for (const [k, arr] of map) map.set(k, dedupeHonors(arr))
+  for (const [k, arr] of map) map.set(k, dedupeHonors(arr, k))
   return map
 }
 
@@ -176,6 +240,8 @@ export default async function QualityPage() {
     category?: string | null
     orientation?: string | null
     image?: { asset?: { _ref?: string }; alt?: string | null } | null
+    imageAlt?: string | null
+    fileName?: string | null
     pdfUrl?: string | null
   }> = []
   try {
@@ -282,16 +348,28 @@ export default async function QualityPage() {
                     <h3 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">{config.label}</h3>
                     <p className="mt-3 text-muted-foreground leading-relaxed max-w-3xl">{config.description}</p>
                   </div>
-                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                  <div
+                    className={`grid gap-8 ${
+                      catKey === 'green' || catKey === 'other'
+                        ? 'sm:grid-cols-2 lg:grid-cols-3'
+                        : 'sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
+                    }`}
+                  >
                     {items.map((honor) => (
                       <HonorCard
                         key={honor._id}
                         _id={honor._id}
-                        displayTitle={honorDisplayTitle(honor)}
+                        displayTitle={honorDisplayTitle({
+                          ...honor,
+                          imageAlt: honor.imageAlt ?? honor.image?.alt,
+                        })}
                         description={honor.description}
                         image={honor.image}
                         pdfUrl={honor.pdfUrl}
-                        orientation={honor.orientation ?? (catKey === 'green' ? 'tall' : undefined)}
+                        orientation={
+                          honor.orientation ??
+                          (catKey === 'green' ? 'landscape' : catKey === 'other' ? 'tall' : undefined)
+                        }
                       />
                     ))}
                   </div>

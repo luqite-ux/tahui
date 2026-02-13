@@ -57,6 +57,9 @@ const HONOR_MAPPINGS = [
   // 专利证书
   { pattern: /专利证书合集/i, title: 'Patent Certificates Collection', titleZh: '专利证书合集', category: 'patent', order: 60 },
   { pattern: /专利证书(\d)/i, title: 'Patent Certificate', titleZh: '专利证书', category: 'patent', order: 70 },
+  // 绿色低碳（横版）
+  { pattern: /5ac830a7/i, title: 'Green Low-Carbon Enterprise Credit Evaluation Model Enterprise', titleZh: '绿色低碳企业信用评价示范企业', category: 'green', order: 75, orientation: 'landscape' },
+  { pattern: /9996e34e|e33edd11/i, title: 'AAA Green Low-Carbon Enterprise Credit Rating', titleZh: '绿色低碳信用评价AAA级企业', category: 'green', order: 76, orientation: 'landscape' },
 ]
 
 function findMapping(filename) {
@@ -132,6 +135,7 @@ async function main() {
         titleEn: title,
         category,
         order,
+        ...(mapping?.orientation && { orientation: mapping.orientation }),
       }
 
       if (isPdf) {
