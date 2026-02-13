@@ -4,10 +4,10 @@ import { Mail, Phone, MapPin } from "lucide-react";
 
 const navigation = {
   products: [
-    { name: "Sweaters", href: "/products#sweaters" },
-    { name: "Cardigans", href: "/products#cardigans" },
-    { name: "Dresses", href: "/products#dresses" },
-    { name: "Accessories", href: "/products#accessories" },
+    { name: "All Products", href: "/products" },
+    { name: "Seamless Knitwear", href: "/products/category/seamless" },
+    { name: "Multi-Material Collection", href: "/products/category/multi-material" },
+    { name: "Advanced Craftsmanship", href: "/products/category/craftsmanship" },
   ],
   company: [
     { name: "About Us", href: "/about" },
@@ -145,7 +145,7 @@ export function Footer() {
               &copy; {new Date().getFullYear()} Tahui Sweater Factory. All
               rights reserved.
             </p>
-            <div className="flex gap-6">
+            <div className="flex flex-wrap justify-center gap-6">
               <Link
                 href="/quality"
                 className="text-sm opacity-50 hover:opacity-100 hover:text-accent transition-all duration-300"
@@ -157,6 +157,18 @@ export function Footer() {
                 className="text-sm opacity-50 hover:opacity-100 hover:text-accent transition-all duration-300"
               >
                 Contact Us
+              </Link>
+              <Link
+                href="/privacy"
+                className="text-sm opacity-50 hover:opacity-100 hover:text-accent transition-all duration-300"
+              >
+                Privacy Policy
+              </Link>
+              <Link
+                href="/terms"
+                className="text-sm opacity-50 hover:opacity-100 hover:text-accent transition-all duration-300"
+              >
+                Terms of Service
               </Link>
             </div>
           </div>

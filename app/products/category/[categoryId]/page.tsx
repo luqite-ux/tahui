@@ -51,14 +51,16 @@ export default async function CategoryProductsPage({ params }: Props) {
     notFound()
   }
 
-  const products = await client.fetch<Array<{
-    _id: string
-    name: string
-    slug?: string | null
-    description?: string | null
-    categoryTitle?: string | null
-    images?: Array<{ asset?: { _ref?: string }; alt?: string | null } | null>
-  }>>(PRODUCTS_BY_CATEGORY_QUERY, { categoryId })
+  const products = await client.fetch<
+    Array<{
+      _id: string
+      name: string
+      slug?: string | null
+      description?: string | null
+      categoryTitle?: string | null
+      images?: Array<{ asset?: { _ref?: string }; alt?: string | null } | null>
+    }>
+  >(PRODUCTS_BY_CATEGORY_QUERY, { categoryId })
 
   const categoryTitle = CATEGORY_TITLES[categoryId]
 
@@ -89,42 +91,47 @@ export default async function CategoryProductsPage({ params }: Props) {
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
               {products.map((product) => {
                 const firstImage = product.images?.[0]
+                const detailHref = product.slug ? `/products/${product.slug}` : `/products/${product._id}`
                 return (
-                  <Card
-                    key={product._id}
-                    className="group/card bg-card rounded-2xl border-border/40 shadow-sm hover:shadow-lg hover:shadow-accent/[0.04] hover:-translate-y-0.5 transition-all duration-500 ease-out overflow-hidden"
-                  >
-                    <div className="relative aspect-[4/3] overflow-hidden bg-warm/30">
-                      {firstImage?.asset ? (
-                        <Image
-                          src={urlFor(firstImage).width(800).height(600).url()}
-                          alt={firstImage?.alt ?? product.name}
-                          fill
-                          className="object-cover transition-transform duration-700 ease-out group-hover/card:scale-105"
-                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                        />
-                      ) : (
-                        <div className="absolute inset-0 flex items-center justify-center text-muted-foreground/50 text-sm">
-                          No image
-                        </div>
-                      )}
-                    </div>
-                    <CardContent className="p-5">
-                      {product.categoryTitle && (
-                        <p className="text-xs font-medium text-accent uppercase tracking-wider mb-1">
-                          {product.categoryTitle}
-                        </p>
-                      )}
-                      <h2 className="font-bold text-foreground text-base leading-tight">
-                        {product.name}
-                      </h2>
-                      {product.description && (
-                        <p className="mt-2 text-sm text-muted-foreground leading-relaxed line-clamp-3">
-                          {product.description}
-                        </p>
-                      )}
-                    </CardContent>
-                  </Card>
+                  <Link key={product._id} href={detailHref} className="block h-full">
+                    <Card
+                      className="group/card h-full bg-card rounded-2xl border-border/40 shadow-sm hover:shadow-lg hover:shadow-accent/[0.04] hover:-translate-y-0.5 transition-all duration-500 ease-out overflow-hidden"
+                    >
+                      <div className="relative aspect-[4/3] overflow-hidden bg-warm/30">
+                        {firstImage?.asset ? (
+                          <Image
+                            src={urlFor(firstImage).width(800).height(600).url()}
+                            alt={firstImage?.alt ?? product.name}
+                            fill
+                            className="object-cover transition-transform duration-700 ease-out group-hover/card:scale-105"
+                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                          />
+                        ) : (
+                          <div className="absolute inset-0 flex items-center justify-center text-muted-foreground/50 text-sm">
+                            No image
+                          </div>
+                        )}
+                      </div>
+                      <CardContent className="p-5">
+                        {product.categoryTitle && (
+                          <p className="text-xs font-medium text-accent uppercase tracking-wider mb-1">
+                            {product.categoryTitle}
+                          </p>
+                        )}
+                        <h2 className="font-bold text-foreground text-base leading-tight">
+                          {product.name}
+                        </h2>
+                        {product.description && (
+                          <p className="mt-2 text-sm text-muted-foreground leading-relaxed line-clamp-3">
+                            {product.description}
+                          </p>
+                        )}
+                        <span className="inline-flex items-center gap-1 mt-3 text-xs font-medium text-accent/70 group-hover/card:text-accent transition-colors">
+                          View details →
+                        </span>
+                      </CardContent>
+                    </Card>
+                  </Link>
                 )
               })}
             </div>

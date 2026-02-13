@@ -153,51 +153,50 @@ function CategorySection({
           </div>
         </Link>
 
-        {/* 该分类下前几个产品（最多 6 个），样式与原来一致 */}
+        {/* 该分类下前几个产品（最多 6 个），点击进入详情页 */}
         {products.length > 0 && (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6">
             {products.map((product) => {
               const firstImage = product.images?.[0]
+              const detailHref = product.slug ? `/products/${product.slug}` : `/products/${product._id}`
               return (
-                <Card
-                  key={product._id}
-                  className="group/card bg-card rounded-2xl border-border/40 shadow-sm hover:shadow-lg hover:shadow-accent/[0.04] hover:-translate-y-0.5 transition-all duration-500 ease-out overflow-hidden relative"
-                >
-                  <div className="relative aspect-[4/3] overflow-hidden bg-warm/30">
-                    {firstImage?.asset ? (
-                      <Image
-                        src={urlFor(firstImage).width(800).height(600).url()}
-                        alt={firstImage?.alt ?? product.name}
-                        fill
-                        className="object-cover transition-transform duration-700 ease-out group-hover/card:scale-105"
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                      />
-                    ) : (
-                      <div className="absolute inset-0 flex items-center justify-center text-muted-foreground/50 text-sm">
-                        No image
-                      </div>
-                    )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-foreground/5 via-transparent to-transparent" />
-                  </div>
-                  <div className="absolute top-0 left-1/2 -translate-x-1/2 h-[2px] w-0 group-hover/card:w-2/3 bg-gradient-to-r from-transparent via-accent to-transparent rounded-b-full transition-all duration-500" />
-                  <CardContent className="p-5">
-                    <h3 className="font-bold text-foreground group-hover/card:text-primary transition-colors duration-300 leading-tight text-base">
-                      {product.name}
-                    </h3>
-                    {product.description && (
-                      <p className="mt-2 text-sm text-muted-foreground leading-relaxed line-clamp-2">
-                        {product.description}
-                      </p>
-                    )}
-                    <Link
-                      href={categoryHref}
-                      className="inline-flex items-center gap-1 mt-3 text-xs font-medium text-accent/70 hover:text-accent transition-colors duration-300"
-                    >
-                      View More
-                      <ArrowRight className="h-3 w-3" />
-                    </Link>
-                  </CardContent>
-                </Card>
+                <Link key={product._id} href={detailHref} className="block h-full">
+                  <Card
+                    className="group/card h-full bg-card rounded-2xl border-border/40 shadow-sm hover:shadow-lg hover:shadow-accent/[0.04] hover:-translate-y-0.5 transition-all duration-500 ease-out overflow-hidden relative"
+                  >
+                    <div className="relative aspect-[4/3] overflow-hidden bg-warm/30">
+                      {firstImage?.asset ? (
+                        <Image
+                          src={urlFor(firstImage).width(800).height(600).url()}
+                          alt={firstImage?.alt ?? product.name}
+                          fill
+                          className="object-cover transition-transform duration-700 ease-out group-hover/card:scale-105"
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        />
+                      ) : (
+                        <div className="absolute inset-0 flex items-center justify-center text-muted-foreground/50 text-sm">
+                          No image
+                        </div>
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-foreground/5 via-transparent to-transparent" />
+                    </div>
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 h-[2px] w-0 group-hover/card:w-2/3 bg-gradient-to-r from-transparent via-accent to-transparent rounded-b-full transition-all duration-500" />
+                    <CardContent className="p-5">
+                      <h3 className="font-bold text-foreground group-hover/card:text-primary transition-colors duration-300 leading-tight text-base">
+                        {product.name}
+                      </h3>
+                      {product.description && (
+                        <p className="mt-2 text-sm text-muted-foreground leading-relaxed line-clamp-2">
+                          {product.description}
+                        </p>
+                      )}
+                      <span className="inline-flex items-center gap-1 mt-3 text-xs font-medium text-accent/70 group-hover/card:text-accent transition-colors duration-300">
+                        View details
+                        <ArrowRight className="h-3 w-3" />
+                      </span>
+                    </CardContent>
+                  </Card>
+                </Link>
               )
             })}
           </div>
