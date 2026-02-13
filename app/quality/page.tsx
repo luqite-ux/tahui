@@ -41,12 +41,88 @@ const qualityCommitments = [
 const HONORS_QUERY = `*[_type == "honor"] | order(order asc, title asc) {
   _id,
   title,
-  "titleEn": coalesce(titleEn, title),
+  titleEn,
   description,
   category,
   image,
   "pdfUrl": pdfFile.asset->url
 }`
+
+/** 常见中文证书名称 → 英文展示（Sanity 未填 titleEn 时使用） */
+const HONOR_TITLE_ZH_TO_EN: Record<string, string> = {
+  '质量管理体系': 'Quality Management System',
+  '质量体系': 'Quality Management System',
+  '环境管理体系': 'Environmental Management System (ISO 14001)',
+  '环境体系': 'Environmental Management System',
+  '职业健康安全体系': 'Occupational Health & Safety (ISO 45001)',
+  '职业健康体系': 'Occupational Health & Safety System',
+  '上海名牌': 'Shanghai Famous Brand',
+  '专精特新证书': 'Specialized SME Certificate',
+  '新著名商标': 'Well-Known Trademark',
+  '海关信用认定书': 'Customs Credit Certification',
+  '高新技术企业认定': 'High-Tech Enterprise Certification',
+  '专利证书合集': 'Patent Certificates Collection',
+  '绿色低碳企业信用评价示范企业': 'Green Low-Carbon Credit Evaluation Model Enterprise',
+  '绿色信用评价AAA企业': 'AAA Green Credit Rating Enterprise',
+  '上海加星': 'Shanghai Star Enterprise',
+  'BSCI 2025 认证': 'BSCI 2025 Certificate',
+  'BSCI 2025 现场报告': 'BSCI 2025 Photo Report',
+}
+
+function honorDisplayTitle(honor: { title?: string | null; titleEn?: string | null }): string {
+  const zh = honor.title ?? ''
+  const en = honor.titleEn?.trim()
+  if (en && en !== zh) return en
+  return HONOR_TITLE_ZH_TO_EN[zh] ?? en ?? zh
+}
+
+/** 证书分类配置：标题 + 说明文字 */
+const HONOR_CATEGORIES: Record<
+  string,
+  { label: string; description: string }
+> = {
+  iso: {
+    label: 'ISO Certifications',
+    description:
+      'Our internationally recognized ISO certifications ensure consistent quality management, environmental responsibility, and occupational health and safety across all operations.',
+  },
+  bsci: {
+    label: 'Social Responsibility & Compliance',
+    description:
+      'We maintain BSCI and other social compliance certifications, demonstrating our commitment to ethical manufacturing, fair labor practices, and responsible supply chain management.',
+  },
+  patent: {
+    label: 'Patents & Innovation',
+    description:
+      'Our patents reflect our continuous investment in knitwear technology and process innovation, supporting our position as a leading manufacturer in the industry.',
+  },
+  honor: {
+    label: 'Honors & Recognitions',
+    description:
+      'Government and industry recognitions including Shanghai Famous Brand, High-Tech Enterprise status, and green credit ratings that validate our excellence and commitment.',
+  },
+  other: {
+    label: 'Other Certifications',
+    description:
+      'Additional qualifications and certifications that support our comprehensive quality and compliance framework.',
+  },
+}
+
+const CATEGORY_ORDER = ['iso', 'bsci', 'patent', 'honor', 'other'] as const
+
+function groupHonorsByCategory(
+  honors: Array<{ category?: string | null }>
+): Map<string, typeof honors> {
+  const map = new Map<string, typeof honors>()
+  for (const c of CATEGORY_ORDER) map.set(c, [])
+  for (const h of honors) {
+    const cat = h.category && CATEGORY_ORDER.includes(h.category as (typeof CATEGORY_ORDER)[number])
+      ? h.category
+      : 'other'
+    map.get(cat)?.push(h)
+  }
+  return map
+}
 
 export default async function QualityPage() {
   let honors: Array<{
@@ -140,55 +216,84 @@ export default async function QualityPage() {
         </div>
       </section>
 
-      {/* Honors & Qualifications Gallery - 从 Sanity 后台管理 */}
+      {/* Honors & Qualifications Gallery - 按分类展示 */}
       {honors.length > 0 && (
         <section className="py-24 lg:py-32">
           <div className="mx-auto max-w-7xl px-6 lg:px-8">
             <div className="text-center max-w-3xl mx-auto mb-20">
               <p className="text-sm font-semibold text-accent tracking-wider uppercase mb-4">Honors & Qualifications</p>
               <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">Our Certificates & Honors</h2>
-              <p className="mt-5 text-lg text-muted-foreground leading-relaxed">Awards, certifications, and qualifications that demonstrate our commitment to excellence.</p>
+              <p className="mt-5 text-lg text-muted-foreground leading-relaxed">Awards, certifications, and qualifications organized by category.</p>
             </div>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {honors.map((honor) => (
-                <div
-                  key={honor._id}
-                  className="group bg-card rounded-xl overflow-hidden border border-border/60 hover:border-accent/30 hover:shadow-lg transition-all duration-500"
-                >
-                  <div className="aspect-[4/3] bg-muted relative">
-                    {honor.image?.asset ? (
-                      <Image
-                        src={urlFor(honor.image).width(600).height(450).url()}
-                        alt={honor.image?.alt ?? honor.titleEn}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-500"
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                      />
-                    ) : honor.pdfUrl ? (
-                      <a href={honor.pdfUrl} target="_blank" rel="noopener noreferrer" className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-muted text-muted-foreground hover:text-accent transition-colors">
-                        <FileDown className="h-16 w-16" />
-                        <span className="text-sm font-medium px-4 text-center">{honor.titleEn}</span>
-                        <span className="text-xs">Click to download PDF</span>
-                      </a>
-                    ) : null}
+
+            {(() => {
+              const byCategory = groupHonorsByCategory(honors)
+              return CATEGORY_ORDER.map((catKey) => {
+                const items = byCategory.get(catKey) ?? []
+              if (items.length === 0) return null
+              const config = HONOR_CATEGORIES[catKey] ?? HONOR_CATEGORIES.other
+              return (
+                <div key={catKey} className="mb-20 last:mb-0">
+                  <div className="mb-10">
+                    <h3 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">{config.label}</h3>
+                    <p className="mt-3 text-muted-foreground leading-relaxed max-w-3xl">{config.description}</p>
                   </div>
-                  <div className="p-4">
-                    <h3 className="font-bold text-foreground">{honor.titleEn}</h3>
-                    {honor.description && <p className="mt-1 text-sm text-muted-foreground line-clamp-2">{honor.description}</p>}
-                    {honor.pdfUrl && honor.image?.asset && (
-                      <a
-                        href={honor.pdfUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="mt-3 inline-flex items-center gap-2 text-sm text-accent hover:underline"
-                      >
-                        <FileDown className="h-4 w-4" /> Download PDF
-                      </a>
-                    )}
+                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                    {items.map((honor) => {
+                      const displayTitle = honorDisplayTitle(honor)
+                      const hasImage = !!honor.image?.asset
+                      const hasPdf = !!honor.pdfUrl
+                      return (
+                        <div
+                          key={honor._id}
+                          className="group bg-card rounded-2xl overflow-hidden border border-border/60 hover:border-accent/40 hover:shadow-xl transition-all duration-300 flex flex-col"
+                        >
+                          <div className="aspect-[3/4] bg-muted/50 relative flex items-center justify-center overflow-hidden">
+                            {hasImage ? (
+                              <Image
+                                src={urlFor(honor.image!).width(800).height(1067).url()}
+                                alt={honor.image?.alt ?? displayTitle}
+                                fill
+                                className="object-contain p-2 group-hover:scale-[1.02] transition-transform duration-300"
+                                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                              />
+                            ) : hasPdf ? (
+                              <a
+                                href={honor.pdfUrl!}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="absolute inset-0 flex flex-col items-center justify-center gap-4 p-6 bg-gradient-to-b from-background to-muted/80 border-b border-border/40 hover:from-accent/5 hover:to-accent/10 transition-colors"
+                              >
+                                <div className="w-20 h-24 rounded-lg bg-primary/10 border-2 border-primary/20 flex items-center justify-center shadow-inner">
+                                  <FileDown className="h-10 w-10 text-primary" strokeWidth={1.5} />
+                                </div>
+                                <span className="text-sm font-semibold text-foreground text-center line-clamp-3">{displayTitle}</span>
+                                <span className="text-xs text-accent font-medium">View PDF</span>
+                              </a>
+                            ) : null}
+                          </div>
+                          <div className="p-4 flex-1 flex flex-col">
+                            <h4 className="font-bold text-foreground">{displayTitle}</h4>
+                            {honor.description && <p className="mt-1 text-sm text-muted-foreground line-clamp-2">{honor.description}</p>}
+                            {hasPdf && (
+                              <a
+                                href={honor.pdfUrl!}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="mt-3 inline-flex items-center gap-2 text-sm text-accent hover:underline w-fit"
+                              >
+                                <FileDown className="h-4 w-4 shrink-0" /> Download PDF
+                              </a>
+                            )}
+                          </div>
+                        </div>
+                      )
+                    })}
                   </div>
                 </div>
-              ))}
-            </div>
+              )
+            })
+            })()}
           </div>
         </section>
       )}

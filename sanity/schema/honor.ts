@@ -17,7 +17,7 @@ export const honor = defineType({
       name: 'titleEn',
       title: '英文名称',
       type: 'string',
-      description: '可选，用于英文站点',
+      description: '用于英文站点展示，请务必填写（如仅填中文名会显示中文）',
     }),
     defineField({
       name: 'description',
@@ -48,7 +48,7 @@ export const honor = defineType({
       type: 'image',
       options: { hotspot: true },
       fields: [defineField({ name: 'alt', type: 'string', title: '替代文字' })],
-      description: '证书/荣誉的展示图，建议上传清晰扫描件',
+      description: '证书展示图（建议完整扫描）。仅有 PDF 时也建议上传一张预览图作为缩略图',
     }),
     defineField({
       name: 'pdfFile',
