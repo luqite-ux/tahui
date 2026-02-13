@@ -2,9 +2,9 @@ import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
 import { SITE_URL } from "@/lib/seo"
-import { ArrowRight, Award, Shield, Leaf, Users, CheckCircle, FileDown } from "lucide-react"
+import { ArrowRight, Award, Shield, Leaf, Users, CheckCircle } from "lucide-react"
 import { client } from "@/sanity/lib/client"
-import { urlFor } from "@/sanity/lib/image"
+import { HonorCard } from "@/components/honor-card"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Header } from "@/components/header"
@@ -44,6 +44,7 @@ const HONORS_QUERY = `*[_type == "honor"] | order(order asc, title asc) {
   titleEn,
   description,
   category,
+  orientation,
   image,
   "pdfUrl": pdfFile.asset->url
 }`
@@ -110,15 +111,28 @@ const HONOR_CATEGORIES: Record<
 
 const CATEGORY_ORDER = ['iso', 'bsci', 'patent', 'honor', 'other'] as const
 
+/** 判定是否为 ISO 相关证书（按名称关键字） */
+const ISO_KEYWORDS = [
+  'iso', '9001', '14001', '45001',
+  '质量', '环境', '职业健康', '质量管理', '环境管理', '职业健康安全',
+  'quality management', 'environmental', 'occupational',
+]
+
+function isIsoRelated(h: { title?: string | null; titleEn?: string | null }): boolean {
+  const t = `${(h.title ?? '').toLowerCase()} ${(h.titleEn ?? '').toLowerCase()}`
+  return ISO_KEYWORDS.some((k) => t.includes(k.toLowerCase()))
+}
+
 function groupHonorsByCategory(
-  honors: Array<{ category?: string | null }>
+  honors: Array<{ category?: string | null; title?: string | null; titleEn?: string | null }>
 ): Map<string, typeof honors> {
   const map = new Map<string, typeof honors>()
   for (const c of CATEGORY_ORDER) map.set(c, [])
   for (const h of honors) {
-    const cat = h.category && CATEGORY_ORDER.includes(h.category as (typeof CATEGORY_ORDER)[number])
+    let cat = h.category && CATEGORY_ORDER.includes(h.category as (typeof CATEGORY_ORDER)[number])
       ? h.category
       : 'other'
+    if (isIsoRelated(h)) cat = 'iso'
     map.get(cat)?.push(h)
   }
   return map
@@ -131,6 +145,7 @@ export default async function QualityPage() {
     titleEn: string
     description?: string | null
     category?: string | null
+    orientation?: string | null
     image?: { asset?: { _ref?: string }; alt?: string | null } | null
     pdfUrl?: string | null
   }> = []
@@ -239,56 +254,17 @@ export default async function QualityPage() {
                     <p className="mt-3 text-muted-foreground leading-relaxed max-w-3xl">{config.description}</p>
                   </div>
                   <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                    {items.map((honor) => {
-                      const displayTitle = honorDisplayTitle(honor)
-                      const hasImage = !!honor.image?.asset
-                      const hasPdf = !!honor.pdfUrl
-                      return (
-                        <div
-                          key={honor._id}
-                          className="group bg-card rounded-2xl overflow-hidden border border-border/60 hover:border-accent/40 hover:shadow-xl transition-all duration-300 flex flex-col"
-                        >
-                          <div className="aspect-[3/4] bg-muted/50 relative flex items-center justify-center overflow-hidden">
-                            {hasImage ? (
-                              <Image
-                                src={urlFor(honor.image!).width(800).height(1067).url()}
-                                alt={honor.image?.alt ?? displayTitle}
-                                fill
-                                className="object-contain p-2 group-hover:scale-[1.02] transition-transform duration-300"
-                                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                              />
-                            ) : hasPdf ? (
-                              <a
-                                href={honor.pdfUrl!}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="absolute inset-0 flex flex-col items-center justify-center gap-4 p-6 bg-gradient-to-b from-background to-muted/80 border-b border-border/40 hover:from-accent/5 hover:to-accent/10 transition-colors"
-                              >
-                                <div className="w-20 h-24 rounded-lg bg-primary/10 border-2 border-primary/20 flex items-center justify-center shadow-inner">
-                                  <FileDown className="h-10 w-10 text-primary" strokeWidth={1.5} />
-                                </div>
-                                <span className="text-sm font-semibold text-foreground text-center line-clamp-3">{displayTitle}</span>
-                                <span className="text-xs text-accent font-medium">View PDF</span>
-                              </a>
-                            ) : null}
-                          </div>
-                          <div className="p-4 flex-1 flex flex-col">
-                            <h4 className="font-bold text-foreground">{displayTitle}</h4>
-                            {honor.description && <p className="mt-1 text-sm text-muted-foreground line-clamp-2">{honor.description}</p>}
-                            {hasPdf && (
-                              <a
-                                href={honor.pdfUrl!}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="mt-3 inline-flex items-center gap-2 text-sm text-accent hover:underline w-fit"
-                              >
-                                <FileDown className="h-4 w-4 shrink-0" /> Download PDF
-                              </a>
-                            )}
-                          </div>
-                        </div>
-                      )
-                    })}
+                    {items.map((honor) => (
+                      <HonorCard
+                        key={honor._id}
+                        _id={honor._id}
+                        displayTitle={honorDisplayTitle(honor)}
+                        description={honor.description}
+                        image={honor.image}
+                        pdfUrl={honor.pdfUrl}
+                        orientation={honor.orientation}
+                      />
+                    ))}
                   </div>
                 </div>
               )

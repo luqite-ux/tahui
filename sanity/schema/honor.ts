@@ -43,12 +43,28 @@ export const honor = defineType({
       validation: (r) => r.required(),
     }),
     defineField({
+      name: 'orientation',
+      title: '图片方向',
+      type: 'string',
+      options: {
+        list: [
+          { title: '竖版 (3:4)', value: 'portrait' },
+          { title: '横版 (4:3)', value: 'landscape' },
+          { title: '方形', value: 'square' },
+        ],
+        layout: 'radio',
+      },
+      initialValue: 'portrait',
+      description: '根据证书实际方向选择，横版证书选横版可完整显示',
+      hidden: ({ document }) => !document?.image,
+    }),
+    defineField({
       name: 'image',
       title: '证书图片',
       type: 'image',
       options: { hotspot: true },
       fields: [defineField({ name: 'alt', type: 'string', title: '替代文字' })],
-      description: '证书展示图（建议完整扫描）。仅有 PDF 时也建议上传一张预览图作为缩略图',
+      description: '证书展示图（建议完整扫描）。PDF 项请务必上传预览图，否则仅显示下载图标',
     }),
     defineField({
       name: 'pdfFile',
