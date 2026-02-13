@@ -1,12 +1,10 @@
 import { defineType, defineField } from 'sanity'
-import { AwardIcon } from '@sanity/icons'
 
 /** 资质与荣誉 (Honors & Qualifications) - 证书、资质、奖项等 */
 export const honor = defineType({
   name: 'honor',
   title: '资质与荣誉',
   type: 'document',
-  icon: AwardIcon,
   fields: [
     defineField({
       name: 'title',
