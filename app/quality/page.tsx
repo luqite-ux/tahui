@@ -63,8 +63,10 @@ const HONOR_TITLE_ZH_TO_EN: Record<string, string> = {
   '海关信用认定书': 'Customs Credit Certification',
   '高新技术企业认定': 'High-Tech Enterprise Certification',
   '专利证书合集': 'Patent Certificates Collection',
-  '绿色低碳企业信用评价示范企业': 'Green Low-Carbon Credit Evaluation Model Enterprise',
-  '绿色信用评价AAA企业': 'AAA Green Credit Rating Enterprise',
+  '绿色低碳企业信用评价示范企业': 'Green Low-Carbon Enterprise Credit Evaluation Model Enterprise',
+  '绿色低碳信用评价示范企业': 'Green Low-Carbon Enterprise Credit Evaluation Model Enterprise',
+  '绿色信用评价AAA企业': 'AAA Green Low-Carbon Enterprise Credit Rating',
+  '绿色低碳信用评价AAA级企业': 'AAA Green Low-Carbon Enterprise Credit Rating',
   '上海加星': 'Shanghai Star Enterprise',
   'BSCI 2025 认证': 'BSCI 2025 Certificate',
   'BSCI 2025 现场报告': 'BSCI 2025 Photo Report',
@@ -100,7 +102,12 @@ const HONOR_CATEGORIES: Record<
   honor: {
     label: 'Honors & Recognitions',
     description:
-      'Government and industry recognitions including Shanghai Famous Brand, High-Tech Enterprise status, and green credit ratings that validate our excellence and commitment.',
+      'Government and industry recognitions including Shanghai Famous Brand, High-Tech Enterprise status, and Well-Known Trademark that validate our excellence.',
+  },
+  green: {
+    label: 'Green Low-Carbon Credit',
+    description:
+      'Green and low-carbon enterprise credit evaluations recognize our commitment to sustainable and environmentally responsible manufacturing practices.',
   },
   other: {
     label: 'Other Certifications',
@@ -109,7 +116,7 @@ const HONOR_CATEGORIES: Record<
   },
 }
 
-const CATEGORY_ORDER = ['iso', 'bsci', 'patent', 'honor', 'other'] as const
+const CATEGORY_ORDER = ['iso', 'bsci', 'patent', 'honor', 'green', 'other'] as const
 
 /** 判定是否为 ISO 相关证书（按名称关键字） */
 const ISO_KEYWORDS = [
@@ -118,13 +125,33 @@ const ISO_KEYWORDS = [
   'quality management', 'environmental', 'occupational',
 ]
 
+const GREEN_KEYWORDS = ['绿色', '低碳', 'green', 'low-carbon', 'credit rating', '信用评价']
+
 function isIsoRelated(h: { title?: string | null; titleEn?: string | null }): boolean {
   const t = `${(h.title ?? '').toLowerCase()} ${(h.titleEn ?? '').toLowerCase()}`
   return ISO_KEYWORDS.some((k) => t.includes(k.toLowerCase()))
 }
 
+function isGreenRelated(h: { title?: string | null; titleEn?: string | null }): boolean {
+  const t = `${(h.title ?? '')} ${(h.titleEn ?? '')}`.toLowerCase()
+  return GREEN_KEYWORDS.some((k) => t.includes(k.toLowerCase()))
+}
+
+/** 按证书编号或展示名去重（同证书仅保留一条） */
+function dedupeHonors(
+  honors: Array<{ _id: string; title?: string | null; titleEn?: string | null }>
+): typeof honors {
+  const seen = new Set<string>()
+  return honors.filter((h) => {
+    const key = `${honorDisplayTitle(h)}`.toLowerCase().replace(/\s+/g, '-')
+    if (seen.has(key)) return false
+    seen.add(key)
+    return true
+  })
+}
+
 function groupHonorsByCategory(
-  honors: Array<{ category?: string | null; title?: string | null; titleEn?: string | null }>
+  honors: Array<{ category?: string | null; title?: string | null; titleEn?: string | null; _id: string }>
 ): Map<string, typeof honors> {
   const map = new Map<string, typeof honors>()
   for (const c of CATEGORY_ORDER) map.set(c, [])
@@ -133,8 +160,10 @@ function groupHonorsByCategory(
       ? h.category
       : 'other'
     if (isIsoRelated(h)) cat = 'iso'
+    else if (isGreenRelated(h)) cat = 'green'
     map.get(cat)?.push(h)
   }
+  for (const [k, arr] of map) map.set(k, dedupeHonors(arr))
   return map
 }
 
@@ -262,7 +291,7 @@ export default async function QualityPage() {
                         description={honor.description}
                         image={honor.image}
                         pdfUrl={honor.pdfUrl}
-                        orientation={honor.orientation}
+                        orientation={honor.orientation ?? (catKey === 'green' ? 'tall' : undefined)}
                       />
                     ))}
                   </div>

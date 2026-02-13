@@ -5,10 +5,11 @@ import { FileDown } from 'lucide-react'
 import { urlFor } from '@/sanity/lib/image'
 import type { SanityImageSource } from '@sanity/image-url/lib/types/types'
 
-type Orientation = 'portrait' | 'landscape' | 'square'
+type Orientation = 'portrait' | 'tall' | 'landscape' | 'square'
 
 const ASPECT_MAP: Record<Orientation, string> = {
   portrait: 'aspect-[3/4]',
+  tall: 'aspect-[2/3]',
   landscape: 'aspect-[4/3]',
   square: 'aspect-square',
 }
@@ -46,7 +47,9 @@ export function HonorCard({
                 ? urlFor(image as SanityImageSource).width(1600).height(1200).url()
                 : orientation === 'square'
                   ? urlFor(image as SanityImageSource).width(1200).height(1200).url()
-                  : urlFor(image as SanityImageSource).width(1200).height(1600).url()
+                  : orientation === 'tall'
+                    ? urlFor(image as SanityImageSource).width(900).height(1350).url()
+                    : urlFor(image as SanityImageSource).width(1200).height(1600).url()
             }
             alt={image?.alt ?? displayTitle}
             fill

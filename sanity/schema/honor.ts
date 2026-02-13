@@ -32,9 +32,10 @@ export const honor = defineType({
       options: {
         list: [
           { title: 'ISO 认证', value: 'iso' },
-          { title: '社会责认证 (BSCI 等)', value: 'bsci' },
+          { title: '社会责任 (BSCI 等)', value: 'bsci' },
           { title: '专利证书', value: 'patent' },
           { title: '荣誉资质', value: 'honor' },
+          { title: '绿色低碳信用', value: 'green' },
           { title: '其他', value: 'other' },
         ],
         layout: 'radio',
@@ -49,6 +50,7 @@ export const honor = defineType({
       options: {
         list: [
           { title: '竖版 (3:4)', value: 'portrait' },
+          { title: '高竖版 (2:3)', value: 'tall' },
           { title: '横版 (4:3)', value: 'landscape' },
           { title: '方形', value: 'square' },
         ],
@@ -97,6 +99,7 @@ export const honor = defineType({
         bsci: 'BSCI',
         patent: '专利',
         honor: '荣誉',
+        green: '绿色低碳',
         other: '其他',
       }
       const suffix = category ? ` (${catLabels[category] ?? category})` : ''
