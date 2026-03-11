@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import Image from "next/image"
 import { Link } from "@/i18n/routing"
 import { SITE_URL } from "@/lib/seo"
+import { getTranslations } from "next-intl/server"
 import { ArrowRight, Award, Shield, Leaf, Users, CheckCircle } from "lucide-react"
 import { client } from "@/sanity/lib/client"
 import { HonorCard } from "@/components/honor-card"
@@ -249,6 +250,9 @@ export default async function QualityPage() {
   } catch {
     // 无 Sanity 或未配置时忽略
   }
+
+  const t = await getTranslations("quality")
+
   return (
     <div className="min-h-screen">
       <Header />
@@ -259,9 +263,9 @@ export default async function QualityPage() {
         <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div>
-              <p className="animate-fade-up text-sm font-semibold text-accent tracking-wider uppercase mb-5">Certifications & Quality</p>
-              <h1 className="animate-fade-up-delay-1 text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl text-balance leading-[1.1]">Certified Excellence in Every Garment</h1>
-              <p className="animate-fade-up-delay-2 mt-7 text-lg leading-relaxed text-muted-foreground">Our triple ISO certification demonstrates our unwavering commitment to quality, environmental responsibility, and workplace safety.</p>
+              <p className="animate-fade-up text-sm font-semibold text-accent tracking-wider uppercase mb-5">{t("heroTag")}</p>
+              <h1 className="animate-fade-up-delay-1 text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl text-balance leading-[1.1]">{t("heroTitle")}</h1>
+              <p className="animate-fade-up-delay-2 mt-7 text-lg leading-relaxed text-muted-foreground">{t("heroP")}</p>
               <div className="animate-fade-up-delay-3 mt-8 flex flex-wrap gap-3">
                 {[{ icon: Shield, label: "ISO 9001" }, { icon: Leaf, label: "ISO 14001" }, { icon: Users, label: "ISO 45001" }].map(({ icon: Icon, label }) => (
                   <div key={label} className="flex items-center gap-2 px-4 py-2 bg-accent/10 rounded-full border border-accent/20">
@@ -286,9 +290,9 @@ export default async function QualityPage() {
       <section className="py-24 lg:py-32">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-20">
-            <p className="text-sm font-semibold text-accent tracking-wider uppercase mb-4">International Standards</p>
-            <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">Our Certifications</h2>
-            <p className="mt-5 text-lg text-muted-foreground leading-relaxed">Internationally recognized certifications that validate our commitment to excellence.</p>
+            <p className="text-sm font-semibold text-accent tracking-wider uppercase mb-4">{t("certificationsTag")}</p>
+            <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">{t("certificationsTitle")}</h2>
+            <p className="mt-5 text-lg text-muted-foreground leading-relaxed">{t("certificationsSub")}</p>
           </div>
           <div className="space-y-12">
             {certifications.map((cert, index) => (
@@ -385,9 +389,9 @@ export default async function QualityPage() {
       <section className="py-24 lg:py-32 bg-secondary">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-20">
-            <p className="text-sm font-semibold text-accent tracking-wider uppercase mb-4">Process</p>
-            <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">Our Quality Control Process</h2>
-            <p className="mt-5 text-lg text-muted-foreground leading-relaxed">A rigorous six-stage quality control process ensures every garment meets our exacting standards.</p>
+            <p className="text-sm font-semibold text-accent tracking-wider uppercase mb-4">{t("processTag")}</p>
+            <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">{t("processTitle")}</h2>
+            <p className="mt-5 text-lg text-muted-foreground leading-relaxed">{t("processSub")}</p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {qualityProcess.map((step) => (
@@ -439,7 +443,7 @@ export default async function QualityPage() {
           <p className="mt-5 text-lg text-primary-foreground/75 leading-relaxed">Partner with a manufacturer that takes quality as seriously as you do.</p>
           <div className="mt-10">
             <Button size="lg" variant="secondary" className="hover:bg-accent hover:text-accent-foreground transition-all duration-300" asChild>
-              <Link href="/contact">Start the Conversation<ArrowRight className="ml-2 h-5 w-5" /></Link>
+              <Link href="/contact">{t("startConversation")}<ArrowRight className="ml-2 h-5 w-5" /></Link>
             </Button>
           </div>
         </div>

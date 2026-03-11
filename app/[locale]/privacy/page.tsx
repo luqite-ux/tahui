@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { Link } from "@/i18n/routing"
 import { SITE_URL } from "@/lib/seo"
+import { getTranslations } from "next-intl/server"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 
@@ -11,7 +12,13 @@ export const metadata: Metadata = {
   alternates: { canonical: `${SITE_URL}/privacy` },
 }
 
-export default function PrivacyPage() {
+const localeToDateLocale: Record<string, string> = { en: "en-US", zh: "zh-CN", fr: "fr-FR" }
+
+export default async function PrivacyPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params
+  const t = await getTranslations("privacy")
+  const dateLocale = localeToDateLocale[locale] ?? "en-US"
+
   return (
     <div className="min-h-screen">
       <Header />
@@ -19,10 +26,10 @@ export default function PrivacyPage() {
       <article className="pt-24 pb-16 lg:pt-28 lg:pb-24">
         <div className="mx-auto max-w-3xl px-6 lg:px-8">
           <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-            Privacy Policy
+            {t("title")}
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            Last updated: {new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
+            {t("lastUpdated")}: {new Date().toLocaleDateString(dateLocale, { year: "numeric", month: "long", day: "numeric" })}
           </p>
 
           <div className="mt-10 prose prose-neutral dark:prose-invert max-w-none">
@@ -62,7 +69,7 @@ export default function PrivacyPage() {
 
           <p className="mt-12">
             <Link href="/contact" className="text-sm font-medium text-accent hover:underline">
-              Contact Us
+              {t("contactUs")}
             </Link>
           </p>
         </div>

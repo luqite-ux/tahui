@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import Image from "next/image"
 import { Link } from "@/i18n/routing"
 import { SITE_URL } from "@/lib/seo"
+import { getTranslations } from "next-intl/server"
 import { ArrowRight, CheckCircle, Layers, Cpu, Palette, Shield, Sparkles, Scissors } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -47,7 +48,9 @@ const qcSteps = [
   { step: "05", title: "Pre-Shipment Audit", description: "Final quality audit and documentation review before shipping." },
 ]
 
-export default function ManufacturingPage() {
+export default async function ManufacturingPage() {
+  const t = await getTranslations("manufacturing")
+
   return (
     <div className="min-h-screen">
       <Header />
@@ -59,20 +62,18 @@ export default function ManufacturingPage() {
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div>
               <p className="animate-fade-up text-sm font-semibold text-accent tracking-wider uppercase mb-5">
-                Manufacturing Capability
+                {t("heroTag")}
               </p>
               <h1 className="animate-fade-up-delay-1 text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl text-balance leading-[1.1]">
-                Advanced Seamless Knitting Technology
+                {t("heroTitle")}
               </h1>
               <p className="animate-fade-up-delay-2 mt-7 text-lg leading-relaxed text-muted-foreground">
-                Our state-of-the-art manufacturing facility combines cutting-edge WholeGarment 
-                technology with traditional craftsmanship. With over 200 seamless knitting machines 
-                and comprehensive quality control systems, we deliver exceptional knitwear at scale.
+                {t("heroP")}
               </p>
               <div className="animate-fade-up-delay-3 mt-10">
                 <Button size="lg" className="bg-primary hover:bg-accent transition-all duration-300 hover:shadow-lg" asChild>
                   <Link href="/contact">
-                    Discuss Your Project
+                    {t("discussProject")}
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>
@@ -93,9 +94,9 @@ export default function ManufacturingPage() {
       <section className="py-24 lg:py-32">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-20">
-            <p className="text-sm font-semibold text-accent tracking-wider uppercase mb-4">Our Equipment</p>
-            <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">Our Technology</h2>
-            <p className="mt-5 text-lg text-muted-foreground leading-relaxed">We invest continuously in the latest knitting technology and digital systems to deliver superior quality.</p>
+            <p className="text-sm font-semibold text-accent tracking-wider uppercase mb-4">{t("equipmentTag")}</p>
+            <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">{t("techTitle")}</h2>
+            <p className="mt-5 text-lg text-muted-foreground leading-relaxed">{t("techSub")}</p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {technologies.map((tech) => (
@@ -111,8 +112,8 @@ export default function ManufacturingPage() {
 
           {/* Seamless Machine Gallery */}
           <div className="mt-20">
-            <p className="text-sm font-semibold text-accent tracking-wider uppercase mb-4 text-center">Seamless Knitting Machines</p>
-            <h3 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl text-center mb-10">200+ WholeGarment Machines in Action</h3>
+            <p className="text-sm font-semibold text-accent tracking-wider uppercase mb-4 text-center">{t("machinesTag")}</p>
+            <h3 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl text-center mb-10">{t("machinesTitle")}</h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 lg:gap-6">
               {["/images/seamless-machine-1.png", "/images/seamless-machine-2.png", "/images/seamless-machine-5.png", "/images/seamless-machine-6.png", "/images/seamless-machine-7.png"].map((src, i) => (
                 <div key={src} className="relative aspect-square rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 group">
@@ -130,22 +131,22 @@ export default function ManufacturingPage() {
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div>
-              <p className="text-sm font-semibold text-accent tracking-wider uppercase mb-4">Seamless Technology</p>
-              <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl leading-tight">WholeGarment Manufacturing</h2>
-              <p className="mt-5 text-lg text-muted-foreground leading-relaxed">WholeGarment technology represents the pinnacle of knitwear manufacturing, creating complete garments in a single process.</p>
+              <p className="text-sm font-semibold text-accent tracking-wider uppercase mb-4">{t("seamlessTag")}</p>
+              <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl leading-tight">{t("wholegarmentTitle")}</h2>
+              <p className="mt-5 text-lg text-muted-foreground leading-relaxed">{t("wholegarmentP")}</p>
               <div className="mt-8 grid sm:grid-cols-2 gap-6">
                 <div className="p-5 rounded-xl bg-card border border-border/60">
-                  <h3 className="font-bold text-foreground mb-3">Benefits</h3>
+                  <h3 className="font-bold text-foreground mb-3">{t("benefitsTitle")}</h3>
                   <ul className="space-y-2">
-                    {["No side seams for comfort", "Reduced material waste", "Faster production time", "Complex 3D shapes possible"].map((item) => (
+                    {[t("benefit1"), t("benefit2"), t("benefit3"), t("benefit4")].map((item) => (
                       <li key={item} className="flex items-start gap-2 text-sm text-muted-foreground"><CheckCircle className="h-4 w-4 text-accent shrink-0 mt-0.5" />{item}</li>
                     ))}
                   </ul>
                 </div>
                 <div className="p-5 rounded-xl bg-card border border-border/60">
-                  <h3 className="font-bold text-foreground mb-3">Capacity</h3>
+                  <h3 className="font-bold text-foreground mb-3">{t("capacityTitle")}</h3>
                   <ul className="space-y-2">
-                    {["200+ machines", "100,000 pcs/month", "3GG to 14GG gauge", "24/7 operation"].map((item) => (
+                    {[t("cap1"), t("cap2"), t("cap3"), t("cap4")].map((item) => (
                       <li key={item} className="flex items-start gap-2 text-sm text-muted-foreground"><CheckCircle className="h-4 w-4 text-accent shrink-0 mt-0.5" />{item}</li>
                     ))}
                   </ul>
@@ -167,9 +168,9 @@ export default function ManufacturingPage() {
       <section className="py-24 lg:py-32">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-20">
-            <p className="text-sm font-semibold text-accent tracking-wider uppercase mb-4">Premium Fibers</p>
-            <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">Materials & Yarns</h2>
-            <p className="mt-5 text-lg text-muted-foreground leading-relaxed">We source premium yarns from trusted suppliers worldwide.</p>
+            <p className="text-sm font-semibold text-accent tracking-wider uppercase mb-4">{t("materialsTag")}</p>
+            <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">{t("materialsTitle")}</h2>
+            <p className="mt-5 text-lg text-muted-foreground leading-relaxed">{t("materialsSub")}</p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {materials.map((material) => (
@@ -193,9 +194,9 @@ export default function ManufacturingPage() {
       <section className="py-24 lg:py-32 bg-secondary">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-20">
-            <p className="text-sm font-semibold text-accent tracking-wider uppercase mb-4">Artisan Skills</p>
-            <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">Techniques & Craftsmanship</h2>
-            <p className="mt-5 text-lg text-muted-foreground leading-relaxed">Beyond advanced technology, our skilled craftspeople bring traditional techniques that elevate every garment.</p>
+            <p className="text-sm font-semibold text-accent tracking-wider uppercase mb-4">{t("techniquesTag")}</p>
+            <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">{t("techniquesTitle")}</h2>
+            <p className="mt-5 text-lg text-muted-foreground leading-relaxed">{t("techniquesSub")}</p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {techniques.map((technique) => (
@@ -212,9 +213,9 @@ export default function ManufacturingPage() {
       <section className="py-24 lg:py-32">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-20">
-            <p className="text-sm font-semibold text-accent tracking-wider uppercase mb-4">Quality Assurance</p>
-            <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">Quality Control Process</h2>
-            <p className="mt-5 text-lg text-muted-foreground leading-relaxed">Our comprehensive quality management system ensures consistent excellence.</p>
+            <p className="text-sm font-semibold text-accent tracking-wider uppercase mb-4">{t("qcTag")}</p>
+            <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">{t("qcTitle")}</h2>
+            <p className="mt-5 text-lg text-muted-foreground leading-relaxed">{t("qcSub")}</p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-6">
             {qcSteps.map((step, index) => (
@@ -237,14 +238,14 @@ export default function ManufacturingPage() {
       <section className="py-24 lg:py-32 bg-primary text-primary-foreground relative overflow-hidden">
         <div className="absolute top-0 right-0 w-80 h-80 bg-accent/10 rounded-full blur-3xl" />
         <div className="relative mx-auto max-w-4xl px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">Partner With Us</h2>
-          <p className="mt-5 text-lg text-primary-foreground/75 leading-relaxed">Whether you are developing a new collection or scaling existing production, our manufacturing capabilities are ready to support your brand.</p>
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">{t("ctaTitle")}</h2>
+          <p className="mt-5 text-lg text-primary-foreground/75 leading-relaxed">{t("ctaP")}</p>
           <div className="mt-10 flex flex-wrap justify-center gap-4">
             <Button size="lg" variant="secondary" className="hover:bg-accent hover:text-accent-foreground transition-all duration-300" asChild>
-              <Link href="/contact">Start a Conversation<ArrowRight className="ml-2 h-5 w-5" /></Link>
+              <Link href="/contact">{t("startConversation")}<ArrowRight className="ml-2 h-5 w-5" /></Link>
             </Button>
             <Button size="lg" variant="outline" className="bg-transparent border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 hover:border-accent/50 transition-all duration-300" asChild>
-              <Link href="/factory-tour">Tour Our Factory</Link>
+              <Link href="/factory-tour">{t("tourFactory")}</Link>
             </Button>
           </div>
         </div>

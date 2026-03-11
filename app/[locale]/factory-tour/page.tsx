@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import Image from "next/image"
 import { Link } from "@/i18n/routing"
 import { SITE_URL } from "@/lib/seo"
+import { getTranslations } from "next-intl/server"
 import { ArrowRight, Building2, Cpu, Users, Package, BarChart3, Clock } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Header } from "@/components/header"
@@ -14,14 +15,9 @@ export const metadata: Metadata = {
   alternates: { canonical: `${SITE_URL}/factory-tour` },
 }
 
-const factoryStats = [
-  { icon: Building2, value: "15,000 m\u00B2", label: "Factory Area" },
-  { icon: Cpu, value: "200+", label: "Knitting Machines" },
-  { icon: Users, value: "500+", label: "Skilled Workers" },
-  { icon: Package, value: "100K", label: "Monthly Capacity" },
-  { icon: Clock, value: "24/7", label: "Production Operation" },
-  { icon: BarChart3, value: "$8.3M+", label: "Annual Export" },
-]
+const statKeys = ["statArea", "statMachines", "statWorkers", "statCapacity", "statOperation", "statExport"] as const
+const factoryStatIcons = [Building2, Cpu, Users, Package, Clock, BarChart3]
+const factoryStatValues = ["15,000 m²", "200+", "500+", "100K", "24/7", "$8.3M+"]
 
 const facilities = [
   { title: "Production Floor", description: "Our main production hall houses over 200 state-of-the-art seamless knitting machines, organized in efficient production lines with optimized workflow.", image: "/images/seamless-machine-1.png", features: ["200+ WholeGarment machines", "Climate-controlled environment", "Optimized production layout", "Real-time monitoring systems"] },
@@ -38,7 +34,9 @@ const digitalFeatures = [
   { title: "Order Management", description: "Comprehensive order tracking with milestone updates." },
 ]
 
-export default function FactoryTourPage() {
+export default async function FactoryTourPage() {
+  const t = await getTranslations("factoryTour")
+
   return (
     <div className="min-h-screen">
       <Header />
@@ -48,12 +46,12 @@ export default function FactoryTourPage() {
         <div className="absolute top-0 right-0 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
         <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
           <div className="max-w-3xl">
-            <p className="animate-fade-up text-sm font-semibold text-accent tracking-wider uppercase mb-5">Virtual Factory Tour</p>
-            <h1 className="animate-fade-up-delay-1 text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl text-balance leading-[1.1]">Inside Our Manufacturing Facility</h1>
-            <p className="animate-fade-up-delay-2 mt-7 text-lg leading-relaxed text-muted-foreground">Welcome to Tahui Sweater Factory. Our modern 15,000 square meter facility in Shanghai combines cutting-edge technology with skilled craftsmanship to produce premium knitwear for brands worldwide.</p>
+            <p className="animate-fade-up text-sm font-semibold text-accent tracking-wider uppercase mb-5">{t("heroTag")}</p>
+            <h1 className="animate-fade-up-delay-1 text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl text-balance leading-[1.1]">{t("heroTitle")}</h1>
+            <p className="animate-fade-up-delay-2 mt-7 text-lg leading-relaxed text-muted-foreground">{t("heroP")}</p>
             <div className="animate-fade-up-delay-3 mt-10">
               <Button size="lg" className="bg-primary hover:bg-accent transition-all duration-300 hover:shadow-lg" asChild>
-                <Link href="/contact">Schedule a Live Tour<ArrowRight className="ml-2 h-5 w-5" /></Link>
+                <Link href="/contact">{t("scheduleTour")}<ArrowRight className="ml-2 h-5 w-5" /></Link>
               </Button>
             </div>
           </div>
@@ -65,15 +63,18 @@ export default function FactoryTourPage() {
         <div className="absolute top-0 right-0 w-64 h-64 bg-accent/10 rounded-full blur-3xl" />
         <div className="relative mx-auto max-w-7xl px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
-            {factoryStats.map((stat) => (
-              <div key={stat.label} className="text-center group">
-                <div className="mx-auto h-12 w-12 rounded-full bg-primary-foreground/10 flex items-center justify-center mb-3 group-hover:bg-accent/20 transition-colors duration-300">
-                  <stat.icon className="h-6 w-6" />
+            {statKeys.map((key, i) => {
+              const Icon = factoryStatIcons[i]
+              return (
+                <div key={key} className="text-center group">
+                  <div className="mx-auto h-12 w-12 rounded-full bg-primary-foreground/10 flex items-center justify-center mb-3 group-hover:bg-accent/20 transition-colors duration-300">
+                    <Icon className="h-6 w-6" />
+                  </div>
+                  <p className="text-3xl font-bold">{factoryStatValues[i]}</p>
+                  <p className="text-sm opacity-75">{t(key)}</p>
                 </div>
-                <p className="text-3xl font-bold">{stat.value}</p>
-                <p className="text-sm opacity-75">{stat.label}</p>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </div>
       </section>
@@ -82,9 +83,9 @@ export default function FactoryTourPage() {
       <section className="py-24 lg:py-32">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-20">
-            <p className="text-sm font-semibold text-accent tracking-wider uppercase mb-4">Our Facilities</p>
-            <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">Explore Our Facilities</h2>
-            <p className="mt-5 text-lg text-muted-foreground leading-relaxed">From raw materials to finished products, tour the key areas of our integrated manufacturing facility.</p>
+            <p className="text-sm font-semibold text-accent tracking-wider uppercase mb-4">{t("facilitiesTag")}</p>
+            <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">{t("facilitiesTitle")}</h2>
+            <p className="mt-5 text-lg text-muted-foreground leading-relaxed">{t("facilitiesSub")}</p>
           </div>
           <div className="space-y-24">
             {facilities.map((facility, index) => (
@@ -125,9 +126,9 @@ export default function FactoryTourPage() {
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div>
-              <p className="text-sm font-semibold text-accent tracking-wider uppercase mb-4">Digital Factory</p>
-              <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl leading-tight">Digitalized Production Management</h2>
-              <p className="mt-5 text-lg text-muted-foreground leading-relaxed">Our factory operates on a fully integrated digital management system that provides real-time visibility into every aspect of production.</p>
+              <p className="text-sm font-semibold text-accent tracking-wider uppercase mb-4">{t("digitalTag")}</p>
+              <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl leading-tight">{t("digitalTitle")}</h2>
+              <p className="mt-5 text-lg text-muted-foreground leading-relaxed">{t("digitalP")}</p>
               <div className="mt-8 grid sm:grid-cols-2 gap-6">
                 {digitalFeatures.map((feature) => (
                   <div key={feature.title} className="p-4 rounded-xl bg-card border border-border/60">
@@ -151,15 +152,15 @@ export default function FactoryTourPage() {
       <section className="py-24 lg:py-32 bg-gradient-to-br from-secondary via-warm/30 to-secondary relative overflow-hidden">
         <div className="absolute top-1/2 left-0 w-64 h-64 bg-accent/8 rounded-full blur-3xl -translate-y-1/2" />
         <div className="relative mx-auto max-w-4xl px-6 lg:px-8 text-center">
-          <p className="text-sm font-semibold text-accent tracking-wider uppercase mb-4">Visit Us</p>
-          <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">Want to See More?</h2>
-          <p className="mt-5 text-lg text-muted-foreground leading-relaxed">Schedule a live video tour with our team to see our factory in action.</p>
+          <p className="text-sm font-semibold text-accent tracking-wider uppercase mb-4">{t("visitTag")}</p>
+          <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">{t("visitTitle")}</h2>
+          <p className="mt-5 text-lg text-muted-foreground leading-relaxed">{t("visitP")}</p>
           <div className="mt-10 flex flex-wrap justify-center gap-4">
             <Button size="lg" className="bg-primary hover:bg-accent transition-all duration-300 hover:shadow-lg" asChild>
-              <Link href="/contact">Schedule a Live Tour<ArrowRight className="ml-2 h-5 w-5" /></Link>
+              <Link href="/contact">{t("scheduleTour")}<ArrowRight className="ml-2 h-5 w-5" /></Link>
             </Button>
             <Button size="lg" variant="outline" className="border-accent/30 hover:bg-accent/10 hover:border-accent/50 transition-all duration-300 bg-transparent" asChild>
-              <Link href="/manufacturing">View Capabilities</Link>
+              <Link href="/manufacturing">{t("viewCapabilities")}</Link>
             </Button>
           </div>
         </div>
