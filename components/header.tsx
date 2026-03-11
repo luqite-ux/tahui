@@ -1,23 +1,26 @@
 "use client"
 
-import Link from "next/link"
 import Image from "next/image"
 import { useState } from "react"
 import { Menu, X, Phone } from "lucide-react"
+import { useTranslations } from "next-intl"
+import { Link } from "@/i18n/routing"
 import { Button } from "@/components/ui/button"
+import { LanguageSwitcher } from "@/components/language-switcher"
 
-const navigation = [
-  { name: "Home", href: "/" },
-  { name: "Products", href: "/products" },
-  { name: "Manufacturing", href: "/manufacturing" },
-  { name: "Factory Tour", href: "/factory-tour" },
-  { name: "Quality", href: "/quality" },
-  { name: "About Us", href: "/about" },
-  { name: "Contact", href: "/contact" },
-]
+const navKeys = [
+  { key: "home", href: "/" },
+  { key: "products", href: "/products" },
+  { key: "manufacturing", href: "/manufacturing" },
+  { key: "factoryTour", href: "/factory-tour" },
+  { key: "quality", href: "/quality" },
+  { key: "aboutUs", href: "/about" },
+  { key: "contact", href: "/contact" },
+] as const
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const t = useTranslations("nav")
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-lg border-b border-border/40 shadow-[0_1px_3px_0_rgba(0,0,0,0.04)]">
@@ -56,22 +59,23 @@ export function Header() {
         </div>
         
         <div className="hidden lg:flex lg:gap-x-8">
-          {navigation.map((item) => (
+          {navKeys.map((item) => (
             <Link
-              key={item.name}
+              key={item.key}
               href={item.href}
               className="text-sm font-medium text-foreground/70 hover:text-primary transition-colors duration-300 relative after:absolute after:bottom-[-6px] after:left-1/2 after:-translate-x-1/2 after:h-[1.5px] after:w-0 after:bg-accent after:rounded-full after:transition-all after:duration-300 after:ease-out hover:after:w-full"
             >
-              {item.name}
+              {t(item.key)}
             </Link>
           ))}
         </div>
         
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-x-4">
+        <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-x-4 lg:items-center">
+          <LanguageSwitcher />
           <Button className="bg-primary hover:bg-primary/90 hover:scale-[1.03] hover:shadow-md active:scale-[0.98] transition-all duration-300 ease-out" asChild>
             <Link href="/contact">
               <Phone className="mr-2 h-4 w-4" />
-              Get a Quote
+              {t("getQuote")}
             </Link>
           </Button>
         </div>
@@ -108,21 +112,22 @@ export function Header() {
             <div className="mt-8 flow-root">
               <div className="-my-6 divide-y divide-border/50">
                 <div className="space-y-1 py-6">
-                  {navigation.map((item) => (
+                  {navKeys.map((item) => (
                     <Link
-                      key={item.name}
+                      key={item.key}
                       href={item.href}
                       className="-mx-3 block rounded-lg px-3 py-3 text-base font-medium text-foreground/80 hover:text-primary hover:bg-warm transition-all duration-200"
                       onClick={() => setMobileMenuOpen(false)}
                     >
-                      {item.name}
+                      {t(item.key)}
                     </Link>
                   ))}
                 </div>
-                <div className="py-6">
+                <div className="py-6 flex flex-col gap-4">
+                  <LanguageSwitcher />
                   <Button asChild className="w-full bg-primary hover:bg-primary/90 hover:shadow-md active:scale-[0.98] transition-all duration-300 ease-out">
                     <Link href="/contact" onClick={() => setMobileMenuOpen(false)}>
-                      Get a Quote
+                      {t("getQuote")}
                     </Link>
                   </Button>
                 </div>

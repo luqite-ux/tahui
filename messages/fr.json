@@ -1,0 +1,187 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "products": "Produits",
+    "manufacturing": "Fabrication",
+    "factoryTour": "Visite d'usine",
+    "quality": "Qualité",
+    "aboutUs": "À propos",
+    "contact": "Contact",
+    "getQuote": "Demander un devis"
+  },
+  "footer": {
+    "tagline": "Leader de la maille sans couture à Shanghai, Chine. Plus de 20 ans d'excellence en services OEM et ODM pour les marques mondiales.",
+    "address": "No 351 Tahui Road, district de Songjiang, Shanghai",
+    "products": "Produits",
+    "allProducts": "Tous les produits",
+    "seamlessKnitwear": "Maille sans couture",
+    "multiMaterial": "Collection multi-matériaux",
+    "advancedCraftsmanship": "Savoir-faire avancé",
+    "company": "Entreprise",
+    "aboutUs": "À propos",
+    "manufacturing": "Fabrication",
+    "factoryTour": "Visite d'usine",
+    "qualityCertifications": "Qualité et certifications",
+    "services": "Services",
+    "oemServices": "Services OEM",
+    "odmServices": "Services ODM",
+    "customDesign": "Design personnalisé",
+    "sampleDevelopment": "Développement d'échantillons",
+    "certifications": "Certifications",
+    "contactUs": "Nous contacter",
+    "privacyPolicy": "Politique de confidentialité",
+    "termsOfService": "Conditions d'utilisation",
+    "rightsReserved": "Tahui Sweater Factory. Tous droits réservés."
+  },
+  "home": {
+    "heroTag": "Fabricant de maille premium",
+    "heroTitleBefore": "Votre partenaire ",
+    "heroHighlight": "maille sans couture",
+    "heroTitleAfter": " de confiance en Chine",
+    "heroSubtitle": "Avec plus de 20 ans d'excellence en fabrication à l'export, Tahui propose des vêtements en maille sans couture, des collections multi-matériaux et un savoir-faire avancé — de la production OEM au développement ODM complet, avec précision et qualité.",
+    "getQuote": "Demander un devis",
+    "exploreFactory": "Découvrir notre usine",
+    "capacityLabel": "100 000+ pcs",
+    "capacitySub": "Capacité mensuelle",
+    "stats": {
+      "yearsExperience": "Ans d'expérience",
+      "annualExport": "Export annuel (USD)",
+      "monthlyCapacity": "Capacité mensuelle",
+      "knittingMachines": "Métiers à tricoter"
+    },
+    "collectionsTag": "Nos collections",
+    "collectionsTitle": "Nos catégories de produits",
+    "collectionsSubtitle": "Des pulls classiques aux vêtements en maille sans couture innovants, nous fabriquons une gamme complète de produits en maille pour les marques de mode mondiales.",
+    "categories": {
+      "seamless": {
+        "title": "Maille sans couture",
+        "description": "Pulls et sous-vêtements innovants en maille sans couture, produits grâce à une technologie de tricotage sans couture entièrement automatique pour un confort et une coupe optimaux."
+      },
+      "multiMaterial": {
+        "title": "Collection multi-matériaux",
+        "description": "Une large gamme de maille premium et de couvertures en laine, soie, coton, lin et fils fantaisie spéciaux."
+      },
+      "advancedCraftsmanship": {
+        "title": "Savoir-faire avancé",
+        "description": "Mise en avant de nos capacités de traitement diverses : jacquard, tricot main, broderie, perles et techniques de teinture personnalisées comme le tie-dye et les dégradés."
+      }
+    },
+    "explore": "Explorer",
+    "viewAllProducts": "Voir tous les produits",
+    "strengthsTag": "Nos atouts",
+    "strengthsTitle": "Pourquoi choisir Tahui",
+    "strengthsSubtitle": "Nous combinons technologie avancée, savoir-faire artisanal et des décennies d'expérience à l'export pour livrer une maille exceptionnelle à votre marque.",
+    "advantages": {
+      "wholegarment": {
+        "title": "Technologie WholeGarment",
+        "description": "Tricotage sans couture avec plus de 200 machines pour un confort supérieur et un minimum de déchets."
+      },
+      "oemOdm": {
+        "title": "Services OEM et ODM",
+        "description": "Solutions de fabrication flexibles à partir de vos designs ou développement produit complet."
+      },
+      "globalExport": {
+        "title": "Expérience à l'export mondial",
+        "description": "Deux décennies au service des marques internationales avec une gestion de chaîne d'approvisionnement fiable."
+      },
+      "isoCertified": {
+        "title": "Qualité certifiée ISO",
+        "description": "Certifié ISO 9001, ISO 14001 et ISO 45001 pour une assurance qualité constante."
+      }
+    },
+    "manufacturingTag": "Excellence de fabrication",
+    "manufacturingTitle": "Technologie de tricotage sans couture avancée",
+    "manufacturingSubtitle": "Notre usine de pointe abrite plus de 200 métiers WholeGarment, nous permettant de produire une maille premium au confort supérieur, avec des coutures minimales et moins de déchets.",
+    "certifications": {
+      "iso9001": "ISO 9001",
+      "qualityMgmt": "Management de la qualité",
+      "iso14001": "ISO 14001",
+      "envMgmt": "Management environnemental",
+      "iso45001": "ISO 45001",
+      "ohsMgmt": "Santé et sécurité au travail"
+    },
+    "manufacturingBullets": [
+      "Technologie WholeGarment / tricot sans couture",
+      "Matériaux premium : laine, coton, soie, cachemire, mélanges",
+      "Techniques avancées : jacquard, broderie, crochet main",
+      "Gestion de production entièrement numérisée",
+      "Contrôle qualité strict à chaque étape"
+    ],
+    "certSection": {
+      "trustCompliance": "Confiance et conformité",
+      "certifiedQuality": "Qualité certifiée",
+      "compliance": "conformité",
+      "paragraph": "Notre engagement envers la qualité, la responsabilité environnementale et la sécurité au travail est validé par des certifications internationalement reconnues.",
+      "viewCertifications": "Voir nos certifications"
+    },
+    "factory": {
+      "behindScenes": "Dans les coulisses",
+      "insideFactory": "À l'intérieur de notre usine",
+      "subtitle": "Découvrez notre usine de production moderne où l'artisanat rencontre la technologie.",
+      "step1": "Étape 1",
+      "linkingWorkshop": "Atelier de couture",
+      "linkingDesc": "Les artisans assemblent avec précision les composants tricotés sur des machines de couture.",
+      "step2": "Étape 2",
+      "handFinishing": "Finition manuelle",
+      "handFinishingDesc": "Inspection détaillée et coupe à la main pour garantir que chaque vêtement répond à nos normes exigeantes.",
+      "step3": "Étape 3",
+      "qualitySorting": "Tri qualité",
+      "qualitySortingDesc": "Revue et classement pièce par pièce avant le passage en finition.",
+      "step4": "Étape 4",
+      "steamPressing": "Repassage vapeur",
+      "steamPressingDesc": "Façonnage vapeur professionnel pour donner à chaque vêtement sa silhouette et sa draperie finales.",
+      "step5": "Étape 5",
+      "packaging": "Emballage",
+      "packagingDesc": "Soigneusement emballés et étiquetés, prêts pour l'exportation mondiale vers nos partenaires.",
+      "virtualTour": "Visite virtuelle de l'usine"
+    },
+    "cta": {
+      "startToday": "Commencer aujourd'hui",
+      "emailUsDirectly": "Nous envoyer un email",
+      "whatsappText": "Ou nous contacter via WhatsApp : +86 166 2168 4217"
+    }
+  },
+  "products": {
+    "ourCollections": "Nos collections",
+    "premiumKnitwear": "Maille premium pour les marques mondiales",
+    "collectionsSubtitle": "De l'innovation sans couture à l'artisanat artisanal, explorez nos trois lignes de produits principales. Tous les articles disponibles en production OEM ou développement ODM complet.",
+    "category": "Catégorie",
+    "viewMoreProducts": "Voir plus de produits",
+    "viewDetails": "Voir les détails",
+    "materials": "Matériaux",
+    "premiumMaterials": "Matériaux et fils premium",
+    "materialsSubtitle": "Nous nous approvisionnons auprès des meilleurs fournisseurs mondiaux pour une qualité constante et des sources durables pour chaque commande.",
+    "materialsList": {
+      "wool": "Laine",
+      "woolNote": "Mérinos, laine d'agneau, laines spéciales",
+      "cotton": "Coton",
+      "cottonNote": "Biologique et conventionnel",
+      "cashmere": "Cachemire",
+      "cashmereNote": "Pur et mélanges",
+      "silk": "Soie",
+      "silkNote": "Soie pure et mélanges soie",
+      "linen": "Lin",
+      "linenNote": "Fils d'été",
+      "fancyYarns": "Fils fantaisie",
+      "fancyYarnsNote": "Bouclé, mohair, chenille"
+    },
+    "oemTitle": "Services OEM",
+    "oemTag": "Fabrication sur mesure",
+    "oemDesc": "Donnez vie à vos designs. Fournissez des fiches techniques, des échantillons ou des spécifications détaillées, et notre équipe produira votre maille selon vos exigences exactes.",
+    "odmTitle": "Services ODM",
+    "odmTag": "Partenariat design",
+    "odmDesc": "Profitez de notre expertise en design. De la recherche de tendances au développement d'échantillons, notre équipe interne crée des collections complètes adaptées à votre marque.",
+    "ctaTitle": "Prêt à développer votre collection ?",
+    "ctaSubtitle": "Contactez notre équipe pour discuter de vos besoins produits, demander des échantillons ou planifier une visite d'usine virtuelle.",
+    "getStartedToday": "Commencer aujourd'hui",
+    "backToProducts": "Retour aux produits",
+    "allInCollection": "Tous les produits de cette collection. Disponibles en OEM et ODM.",
+    "noProducts": "Aucun produit dans cette catégorie pour le moment."
+  },
+  "common": {
+    "getQuote": "Demander un devis",
+    "viewMore": "Voir plus",
+    "learnMore": "En savoir plus",
+    "contactUs": "Nous contacter"
+  }
+}

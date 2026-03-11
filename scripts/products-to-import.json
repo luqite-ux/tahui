@@ -1,0 +1,60 @@
+[
+  {
+    "name": "Seamless Sweaters",
+    "slug": "seamless-sweaters",
+    "category": "seamless",
+    "description": "Seamless knit sweaters, one-piece construction, no side seams.",
+    "images": ["product-seamless-sweaters.jpg"],
+    "order": 1
+  },
+  {
+    "name": "Seamless Underwear",
+    "category": "seamless",
+    "description": "Comfortable seamless base layers.",
+    "images": ["product-seamless-underwear.jpg"],
+    "order": 2
+  },
+  {
+    "name": "Vests",
+    "slug": "vests",
+    "category": "seamless",
+    "description": "Seamless vests for layering.",
+    "images": ["product-vests.jpg"],
+    "order": 3
+  },
+  {
+    "name": "Sweaters",
+    "category": "multi-material",
+    "description": "Classic sweaters in various materials.",
+    "images": ["product-sweaters.jpg"],
+    "order": 10
+  },
+  {
+    "name": "Cardigans",
+    "category": "multi-material",
+    "description": "Knit cardigans for versatile styling.",
+    "images": ["product-cardigans.jpg"],
+    "order": 11
+  },
+  {
+    "name": "Hoodies",
+    "category": "multi-material",
+    "description": "Casual hoodies and sweatshirts.",
+    "images": ["product-hoodies.jpg"],
+    "order": 12
+  },
+  {
+    "name": "Dresses",
+    "category": "craftsmanship",
+    "description": "Knit dresses and tunics.",
+    "images": ["product-dresses.jpg"],
+    "order": 20
+  },
+  {
+    "name": "Skirts",
+    "category": "craftsmanship",
+    "description": "Knit skirts and pencil skirts.",
+    "images": ["product-skirts.jpg"],
+    "order": 21
+  }
+]

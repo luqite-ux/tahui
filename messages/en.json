@@ -1,0 +1,187 @@
+{
+  "nav": {
+    "home": "Home",
+    "products": "Products",
+    "manufacturing": "Manufacturing",
+    "factoryTour": "Factory Tour",
+    "quality": "Quality",
+    "aboutUs": "About Us",
+    "contact": "Contact",
+    "getQuote": "Get a Quote"
+  },
+  "footer": {
+    "tagline": "Leading seamless knitwear manufacturer in Shanghai, China. Over 20 years of excellence in OEM & ODM services for global brands.",
+    "address": "No. 351 Tahui Road, Songjiang District, Shanghai",
+    "products": "Products",
+    "allProducts": "All Products",
+    "seamlessKnitwear": "Seamless Knitwear",
+    "multiMaterial": "Multi-Material Collection",
+    "advancedCraftsmanship": "Advanced Craftsmanship",
+    "company": "Company",
+    "aboutUs": "About Us",
+    "manufacturing": "Manufacturing",
+    "factoryTour": "Factory Tour",
+    "qualityCertifications": "Quality & Certifications",
+    "services": "Services",
+    "oemServices": "OEM Services",
+    "odmServices": "ODM Services",
+    "customDesign": "Custom Design",
+    "sampleDevelopment": "Sample Development",
+    "certifications": "Certifications",
+    "contactUs": "Contact Us",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "rightsReserved": "Tahui Sweater Factory. All rights reserved."
+  },
+  "home": {
+    "heroTag": "Premium Knitwear Manufacturer",
+    "heroTitleBefore": "Your Trusted ",
+    "heroHighlight": "Seamless Knitwear",
+    "heroTitleAfter": " Partner in China",
+    "heroSubtitle": "With over 20 years of export manufacturing excellence, Tahui delivers premium seamless knitwear, multi-material collections, and advanced craftsmanship — from OEM production to full ODM development, with precision and quality.",
+    "getQuote": "Get a Quote",
+    "exploreFactory": "Explore Our Factory",
+    "capacityLabel": "100,000+ pcs",
+    "capacitySub": "Monthly Capacity",
+    "stats": {
+      "yearsExperience": "Years Experience",
+      "annualExport": "Annual Export (USD)",
+      "monthlyCapacity": "Monthly Capacity",
+      "knittingMachines": "Knitting Machines"
+    },
+    "collectionsTag": "Our Collections",
+    "collectionsTitle": "Our Product Categories",
+    "collectionsSubtitle": "From classic sweaters to innovative seamless garments, we manufacture a complete range of knitwear products for global fashion brands.",
+    "categories": {
+      "seamless": {
+        "title": "Seamless Knitwear",
+        "description": "Featuring innovative seamless sweaters and base layers produced using advanced fully automatic seamless knitting technology for ultimate comfort and fit."
+      },
+      "multiMaterial": {
+        "title": "Multi-Material Collection",
+        "description": "A wide range of premium knitwear and blankets crafted from diverse materials including wool, silk, cotton, linen, and specialized fancy yarns."
+      },
+      "advancedCraftsmanship": {
+        "title": "Advanced Craftsmanship",
+        "description": "Showcasing our diverse processing capabilities, from jacquard and hand-knitting to embroidery, beading, and custom dyeing techniques like tie-dye and gradient."
+      }
+    },
+    "explore": "Explore",
+    "viewAllProducts": "View All Products",
+    "strengthsTag": "Our Strengths",
+    "strengthsTitle": "Why Choose Tahui",
+    "strengthsSubtitle": "We combine advanced technology, skilled craftsmanship, and decades of export experience to deliver exceptional knitwear for your brand.",
+    "advantages": {
+      "wholegarment": {
+        "title": "WholeGarment Technology",
+        "description": "Advanced seamless knitting with 200+ machines for superior comfort and minimal waste."
+      },
+      "oemOdm": {
+        "title": "OEM & ODM Services",
+        "description": "Flexible manufacturing solutions from your designs or complete product development."
+      },
+      "globalExport": {
+        "title": "Global Export Experience",
+        "description": "Two decades serving international brands with reliable supply chain management."
+      },
+      "isoCertified": {
+        "title": "ISO Certified Quality",
+        "description": "ISO 9001, ISO 14001, and ISO 45001 certified for consistent quality assurance."
+      }
+    },
+    "manufacturingTag": "Manufacturing Excellence",
+    "manufacturingTitle": "Advanced Seamless Knitting Technology",
+    "manufacturingSubtitle": "Our state-of-the-art facility houses over 200 WholeGarment seamless knitting machines, enabling us to produce premium knitwear with superior comfort, minimal seams, and reduced waste.",
+    "certifications": {
+      "iso9001": "ISO 9001",
+      "qualityMgmt": "Quality Management",
+      "iso14001": "ISO 14001",
+      "envMgmt": "Environmental Management",
+      "iso45001": "ISO 45001",
+      "ohsMgmt": "Occupational Health & Safety"
+    },
+    "manufacturingBullets": [
+      "WholeGarment / Seamless knitting technology",
+      "Premium materials: wool, cotton, silk, cashmere, blends",
+      "Advanced techniques: jacquard, embroidery, hand crochet",
+      "Full digitalized production management",
+      "Strict quality control at every stage"
+    ],
+    "certSection": {
+      "trustCompliance": "Trust & Compliance",
+      "certifiedQuality": "Certified Quality",
+      "compliance": "Compliance",
+      "paragraph": "Our commitment to quality, environmental responsibility, and workplace safety is validated by internationally recognized certifications.",
+      "viewCertifications": "View Our Certifications"
+    },
+    "factory": {
+      "behindScenes": "Behind the Scenes",
+      "insideFactory": "Inside Our Factory",
+      "subtitle": "Take a glimpse into our modern production facility where craftsmanship meets technology.",
+      "step1": "Step 1",
+      "linkingWorkshop": "Linking Workshop",
+      "linkingDesc": "Core assembly floor where skilled artisans piece together knitwear components with precision stitching.",
+      "step2": "Step 2",
+      "handFinishing": "Hand Finishing",
+      "handFinishingDesc": "Detailed inspection and hand-trimming to ensure every garment meets our exacting quality standards.",
+      "step3": "Step 3",
+      "qualitySorting": "Quality Sorting",
+      "qualitySortingDesc": "Careful piece-by-piece review and grading before garments move to finishing.",
+      "step4": "Step 4",
+      "steamPressing": "Steam Pressing",
+      "steamPressingDesc": "Professional steam shaping to give each garment its final silhouette and drape.",
+      "step5": "Step 5",
+      "packaging": "Packaging",
+      "packagingDesc": "Carefully boxed and labeled, ready for worldwide export to our brand partners.",
+      "virtualTour": "Take a Virtual Factory Tour"
+    },
+    "cta": {
+      "startToday": "Start Today",
+      "emailUsDirectly": "Email Us Directly",
+      "whatsappText": "Or reach us via WhatsApp: +86 166 2168 4217"
+    }
+  },
+  "products": {
+    "ourCollections": "Our Collections",
+    "premiumKnitwear": "Premium Knitwear for Global Brands",
+    "collectionsSubtitle": "From seamless innovation to artisanal craft, explore our three core product lines. All items available for OEM production or full ODM development.",
+    "category": "Category",
+    "viewMoreProducts": "View More Products",
+    "viewDetails": "View details",
+    "materials": "Materials",
+    "premiumMaterials": "Premium Materials & Yarns",
+    "materialsSubtitle": "We source the finest yarns from trusted suppliers worldwide, ensuring consistent quality and sustainable sourcing for every order.",
+    "materialsList": {
+      "wool": "Wool",
+      "woolNote": "Merino, lambswool, specialty wools",
+      "cotton": "Cotton",
+      "cottonNote": "Organic & conventional",
+      "cashmere": "Cashmere",
+      "cashmereNote": "Pure & blends",
+      "silk": "Silk",
+      "silkNote": "Pure silk & silk blends",
+      "linen": "Linen",
+      "linenNote": "Summer-weight yarns",
+      "fancyYarns": "Fancy Yarns",
+      "fancyYarnsNote": "Bouclé, mohair, chenille"
+    },
+    "oemTitle": "OEM Services",
+    "oemTag": "Custom Manufacturing",
+    "oemDesc": "Bring your designs to life. Provide tech packs, samples, or detailed specifications, and our team will produce your knitwear to exact requirements.",
+    "odmTitle": "ODM Services",
+    "odmTag": "Design Partnership",
+    "odmDesc": "Leverage our design expertise. From trend research to sample development, our in-house team creates complete collections tailored to your brand.",
+    "ctaTitle": "Ready to Develop Your Collection?",
+    "ctaSubtitle": "Contact our team to discuss your product requirements, request samples, or schedule a virtual factory tour.",
+    "getStartedToday": "Get Started Today",
+    "backToProducts": "Back to Products",
+    "allInCollection": "All products in this collection. Available for OEM & ODM.",
+    "noProducts": "No products in this category yet."
+  },
+  "common": {
+    "getQuote": "Get a Quote",
+    "viewMore": "View More",
+    "learnMore": "Learn More",
+    "contactUs": "Contact Us"
+  }
+}

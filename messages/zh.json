@@ -1,0 +1,187 @@
+{
+  "nav": {
+    "home": "首页",
+    "products": "产品",
+    "manufacturing": "制造",
+    "factoryTour": "工厂参观",
+    "quality": "品质",
+    "aboutUs": "关于我们",
+    "contact": "联系",
+    "getQuote": "获取报价"
+  },
+  "footer": {
+    "tagline": "上海领先的无缝针织制造商。二十多年来为全球品牌提供卓越的 OEM 和 ODM 服务。",
+    "address": "上海市松江区塔汇路 351 号",
+    "products": "产品",
+    "allProducts": "全部产品",
+    "seamlessKnitwear": "无缝针织",
+    "multiMaterial": "多材质系列",
+    "advancedCraftsmanship": "先进工艺",
+    "company": "公司",
+    "aboutUs": "关于我们",
+    "manufacturing": "制造",
+    "factoryTour": "工厂参观",
+    "qualityCertifications": "品质与认证",
+    "services": "服务",
+    "oemServices": "OEM 服务",
+    "odmServices": "ODM 服务",
+    "customDesign": "定制设计",
+    "sampleDevelopment": "打样开发",
+    "certifications": "认证",
+    "contactUs": "联系我们",
+    "privacyPolicy": "隐私政策",
+    "termsOfService": "服务条款",
+    "rightsReserved": "塔汇针织厂。版权所有。"
+  },
+  "home": {
+    "heroTag": "高端针织制造商",
+    "heroTitleBefore": "您在中国信赖的",
+    "heroHighlight": "无缝针织",
+    "heroTitleAfter": "合作伙伴",
+    "heroSubtitle": "二十多年出口制造经验，塔汇提供优质无缝针织、多材质系列及先进工艺——从 OEM 生产到完整 ODM 开发，品质精准可靠。",
+    "getQuote": "获取报价",
+    "exploreFactory": "参观工厂",
+    "capacityLabel": "10万+ 件",
+    "capacitySub": "月产能",
+    "stats": {
+      "yearsExperience": "年经验",
+      "annualExport": "年出口额（美元）",
+      "monthlyCapacity": "月产能",
+      "knittingMachines": "针织机"
+    },
+    "collectionsTag": "产品系列",
+    "collectionsTitle": "产品分类",
+    "collectionsSubtitle": "从经典毛衣到创新无缝服装，我们为全球时尚品牌生产全系列针织产品。",
+    "categories": {
+      "seamless": {
+        "title": "无缝针织",
+        "description": "采用先进全自动无缝针织技术生产的创新无缝毛衣和基础款，舒适贴合，无侧缝设计。"
+      },
+      "multiMaterial": {
+        "title": "多材质系列",
+        "description": "以羊毛、真丝、棉、亚麻及特种花式纱线等多种材质打造的 premium 针织及毛毯系列。"
+      },
+      "advancedCraftsmanship": {
+        "title": "先进工艺",
+        "description": "展示多元化加工能力：提花、手编、刺绣、珠饰及定制染色工艺（扎染、渐变色等）。"
+      }
+    },
+    "explore": "探索",
+    "viewAllProducts": "查看全部产品",
+    "strengthsTag": "我们的优势",
+    "strengthsTitle": "为何选择塔汇",
+    "strengthsSubtitle": "我们将先进技术、精湛工艺与数十年的出口经验相结合，为您的品牌提供卓越针织产品。",
+    "advantages": {
+      "wholegarment": {
+        "title": "全成型技术",
+        "description": "200+ 台无缝针织机，舒适度高、废料少。"
+      },
+      "oemOdm": {
+        "title": "OEM & ODM 服务",
+        "description": "从来样加工到完整产品开发，灵活制造方案。"
+      },
+      "globalExport": {
+        "title": "全球出口经验",
+        "description": "二十余年服务国际品牌，供应链管理可靠。"
+      },
+      "isoCertified": {
+        "title": "ISO 认证品质",
+        "description": "通过 ISO 9001、ISO 14001、ISO 45001 认证，品质稳定可控。"
+      }
+    },
+    "manufacturingTag": "制造实力",
+    "manufacturingTitle": "先进无缝针织技术",
+    "manufacturingSubtitle": "工厂配备 200+ 台全成型无缝针织机，生产高端针织品，舒适贴合、接缝少、废料低。",
+    "certifications": {
+      "iso9001": "ISO 9001",
+      "qualityMgmt": "质量管理",
+      "iso14001": "ISO 14001",
+      "envMgmt": "环境管理",
+      "iso45001": "ISO 45001",
+      "ohsMgmt": "职业健康与安全"
+    },
+    "manufacturingBullets": [
+      "全成型/无缝针织技术",
+      "优质材料：羊毛、棉、真丝、羊绒及混纺",
+      "先进工艺：提花、刺绣、手工钩编",
+      "全程数字化生产管理",
+      "每道环节严格质量管控"
+    ],
+    "certSection": {
+      "trustCompliance": "信任与合规",
+      "certifiedQuality": "认证品质",
+      "compliance": "合规",
+      "paragraph": "我们对品质、环保和职业安全的承诺已获得国际认证的认可。",
+      "viewCertifications": "查看我们的认证"
+    },
+    "factory": {
+      "behindScenes": "幕后花絮",
+      "insideFactory": "走进工厂",
+      "subtitle": "一睹我们现代化生产基地，见证工艺与技术的完美结合。",
+      "step1": "步骤 1",
+      "linkingWorkshop": "套口车间",
+      "linkingDesc": "熟练技工在套口机上精确缝合针织部件，完成核心组装。",
+      "step2": "步骤 2",
+      "handFinishing": "手工整烫",
+      "handFinishingDesc": "逐件细致检验与手工修剪，确保每件成品符合严苛品质标准。",
+      "step3": "步骤 3",
+      "qualitySorting": "品质分拣",
+      "qualitySortingDesc": "成品进入整烫前，逐件审核与分级。",
+      "step4": "步骤 4",
+      "steamPressing": "蒸汽熨烫",
+      "steamPressingDesc": "专业蒸汽定型，赋予每件成衣最终廓形与垂坠感。",
+      "step5": "步骤 5",
+      "packaging": "包装",
+      "packagingDesc": "精心装箱贴标，运往全球品牌合作伙伴。",
+      "virtualTour": "线上工厂参观"
+    },
+    "cta": {
+      "startToday": "立即开始",
+      "emailUsDirectly": "直接邮件联系",
+      "whatsappText": "或通过 WhatsApp 联系：+86 166 2168 4217"
+    }
+  },
+  "products": {
+    "ourCollections": "产品系列",
+    "premiumKnitwear": "全球品牌高端针织",
+    "collectionsSubtitle": "从无缝创新到工艺匠心，探索三大核心产品线。所有产品均可 OEM 生产或完整 ODM 开发。",
+    "category": "分类",
+    "viewMoreProducts": "查看更多产品",
+    "viewDetails": "查看详情",
+    "materials": "材料",
+    "premiumMaterials": "优质材料与纱线",
+    "materialsSubtitle": "我们从全球可信供应商采购优质纱线，确保每笔订单品质一致、来源可持续。",
+    "materialsList": {
+      "wool": "羊毛",
+      "woolNote": "美利奴、羔羊毛、特种羊毛",
+      "cotton": "棉",
+      "cottonNote": "有机棉与常规棉",
+      "cashmere": "羊绒",
+      "cashmereNote": "纯羊绒及混纺",
+      "silk": "真丝",
+      "silkNote": "纯真丝及丝混纺",
+      "linen": "亚麻",
+      "linenNote": "夏季轻薄纱线",
+      "fancyYarns": "花式纱线",
+      "fancyYarnsNote": "圈圈纱、马海毛、雪尼尔"
+    },
+    "oemTitle": "OEM 服务",
+    "oemTag": "定制制造",
+    "oemDesc": "将您的设计化为现实。提供技术包、样品或详细规格，我们将按您的要求精确生产针织品。",
+    "odmTitle": "ODM 服务",
+    "odmTag": "设计合作",
+    "odmDesc": "借助我们的设计专长。从趋势研究到样品开发，内部团队为您量身打造完整系列。",
+    "ctaTitle": "准备好开发您的系列了吗？",
+    "ctaSubtitle": "联系我们的团队，讨论产品需求、索取样品或预约线上工厂参观。",
+    "getStartedToday": "立即开始",
+    "backToProducts": "返回产品",
+    "allInCollection": "本系列全部产品。支持 OEM 与 ODM。",
+    "noProducts": "该分类暂无产品。"
+  },
+  "common": {
+    "getQuote": "获取报价",
+    "viewMore": "更多",
+    "learnMore": "了解更多",
+    "contactUs": "联系我们"
+  }
+}

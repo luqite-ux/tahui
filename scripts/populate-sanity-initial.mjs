@@ -107,16 +107,23 @@ async function main() {
     })
   }
 
-  // 创建 3 个产品分类
+  // 创建/更新 3 个产品分类（按 id 查找已有则更新，否则用固定 _id 创建，避免重复）
   const categories = [
     { id: 'seamless', number: '01', title: 'Seamless', desc: 'Seamless knitwear', key: 'seamless' },
     { id: 'multi-material', number: '02', title: 'Multi-Material', desc: 'Multi-material knitwear', key: 'materials' },
     { id: 'craftsmanship', number: '03', title: 'Craftsmanship', desc: 'Craftsmanship knitwear', key: 'craftsmanship' },
   ]
-  console.log('创建产品分类…')
+  console.log('创建/更新产品分类…')
+  const existing = await client.fetch(
+    `*[_type == "productCategory" && id in $ids]{ _id, id }`,
+    { ids: categories.map((c) => c.id) }
+  )
+  const byId = new Map(existing.map((d) => [d.id, d._id]))
   for (const cat of categories) {
     const image = uploaded[cat.key]
-    await client.create({
+    const _id = byId.get(cat.id) || `productCategory-${cat.id}`
+    await client.createOrReplace({
+      _id,
       _type: 'productCategory',
       id: cat.id,
       number: cat.number,

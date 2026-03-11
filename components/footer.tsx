@@ -1,29 +1,31 @@
-import Link from "next/link";
 import Image from "next/image";
 import { Mail, Phone, MapPin } from "lucide-react";
+import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/routing";
 
-const navigation = {
+const footerNav = {
   products: [
-    { name: "All Products", href: "/products" },
-    { name: "Seamless Knitwear", href: "/products/category/seamless" },
-    { name: "Multi-Material Collection", href: "/products/category/multi-material" },
-    { name: "Advanced Craftsmanship", href: "/products/category/craftsmanship" },
+    { key: "allProducts", href: "/products" },
+    { key: "seamlessKnitwear", href: "/products/category/seamless" },
+    { key: "multiMaterial", href: "/products/category/multi-material" },
+    { key: "advancedCraftsmanship", href: "/products/category/craftsmanship" },
   ],
   company: [
-    { name: "About Us", href: "/about" },
-    { name: "Manufacturing", href: "/manufacturing" },
-    { name: "Factory Tour", href: "/factory-tour" },
-    { name: "Quality & Certifications", href: "/quality" },
+    { key: "aboutUs", href: "/about" },
+    { key: "manufacturing", href: "/manufacturing" },
+    { key: "factoryTour", href: "/factory-tour" },
+    { key: "qualityCertifications", href: "/quality" },
   ],
   services: [
-    { name: "OEM Services", href: "/manufacturing#oem" },
-    { name: "ODM Services", href: "/manufacturing#odm" },
-    { name: "Custom Design", href: "/manufacturing#custom" },
-    { name: "Sample Development", href: "/contact" },
+    { key: "oemServices", href: "/manufacturing#oem" },
+    { key: "odmServices", href: "/manufacturing#odm" },
+    { key: "customDesign", href: "/manufacturing#custom" },
+    { key: "sampleDevelopment", href: "/contact" },
   ],
-};
+} as const;
 
-export function Footer() {
+export async function Footer() {
+  const t = await getTranslations("footer");
   return (
     <footer className="bg-primary text-primary-foreground relative overflow-hidden">
       <div className="absolute top-0 right-0 w-80 h-80 bg-accent/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
@@ -53,14 +55,13 @@ export function Footer() {
               </div>
             </Link>
             <p className="mt-5 text-sm leading-relaxed opacity-75">
-              Leading seamless knitwear manufacturer in Shanghai, China. Over 20
-              years of excellence in OEM &amp; ODM services for global brands.
+              {t("tagline")}
             </p>
             <div className="mt-7 space-y-3">
               <div className="flex items-start gap-3 text-sm">
                 <MapPin className="h-4 w-4 shrink-0 mt-0.5 text-accent" />
                 <span className="opacity-75">
-                  No. 351 Tahui Road, Songjiang District, Shanghai
+                  {t("address")}
                 </span>
               </div>
               <div className="flex items-center gap-3 text-sm">
@@ -86,16 +87,16 @@ export function Footer() {
 
           <div>
             <h3 className="text-sm font-bold tracking-wider uppercase text-accent">
-              Products
+              {t("products")}
             </h3>
             <ul className="mt-5 space-y-3">
-              {navigation.products.map((item) => (
-                <li key={item.name}>
+              {footerNav.products.map((item) => (
+                <li key={item.key}>
                   <Link
                     href={item.href}
                     className="text-sm opacity-70 hover:opacity-100 hover:text-accent transition-all duration-300"
                   >
-                    {item.name}
+                    {t(item.key)}
                   </Link>
                 </li>
               ))}
@@ -104,16 +105,16 @@ export function Footer() {
 
           <div>
             <h3 className="text-sm font-bold tracking-wider uppercase text-accent">
-              Company
+              {t("company")}
             </h3>
             <ul className="mt-5 space-y-3">
-              {navigation.company.map((item) => (
-                <li key={item.name}>
+              {footerNav.company.map((item) => (
+                <li key={item.key}>
                   <Link
                     href={item.href}
                     className="text-sm opacity-70 hover:opacity-100 hover:text-accent transition-all duration-300"
                   >
-                    {item.name}
+                    {t(item.key)}
                   </Link>
                 </li>
               ))}
@@ -122,16 +123,16 @@ export function Footer() {
 
           <div>
             <h3 className="text-sm font-bold tracking-wider uppercase text-accent">
-              Services
+              {t("services")}
             </h3>
             <ul className="mt-5 space-y-3">
-              {navigation.services.map((item) => (
-                <li key={item.name}>
+              {footerNav.services.map((item) => (
+                <li key={item.key}>
                   <Link
                     href={item.href}
                     className="text-sm opacity-70 hover:opacity-100 hover:text-accent transition-all duration-300"
                   >
-                    {item.name}
+                    {t(item.key)}
                   </Link>
                 </li>
               ))}
@@ -142,33 +143,32 @@ export function Footer() {
         <div className="mt-16 border-t border-primary-foreground/15 pt-8">
           <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
             <p className="text-sm opacity-50">
-              &copy; {new Date().getFullYear()} Tahui Sweater Factory. All
-              rights reserved.
+              &copy; {new Date().getFullYear()} {t("rightsReserved")}
             </p>
             <div className="flex flex-wrap justify-center gap-6">
               <Link
                 href="/quality"
                 className="text-sm opacity-50 hover:opacity-100 hover:text-accent transition-all duration-300"
               >
-                Certifications
+                {t("certifications")}
               </Link>
               <Link
                 href="/contact"
                 className="text-sm opacity-50 hover:opacity-100 hover:text-accent transition-all duration-300"
               >
-                Contact Us
+                {t("contactUs")}
               </Link>
               <Link
                 href="/privacy"
                 className="text-sm opacity-50 hover:opacity-100 hover:text-accent transition-all duration-300"
               >
-                Privacy Policy
+                {t("privacyPolicy")}
               </Link>
               <Link
                 href="/terms"
                 className="text-sm opacity-50 hover:opacity-100 hover:text-accent transition-all duration-300"
               >
-                Terms of Service
+                {t("termsOfService")}
               </Link>
             </div>
           </div>
