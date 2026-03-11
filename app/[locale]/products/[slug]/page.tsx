@@ -3,6 +3,7 @@ import Image from "next/image"
 import { Link } from "@/i18n/routing"
 import { notFound } from "next/navigation"
 import { SITE_URL } from "@/lib/seo"
+import { getTranslations } from "next-intl/server"
 import { ArrowLeft } from "lucide-react"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
@@ -34,10 +35,11 @@ const ALL_PRODUCT_IDS_QUERY = `*[_type == "product" && !defined(slug.current)]{ 
 
 export const revalidate = 60
 
-type Props = { params: Promise<{ slug: string }> }
+type Props = { params: Promise<{ locale: string; slug: string }> }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params
+  const { locale, slug } = await params
+  const tProducts = await getTranslations({ locale, namespace: "products" })
   let product = await client.fetch<{ name?: string; description?: string | null } | null>(
     `*[_type == "product" && slug.current == $slug][0]{ name, description }`,
     { slug }
@@ -48,10 +50,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       { id: slug }
     )
   }
-  if (!product?.name) return { title: "Product" }
+  if (!product?.name) return { title: tProducts("productMetaFallbackTitle") }
   return {
     title: `${product.name} - TAHUI Sweater Factory`,
-    description: product.description ?? `Product: ${product.name}. OEM & ODM knitwear.`,
+    description: product.description ?? tProducts("productMetaDescriptionFallback", { name: product.name }),
     alternates: { canonical: `${SITE_URL}/products/${slug}` },
   }
 }
@@ -81,6 +83,10 @@ export default async function ProductDetailPage({ params }: Props) {
 
   if (!product) notFound()
 
+  const tNav = await getTranslations("nav")
+  const tProducts = await getTranslations("products")
+  const tCommon = await getTranslations("common")
+
   const categoryHref = product.categoryId ? `/products/category/${product.categoryId}` : "/products"
 
   return (
@@ -92,7 +98,7 @@ export default async function ProductDetailPage({ params }: Props) {
           {/* Breadcrumb */}
           <nav className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground mb-8">
             <Link href="/products" className="hover:text-accent transition-colors">
-              Products
+              {tNav("products")}
             </Link>
             {product.categoryTitle && (
               <>
@@ -144,7 +150,7 @@ export default async function ProductDetailPage({ params }: Props) {
                 </>
               ) : (
                 <div className="aspect-[4/3] rounded-2xl bg-warm/30 flex items-center justify-center text-muted-foreground">
-                  No image
+                  {tCommon("noImage")}
                 </div>
               )}
             </div>
@@ -174,13 +180,13 @@ export default async function ProductDetailPage({ params }: Props) {
                   className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-border bg-card text-sm font-medium text-foreground hover:border-accent hover:text-accent transition-colors"
                 >
                   <ArrowLeft className="h-4 w-4" />
-                  Back to collection
+                  {tProducts("backToCollection")}
                 </Link>
                 <Link
                   href="/contact"
                   className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity"
                 >
-                  Get a Quote
+                  {tCommon("getQuote")}
                 </Link>
               </div>
             </div>

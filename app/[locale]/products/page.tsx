@@ -3,6 +3,7 @@ import Image from "next/image"
 import { Link } from "@/i18n/routing"
 import { SITE_URL } from "@/lib/seo"
 import { ArrowRight, CheckCircle, Sparkles, Palette, Scissors } from "lucide-react"
+import { getTranslations } from "next-intl/server"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Header } from "@/components/header"
@@ -10,11 +11,16 @@ import { Footer } from "@/components/footer"
 import { client } from "@/sanity/lib/client"
 import { urlFor } from "@/sanity/lib/image"
 
-export const metadata: Metadata = {
-  title: "Products - Seamless Knitwear Manufacturer",
-  description:
-    "Explore our product range: seamless knitwear, multi-material collections, and advanced craftsmanship. OEM & ODM knitwear manufacturing from Shanghai, China.",
-  alternates: { canonical: `${SITE_URL}/products` },
+type Props = { params: Promise<{ locale: string }> }
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: "products" })
+  return {
+    title: t("metaTitle"),
+    description: t("metaDescription"),
+    alternates: { canonical: `${SITE_URL}/products` },
+  }
 }
 
 /** 产品页定时重新拉取 Sanity 数据，便于后台更新后前台更新 */
@@ -33,9 +39,9 @@ const PRODUCTS_QUERY = `*[_type == "product"] | order(order asc, name asc) {
 /* ─── Category Data ─── */
 
 const categoryNav = [
-  { id: "seamless", label: "Seamless Knitwear", icon: Sparkles },
-  { id: "multi-material", label: "Multi-Material Collection", icon: Palette },
-  { id: "craftsmanship", label: "Advanced Craftsmanship", icon: Scissors },
+  { id: "seamless", icon: Sparkles },
+  { id: "multi-material", icon: Palette },
+  { id: "craftsmanship", icon: Scissors },
 ]
 
 type SanityProduct = {
@@ -61,40 +67,29 @@ const categoryConfigs: CategoryConfig[] = [
   {
     id: "seamless",
     number: "01",
-    title: "Seamless Knitwear",
-    description:
-      "Innovative seamless sweaters and base layers produced using advanced fully automatic seamless knitting technology for ultimate comfort and fit.",
+    title: "seamless",
+    description: "seamless",
     image: "/images/category-seamless.jpg",
     icon: Sparkles,
   },
   {
     id: "multi-material",
     number: "02",
-    title: "Multi-Material Collection",
-    description:
-      "A wide range of premium knitwear and blankets crafted from diverse materials including wool, silk, cotton, linen, and specialized fancy yarns.",
+    title: "multi-material",
+    description: "multi-material",
     image: "/images/category-materials.jpg",
     icon: Palette,
   },
   {
     id: "craftsmanship",
     number: "03",
-    title: "Advanced Craftsmanship",
-    description:
-      "Showcasing our diverse processing capabilities, from jacquard and hand-knitting to embroidery, beading, and custom dyeing techniques.",
+    title: "craftsmanship",
+    description: "craftsmanship",
     image: "/images/category-craftsmanship.jpg",
     icon: Scissors,
   },
 ]
-
-const materials = [
-  { name: "Wool", note: "Merino, lambswool, specialty wools" },
-  { name: "Cotton", note: "Organic & conventional" },
-  { name: "Cashmere", note: "Pure & blends" },
-  { name: "Silk", note: "Pure silk & silk blends" },
-  { name: "Linen", note: "Summer-weight yarns" },
-  { name: "Fancy Yarns", note: "Bouclé, mohair, chenille" },
-]
+const materialIds = ["wool", "cotton", "cashmere", "silk", "linen", "fancyYarns"] as const
 
 /* ─── Category Section Component ─── */
 
@@ -102,13 +97,19 @@ function CategorySection({
   category,
   products,
   bgClass,
+  t,
+  tCommon,
 }: {
   category: CategoryConfig
   products: SanityProduct[]
   bgClass?: string
+  t: Awaited<ReturnType<typeof getTranslations>>
+  tCommon: Awaited<ReturnType<typeof getTranslations>>
 }) {
   const Icon = category.icon
   const categoryHref = `/products/category/${category.id}`
+  const title = t(`categories.${category.id}.title`)
+  const description = t(`categories.${category.id}.description`)
 
   return (
     <section id={category.id} className={`scroll-mt-20 py-20 lg:py-28 ${bgClass || ""}`}>
@@ -118,26 +119,26 @@ function CategorySection({
           <div className="flex items-center gap-3">
             <span className="text-sm font-semibold text-accent tracking-[0.15em] uppercase flex items-center gap-2">
               <Icon className="h-4 w-4" strokeWidth={1.5} />
-              Category {category.number}
+              {t("categoryLabel", { number: category.number })}
             </span>
           </div>
           <Link
             href={categoryHref}
             className="group/more inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-accent text-accent-foreground text-sm font-semibold shadow-sm hover:bg-accent/90 hover:shadow-md transition-all duration-300 shrink-0 border border-accent"
           >
-            View More Products
+            {t("viewMoreProducts")}
             <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover/more:translate-x-0.5" />
           </Link>
         </div>
 
         {/* Title */}
         <h2 className="text-3xl font-bold tracking-tight text-foreground lg:text-4xl leading-[1.1] mb-4">
-          {category.title}
+          {title}
         </h2>
 
         {/* Description */}
         <p className="text-muted-foreground leading-relaxed max-w-2xl mb-10">
-          {category.description}
+          {description}
         </p>
 
         {/* 分类主图：点击进入该分类全部产品 */}
@@ -145,7 +146,7 @@ function CategorySection({
           <div className="aspect-[16/9] lg:aspect-[21/9] rounded-2xl overflow-hidden bg-warm/40 shadow-md ring-1 ring-border/20 relative">
             <Image
               src={category.image || "/placeholder.svg"}
-              alt={`${category.title} representative product`}
+              alt={t("categoryImageAlt", { category: title })}
               fill
               className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.02]"
             />
@@ -175,7 +176,7 @@ function CategorySection({
                         />
                       ) : (
                         <div className="absolute inset-0 flex items-center justify-center text-muted-foreground/50 text-sm">
-                          No image
+                          {tCommon("noImage")}
                         </div>
                       )}
                       <div className="absolute inset-0 bg-gradient-to-t from-foreground/5 via-transparent to-transparent" />
@@ -191,7 +192,7 @@ function CategorySection({
                         </p>
                       )}
                       <span className="inline-flex items-center gap-1 mt-3 text-xs font-medium text-accent/70 group-hover/card:text-accent transition-colors duration-300">
-                        View details
+                        {t("viewDetails")}
                         <ArrowRight className="h-3 w-3" />
                       </span>
                     </CardContent>
@@ -209,6 +210,9 @@ function CategorySection({
 /* ─── Page ─── */
 
 export default async function ProductsPage() {
+  const t = await getTranslations("products")
+  const tCommon = await getTranslations("common")
+
   let sanityProducts: Array<{
     _id: string
     name: string
@@ -242,15 +246,13 @@ export default async function ProductsPage() {
           <div className="max-w-3xl animate-fade-up">
             <p className="text-sm font-semibold text-accent tracking-[0.2em] uppercase mb-5 flex items-center gap-2">
               <span className="inline-block w-6 h-px bg-accent" />
-              Our Collections
+              {t("ourCollections")}
             </p>
             <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl text-balance leading-[1.08]">
-              Premium Knitwear for Global Brands
+              {t("premiumKnitwear")}
             </h1>
             <p className="mt-7 text-lg leading-relaxed text-muted-foreground max-w-2xl">
-              From seamless innovation to artisanal craft, explore our three
-              core product lines. All items available for OEM production or full
-              ODM development.
+              {t("collectionsSubtitle")}
             </p>
           </div>
 
@@ -263,7 +265,7 @@ export default async function ProductsPage() {
                 className="group/tab inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-border/60 bg-card/80 backdrop-blur-sm text-sm font-medium text-foreground/80 hover:border-accent/50 hover:text-accent hover:shadow-md hover:shadow-accent/5 transition-all duration-300"
               >
                 <cat.icon className="h-4 w-4 text-primary/60 group-hover/tab:text-accent transition-colors duration-300" strokeWidth={1.5} />
-                {cat.label}
+                {t(`categories.${cat.id}.title`)}
               </a>
             ))}
           </div>
@@ -282,6 +284,8 @@ export default async function ProductsPage() {
             category={category}
             products={products}
             bgClass={i % 2 === 1 ? "bg-secondary/50" : ""}
+            t={t}
+            tCommon={tCommon}
           />
         </div>
       ))}
@@ -291,31 +295,29 @@ export default async function ProductsPage() {
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16 lg:mb-20">
             <p className="text-sm font-semibold text-accent tracking-[0.2em] uppercase mb-4">
-              Materials
+              {t("materials")}
             </p>
             <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl leading-[1.1]">
-              Premium Materials & Yarns
+              {t("premiumMaterials")}
             </h2>
             <p className="mt-5 text-lg text-muted-foreground leading-relaxed">
-              We source the finest yarns from trusted suppliers worldwide,
-              ensuring consistent quality and sustainable sourcing for every
-              order.
+              {t("materialsSubtitle")}
             </p>
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6">
-            {materials.map((m) => (
+            {materialIds.map((id) => (
               <Card
-                key={m.name}
+                key={id}
                 className="group bg-card rounded-2xl border-border/50 shadow-sm hover:shadow-xl hover:shadow-accent/6 hover:-translate-y-1 transition-all duration-500 ease-out overflow-hidden relative"
               >
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 h-[2px] w-0 group-hover:w-3/5 bg-gradient-to-r from-transparent via-accent to-transparent rounded-b-full transition-all duration-500" />
                 <CardContent className="p-6 lg:p-7">
                   <h3 className="font-bold text-lg text-foreground group-hover:text-primary transition-colors duration-300">
-                    {m.name}
+                    {t(`materialsList.${id}`)}
                   </h3>
                   <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-                    {m.note}
+                    {t(`materialsList.${id}Note`)}
                   </p>
                 </CardContent>
               </Card>
@@ -330,28 +332,16 @@ export default async function ProductsPage() {
           <div className="grid lg:grid-cols-2 gap-8">
             {[
               {
-                tag: "Custom Manufacturing",
-                title: "OEM Services",
-                desc: "Bring your designs to life. Provide tech packs, samples, or detailed specifications, and our team will produce your knitwear to exact requirements.",
-                bullets: [
-                  "Production from your tech packs",
-                  "Sample matching and development",
-                  "Private label and custom packaging",
-                  "Flexible MOQ for qualified brands",
-                  "Dedicated production planning",
-                ],
+                tag: t("oemTag"),
+                title: t("oemTitle"),
+                desc: t("oemDesc"),
+                bullets: t.raw("oemBullets") as string[],
               },
               {
-                tag: "Design Partnership",
-                title: "ODM Services",
-                desc: "Leverage our design expertise. From trend research to sample development, our in-house team creates complete collections tailored to your brand.",
-                bullets: [
-                  "Trend research and forecasting",
-                  "Original design development",
-                  "Material sourcing and selection",
-                  "Sample creation and iteration",
-                  "Full technical documentation",
-                ],
+                tag: t("odmTag"),
+                title: t("odmTitle"),
+                desc: t("odmDesc"),
+                bullets: t.raw("odmBullets") as string[],
               },
             ].map((svc) => (
               <div
@@ -393,11 +383,10 @@ export default async function ProductsPage() {
         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent/30 to-transparent" />
         <div className="relative mx-auto max-w-4xl px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl leading-[1.1]">
-            Ready to Develop Your Collection?
+            {t("ctaTitle")}
           </h2>
           <p className="mt-5 text-lg text-primary-foreground/70 leading-relaxed">
-            Contact our team to discuss your product requirements, request
-            samples, or schedule a virtual factory tour.
+            {t("ctaSubtitle")}
           </p>
           <div className="mt-10 flex flex-wrap justify-center gap-4">
             <Button
@@ -407,7 +396,7 @@ export default async function ProductsPage() {
               asChild
             >
               <Link href="/contact">
-                Get Started Today
+                {t("getStartedToday")}
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>

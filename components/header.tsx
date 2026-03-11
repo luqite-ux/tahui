@@ -21,6 +21,7 @@ const navKeys = [
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const t = useTranslations("nav")
+  const tCommon = useTranslations("common")
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-lg border-b border-border/40 shadow-[0_1px_3px_0_rgba(0,0,0,0.04)]">
@@ -53,7 +54,7 @@ export function Header() {
             className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-foreground"
             onClick={() => setMobileMenuOpen(true)}
           >
-            <span className="sr-only">Open main menu</span>
+            <span className="sr-only">{tCommon("openMainMenu")}</span>
             <Menu className="h-6 w-6" aria-hidden="true" />
           </button>
         </div>
@@ -105,7 +106,7 @@ export function Header() {
                 className="-m-2.5 rounded-md p-2.5 text-foreground"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                <span className="sr-only">Close menu</span>
+                <span className="sr-only">{tCommon("closeMenu")}</span>
                 <X className="h-6 w-6" aria-hidden="true" />
               </button>
             </div>

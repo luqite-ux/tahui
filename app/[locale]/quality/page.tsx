@@ -11,33 +11,26 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 
-export const metadata: Metadata = {
-  title: "Quality & Certifications - ISO Certified Manufacturer",
-  description: "Learn about our ISO 9001, ISO 14001, and ISO 45001 certifications. Quality management, environmental and occupational health systems.",
-  alternates: { canonical: `${SITE_URL}/quality` },
+type Props = { params: Promise<{ locale: string }> }
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: "quality" })
+  return {
+    title: t("metaTitle"),
+    description: t("metaDescription"),
+    alternates: { canonical: `${SITE_URL}/quality` },
+  }
 }
 
 const certifications = [
-  { icon: Award, name: "ISO 9001:2015", title: "Quality Management System", description: "Our ISO 9001 certification demonstrates our commitment to consistent quality in all processes.", benefits: ["Documented quality procedures", "Continuous improvement processes", "Customer satisfaction focus", "Consistent product quality", "Risk-based approach", "Regular internal audits"] },
-  { icon: Leaf, name: "ISO 14001:2015", title: "Environmental Management System", description: "We are committed to minimizing our environmental impact through responsible manufacturing practices.", benefits: ["Waste reduction programs", "Energy efficiency measures", "Sustainable sourcing options", "Pollution prevention", "Environmental compliance", "Continuous improvement"] },
-  { icon: Users, name: "ISO 45001:2018", title: "Occupational Health & Safety", description: "The safety and wellbeing of our workforce is paramount.", benefits: ["Safe working conditions", "Regular safety training", "Hazard identification", "Emergency preparedness", "Worker health programs", "Incident investigation"] },
-]
+  { id: "iso9001", icon: Award, name: "ISO 9001:2015" },
+  { id: "iso14001", icon: Leaf, name: "ISO 14001:2015" },
+  { id: "iso45001", icon: Users, name: "ISO 45001:2018" },
+] as const
 
-const qualityProcess = [
-  { step: "01", title: "Incoming Material Inspection", description: "Every yarn shipment undergoes comprehensive testing including weight verification, color matching, and visual inspection." },
-  { step: "02", title: "In-Line Quality Checks", description: "Regular checks throughout production monitoring gauge consistency, pattern accuracy, and stitch quality." },
-  { step: "03", title: "Assembly Inspection", description: "All linking, seaming, finishing, and trim operations inspected for workmanship quality." },
-  { step: "04", title: "Final Product Inspection", description: "Every finished garment undergoes 100% inspection against approved samples." },
-  { step: "05", title: "AQL Sampling", description: "Statistical sampling according to AQL standards, typically AQL 2.5 or stricter." },
-  { step: "06", title: "Pre-Shipment Audit", description: "Final audit to verify quantities, packing quality, and documentation accuracy." },
-]
-
-const qualityCommitments = [
-  { title: "Zero Tolerance Policy", description: "We maintain zero tolerance for critical defects. Any garment not meeting our standards is rejected." },
-  { title: "Traceability", description: "Full traceability from yarn lot to finished garment for quick issue identification." },
-  { title: "Continuous Training", description: "Our team receives ongoing training in quality standards and inspection techniques." },
-  { title: "Client Standards", description: "We adapt our quality protocols to meet specific client requirements and brand-specific QC manuals." },
-]
+const qualityProcessSteps = ["01", "02", "03", "04", "05", "06"] as const
+const qualityCommitmentIds = ["zeroTolerance", "traceability", "training", "clientStandards"] as const
 
 const HONORS_QUERY = `*[_type == "honor"] | order(order asc, title asc) {
   _id,
@@ -100,43 +93,6 @@ function honorDisplayTitle(honor: {
   }
   if (en && en !== zh && !isLikelyUuid(en)) return HONOR_TITLE_ZH_TO_EN[zh] ?? en
   return HONOR_TITLE_ZH_TO_EN[zh] ?? (zh && !isLikelyUuid(zh) ? zh : null) ?? en ?? (alt || 'Certificate')
-}
-
-/** 证书分类配置：标题 + 说明文字 */
-const HONOR_CATEGORIES: Record<
-  string,
-  { label: string; description: string }
-> = {
-  iso: {
-    label: 'ISO Certifications',
-    description:
-      'Our internationally recognized ISO certifications ensure consistent quality management, environmental responsibility, and occupational health and safety across all operations.',
-  },
-  bsci: {
-    label: 'Social Responsibility & Compliance',
-    description:
-      'We maintain BSCI and other social compliance certifications, demonstrating our commitment to ethical manufacturing, fair labor practices, and responsible supply chain management.',
-  },
-  patent: {
-    label: 'Patents & Innovation',
-    description:
-      'Our patents reflect our continuous investment in knitwear technology and process innovation, supporting our position as a leading manufacturer in the industry.',
-  },
-  honor: {
-    label: 'Honors & Recognitions',
-    description:
-      'Government and industry recognitions including Shanghai Famous Brand, High-Tech Enterprise status, and Well-Known Trademark that validate our excellence.',
-  },
-  green: {
-    label: 'Green Low-Carbon Credit',
-    description:
-      'Green and low-carbon enterprise credit evaluations recognize our commitment to sustainable and environmentally responsible manufacturing practices.',
-  },
-  other: {
-    label: 'Other Certifications',
-    description:
-      'Additional qualifications and certifications that support our comprehensive quality and compliance framework.',
-  },
 }
 
 const CATEGORY_ORDER = ['iso', 'bsci', 'patent', 'honor', 'green', 'other'] as const
@@ -252,6 +208,7 @@ export default async function QualityPage() {
   }
 
   const t = await getTranslations("quality")
+  const tCommon = await getTranslations("common")
 
   return (
     <div className="min-h-screen">
@@ -277,7 +234,7 @@ export default async function QualityPage() {
             </div>
             <div className="animate-slide-in-right relative">
               <div className="aspect-[4/3] rounded-2xl overflow-hidden relative shadow-2xl shadow-primary/10">
-                <Image src="/images/quality-hero.jpg" alt="Quality inspection at Tahui Sweater Factory" fill className="object-cover" priority />
+                <Image src="/images/quality-hero.jpg" alt={t("heroImageAlt")} fill className="object-cover" priority />
                 <div className="absolute inset-0 bg-gradient-to-tr from-accent/5 to-transparent" />
               </div>
               <div className="absolute -bottom-4 -right-4 h-24 w-24 bg-accent/8 rounded-2xl -z-10" />
@@ -296,7 +253,7 @@ export default async function QualityPage() {
           </div>
           <div className="space-y-12">
             {certifications.map((cert, index) => (
-              <Card key={cert.name} className="overflow-hidden border-border/60 hover:border-accent/30 hover:shadow-lg transition-all duration-500">
+              <Card key={cert.id} className="overflow-hidden border-border/60 hover:border-accent/30 hover:shadow-lg transition-all duration-500">
                 <CardContent className="p-0">
                   <div className="grid lg:grid-cols-2">
                     <div className={`p-8 lg:p-12 ${index % 2 === 1 ? "lg:order-2" : ""}`}>
@@ -306,12 +263,12 @@ export default async function QualityPage() {
                         </div>
                         <div>
                           <p className="font-bold text-accent">{cert.name}</p>
-                          <p className="text-sm text-muted-foreground">{cert.title}</p>
+                          <p className="text-sm text-muted-foreground">{t(`certificationsDetail.${cert.id}.title`)}</p>
                         </div>
                       </div>
-                      <p className="text-muted-foreground leading-relaxed">{cert.description}</p>
+                      <p className="text-muted-foreground leading-relaxed">{t(`certificationsDetail.${cert.id}.description`)}</p>
                       <div className="mt-6 grid sm:grid-cols-2 gap-3">
-                        {cert.benefits.map((benefit) => (
+                        {(t.raw(`certificationsDetail.${cert.id}.benefits`) as string[]).map((benefit) => (
                           <div key={benefit} className="flex items-center gap-2 text-sm">
                             <CheckCircle className="h-4 w-4 text-accent shrink-0" />
                             <span className="text-muted-foreground">{benefit}</span>
@@ -320,7 +277,7 @@ export default async function QualityPage() {
                       </div>
                     </div>
                     <div className={`bg-muted aspect-[4/3] lg:aspect-auto relative ${index % 2 === 1 ? "lg:order-1" : ""}`}>
-                      <Image src={`/images/cert-${index + 1}.jpg`} alt={cert.title} fill className="object-cover" />
+                      <Image src={`/images/cert-${index + 1}.jpg`} alt={t(`certificationsDetail.${cert.id}.imageAlt`)} fill className="object-cover" />
                     </div>
                   </div>
                 </CardContent>
@@ -335,9 +292,9 @@ export default async function QualityPage() {
         <section className="py-24 lg:py-32">
           <div className="mx-auto max-w-7xl px-6 lg:px-8">
             <div className="text-center max-w-3xl mx-auto mb-20">
-              <p className="text-sm font-semibold text-accent tracking-wider uppercase mb-4">Honors & Qualifications</p>
-              <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">Our Certificates & Honors</h2>
-              <p className="mt-5 text-lg text-muted-foreground leading-relaxed">Awards, certifications, and qualifications organized by category.</p>
+              <p className="text-sm font-semibold text-accent tracking-wider uppercase mb-4">{t("honorsTag")}</p>
+              <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">{t("honorsTitle")}</h2>
+              <p className="mt-5 text-lg text-muted-foreground leading-relaxed">{t("honorsSub")}</p>
             </div>
 
             {(() => {
@@ -345,12 +302,11 @@ export default async function QualityPage() {
               return CATEGORY_ORDER.map((catKey) => {
                 const items = byCategory.get(catKey) ?? []
               if (items.length === 0) return null
-              const config = HONOR_CATEGORIES[catKey] ?? HONOR_CATEGORIES.other
               return (
                 <div key={catKey} className="mb-20 last:mb-0">
                   <div className="mb-10">
-                    <h3 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">{config.label}</h3>
-                    <p className="mt-3 text-muted-foreground leading-relaxed max-w-3xl">{config.description}</p>
+                    <h3 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">{t(`honorCategories.${catKey}.label`)}</h3>
+                    <p className="mt-3 text-muted-foreground leading-relaxed max-w-3xl">{t(`honorCategories.${catKey}.description`)}</p>
                   </div>
                   <div
                     className={`grid gap-8 ${
@@ -394,13 +350,13 @@ export default async function QualityPage() {
             <p className="mt-5 text-lg text-muted-foreground leading-relaxed">{t("processSub")}</p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {qualityProcess.map((step) => (
-              <div key={step.step} className="group bg-card rounded-xl p-6 border border-border/60 hover:border-accent/30 hover:shadow-lg hover:-translate-y-1 transition-all duration-500">
+            {qualityProcessSteps.map((step) => (
+              <div key={step} className="group bg-card rounded-xl p-6 border border-border/60 hover:border-accent/30 hover:shadow-lg hover:-translate-y-1 transition-all duration-500">
                 <div className="h-10 w-10 rounded-full bg-primary flex items-center justify-center mb-4 group-hover:bg-accent transition-colors duration-300">
-                  <span className="text-sm font-bold text-primary-foreground">{step.step}</span>
+                  <span className="text-sm font-bold text-primary-foreground">{step}</span>
                 </div>
-                <h3 className="font-bold text-lg text-foreground mb-2">{step.title}</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">{step.description}</p>
+                <h3 className="font-bold text-lg text-foreground mb-2">{t(`processSteps.${step}.title`)}</h3>
+                <p className="text-muted-foreground text-sm leading-relaxed">{t(`processSteps.${step}.description`)}</p>
               </div>
             ))}
           </div>
@@ -412,21 +368,21 @@ export default async function QualityPage() {
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div>
-              <p className="text-sm font-semibold text-accent tracking-wider uppercase mb-4">Our Promise</p>
-              <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl leading-tight">Quality Commitments</h2>
-              <p className="mt-5 text-lg text-muted-foreground leading-relaxed">Quality is not just a department at Tahui - it is a company-wide philosophy embedded in everything we do.</p>
+              <p className="text-sm font-semibold text-accent tracking-wider uppercase mb-4">{t("commitmentsTag")}</p>
+              <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl leading-tight">{t("commitmentsTitle")}</h2>
+              <p className="mt-5 text-lg text-muted-foreground leading-relaxed">{t("commitmentsP")}</p>
               <div className="mt-8 space-y-6">
-                {qualityCommitments.map((commitment) => (
-                  <div key={commitment.title} className="p-5 rounded-xl bg-card border border-border/60 hover:border-accent/30 transition-all duration-300">
-                    <h3 className="font-bold text-foreground">{commitment.title}</h3>
-                    <p className="mt-1 text-muted-foreground text-sm leading-relaxed">{commitment.description}</p>
+                {qualityCommitmentIds.map((id) => (
+                  <div key={id} className="p-5 rounded-xl bg-card border border-border/60 hover:border-accent/30 transition-all duration-300">
+                    <h3 className="font-bold text-foreground">{t(`commitments.${id}.title`)}</h3>
+                    <p className="mt-1 text-muted-foreground text-sm leading-relaxed">{t(`commitments.${id}.description`)}</p>
                   </div>
                 ))}
               </div>
             </div>
             <div className="relative">
               <div className="aspect-square rounded-2xl overflow-hidden relative shadow-xl">
-                <Image src="/images/quality-commitment.jpg" alt="Quality commitment at Tahui factory" fill className="object-cover" />
+                <Image src="/images/quality-commitment.jpg" alt={t("commitmentsImageAlt")} fill className="object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-tr from-accent/5 to-transparent" />
               </div>
               <div className="absolute -top-4 -left-4 h-20 w-20 bg-primary/5 rounded-full -z-10" />
@@ -439,8 +395,8 @@ export default async function QualityPage() {
       <section className="py-24 lg:py-32 bg-primary text-primary-foreground relative overflow-hidden">
         <div className="absolute top-0 right-0 w-80 h-80 bg-accent/10 rounded-full blur-3xl" />
         <div className="relative mx-auto max-w-4xl px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">Experience Our Quality Standards</h2>
-          <p className="mt-5 text-lg text-primary-foreground/75 leading-relaxed">Partner with a manufacturer that takes quality as seriously as you do.</p>
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">{t("ctaTitle")}</h2>
+          <p className="mt-5 text-lg text-primary-foreground/75 leading-relaxed">{t("ctaP")}</p>
           <div className="mt-10">
             <Button size="lg" variant="secondary" className="hover:bg-accent hover:text-accent-foreground transition-all duration-300" asChild>
               <Link href="/contact">{t("startConversation")}<ArrowRight className="ml-2 h-5 w-5" /></Link>

@@ -92,6 +92,11 @@
     "manufacturingTag": "Excellence de fabrication",
     "manufacturingTitle": "Technologie de tricotage sans couture avancée",
     "manufacturingSubtitle": "Notre usine de pointe abrite plus de 200 métiers WholeGarment, nous permettant de produire une maille premium au confort supérieur, avec des coutures minimales et moins de déchets.",
+    "manufacturingImageAlt": "Métiers de tricotage sans couture avancés chez Tahui",
+    "heroFallbackAlt1": "Mannequin portant un cardigan crème ajouré avec boutons dorés",
+    "heroFallbackAlt2": "Mannequin portant un pull en maille ivoire à volants col V",
+    "heroFallbackAlt3": "Mannequin portant un pull texturé dégradé marron et rose",
+    "heroFallbackAlt4": "Mannequin portant un col roulé en maille bleu avec bordure dentelle",
     "certifications": {
       "iso9001": "ISO 9001",
       "qualityMgmt": "Management de la qualité",
@@ -142,12 +147,30 @@
     }
   },
   "products": {
+    "metaTitle": "Produits - Fabricant de maille sans couture",
+    "metaDescription": "Découvrez notre gamme : maille sans couture, collections multi-matériaux et savoir-faire avancé. Fabrication OEM/ODM à Shanghai, Chine.",
     "ourCollections": "Nos collections",
     "premiumKnitwear": "Maille premium pour les marques mondiales",
     "collectionsSubtitle": "De l'innovation sans couture à l'artisanat artisanal, explorez nos trois lignes de produits principales. Tous les articles disponibles en production OEM ou développement ODM complet.",
+    "categoryLabel": "Catégorie {number}",
     "category": "Catégorie",
     "viewMoreProducts": "Voir plus de produits",
     "viewDetails": "Voir les détails",
+    "categoryImageAlt": "Produit représentatif : {category}",
+    "categories": {
+      "seamless": {
+        "title": "Maille sans couture",
+        "description": "Pulls et sous-vêtements innovants en maille sans couture, produits grâce à une technologie de tricotage sans couture entièrement automatique pour un confort et une coupe optimaux."
+      },
+      "multi-material": {
+        "title": "Collection multi-matériaux",
+        "description": "Une large gamme de maille premium et de couvertures en laine, soie, coton, lin et fils fantaisie spéciaux."
+      },
+      "craftsmanship": {
+        "title": "Savoir-faire avancé",
+        "description": "Mise en avant de nos capacités de traitement diverses : jacquard, tricot main, broderie, perles et techniques de teinture personnalisées."
+      }
+    },
     "materials": "Matériaux",
     "premiumMaterials": "Matériaux et fils premium",
     "materialsSubtitle": "Nous nous approvisionnons auprès des meilleurs fournisseurs mondiaux pour une qualité constante et des sources durables pour chaque commande.",
@@ -168,23 +191,58 @@
     "oemTitle": "Services OEM",
     "oemTag": "Fabrication sur mesure",
     "oemDesc": "Donnez vie à vos designs. Fournissez des fiches techniques, des échantillons ou des spécifications détaillées, et notre équipe produira votre maille selon vos exigences exactes.",
+    "oemBullets": [
+      "Production à partir de vos fiches techniques",
+      "Développement et ajustement d’échantillons",
+      "Marque blanche et packaging personnalisé",
+      "MOQ flexible pour marques qualifiées",
+      "Planification de production dédiée"
+    ],
     "odmTitle": "Services ODM",
     "odmTag": "Partenariat design",
     "odmDesc": "Profitez de notre expertise en design. De la recherche de tendances au développement d'échantillons, notre équipe interne crée des collections complètes adaptées à votre marque.",
+    "odmBullets": [
+      "Recherche et prévisions de tendances",
+      "Développement de designs originaux",
+      "Sourcing et sélection des matières",
+      "Création et itération d’échantillons",
+      "Documentation technique complète"
+    ],
     "ctaTitle": "Prêt à développer votre collection ?",
     "ctaSubtitle": "Contactez notre équipe pour discuter de vos besoins produits, demander des échantillons ou planifier une visite d'usine virtuelle.",
     "getStartedToday": "Commencer aujourd'hui",
+    "backToCollection": "Retour à la collection",
     "backToProducts": "Retour aux produits",
     "allInCollection": "Tous les produits de cette collection. Disponibles en OEM et ODM.",
-    "noProducts": "Aucun produit dans cette catégorie pour le moment."
+    "noProducts": "Aucun produit dans cette catégorie pour le moment.",
+    "productMetaFallbackTitle": "Produit",
+    "categoryMetaDescription": "Parcourez tous les produits « {category} ». Fabrication maille OEM/ODM.",
+    "productMetaDescriptionFallback": "Produit : {name}. Fabrication maille OEM/ODM."
   },
   "common": {
     "getQuote": "Demander un devis",
+    "noImage": "Aucune image",
     "viewMore": "Voir plus",
     "learnMore": "En savoir plus",
-    "contactUs": "Nous contacter"
+    "contactUs": "Nous contacter",
+    "openMainMenu": "Ouvrir le menu principal",
+    "closeMenu": "Fermer le menu",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "morePages": "Plus de pages",
+    "goToPreviousPage": "Aller à la page précédente",
+    "goToNextPage": "Aller à la page suivante",
+    "previousSlide": "Diapositive précédente",
+    "nextSlide": "Diapositive suivante",
+    "more": "Plus",
+    "close": "Fermer",
+    "toggleSidebar": "Basculer la barre latérale"
   },
   "contact": {
+    "metaTitle": "Contact",
+    "metaDescription": "Contactez Tahui Sweater Factory pour la fabrication maille OEM/ODM, des échantillons ou une visite d’usine. E-mail, téléphone/WhatsApp et adresse à Shanghai.",
+    "metaOgTitle": "Contact | Tahui Sweater Factory",
+    "metaOgDescription": "Contactez Tahui pour vos demandes de fabrication maille. Basé à Shanghai, export mondial.",
     "heroTag": "Nous contacter",
     "heroTitle": "Restons en contact",
     "heroSubtitle": "Prêt à lancer votre projet de maille ? Contactez notre équipe pour une consultation gratuite et un devis. Nous répondons généralement sous 24 heures.",
@@ -194,8 +252,11 @@
     "phoneDesc": "Lun-Sam, 9h-18h (GMT+8)",
     "address": "Adresse de l'usine",
     "addressDesc": "Visites sur rendez-vous",
+    "addressContent": "No 351 Tahui Road, district de Songjiang, Shanghai",
     "hours": "Heures d'ouverture",
     "hoursDesc": "9h00 - 18h00 (GMT+8)",
+    "hoursContent": "Lundi - samedi",
+    "mapImageAlt": "Localisation de Tahui Sweater Factory",
     "formTag": "Formulaire de demande",
     "formTitle": "Envoyez-nous une demande",
     "formSubtitle": "Remplissez le formulaire ci-dessous et notre équipe commerciale vous répondra sous 24 heures.",
@@ -257,10 +318,13 @@
     }
   },
   "about": {
+    "metaTitle": "À propos - 20+ ans d’excellence en maille",
+    "metaDescription": "Découvrez l’histoire de Tahui Sweater Factory : plus de 20 ans de fabrication maille à Shanghai, certifiée ISO, export mondial.",
     "heroTag": "À propos",
     "heroTitle": "Deux décennies d'excellence en maille",
     "heroP1": "Depuis plus de 20 ans, Tahui Sweater Factory est un partenaire de confiance pour les marques de mode mondiales. De notre atelier de maille à Shanghai, nous sommes devenus une usine de fabrication moderne.",
     "heroP2": "Aujourd'hui, nous allions savoir-faire traditionnel et technologie sans couture pour livrer des produits d'exception aux marques d'Europe, d'Amérique du Nord et d'Asie.",
+    "heroImageAlt": "Entrée de l’usine de tricot Tahui à Shanghai",
     "statsYears": "Ans d'activité",
     "statsTeam": "Membres de l'équipe",
     "statsBrands": "Marques partenaires",
@@ -302,6 +366,7 @@
     "teamP1": "Derrière chaque vêtement, une équipe de professionnels fiers de leur métier.",
     "teamP2": "Nous investissons dans notre équipe : formation continue, conditions de travail sûres et opportunités d'évolution. Beaucoup sont avec nous depuis plus de dix ans.",
     "meetTeam": "Découvrir notre équipe",
+    "teamImageAlt": "Équipe de production de Tahui Sweater Factory",
     "partnershipTag": "Partenariats durables",
     "partnershipTitle": "Construire des relations qui durent",
     "partnershipP": "Nous ne faisons pas que fabriquer : nous construisons des partenariats. Nombre de nos clients travaillent avec nous depuis plus de 10 ans.",
@@ -311,9 +376,12 @@
     "viewProducts": "Voir nos produits"
   },
   "manufacturing": {
+    "metaTitle": "Capacité de fabrication - Technologie WholeGarment",
+    "metaDescription": "Découvrez notre technologie de tricotage sans couture, nos matières premium et notre savoir-faire. 200+ métiers WholeGarment, contrôle qualité complet et gestion de production digitalisée.",
     "heroTag": "Capacité de fabrication",
     "heroTitle": "Technologie de tricotage sans couture avancée",
     "heroP": "Notre usine allie technologie WholeGarment et savoir-faire traditionnel. Avec plus de 200 métiers sans couture et un contrôle qualité complet, nous livrons une maille d'exception à grande échelle.",
+    "heroImageAlt": "Métiers WholeGarment de tricotage sans couture",
     "discussProject": "Parler de votre projet",
     "equipmentTag": "Notre équipement",
     "techTitle": "Notre technologie",
@@ -360,12 +428,74 @@
     "qc4Desc": "Contrôle 100 % par rapport aux échantillons approuvés et normes AQL.",
     "qc5Title": "Audit pré-expédition",
     "qc5Desc": "Audit qualité final et vérification de la documentation avant expédition.",
+    "machineImageAlt": "Métier WholeGarment sans couture {index}",
+    "wholegarmentImageAlt": "Tricotage sans couture WholeGarment",
+    "materialsCards": {
+      "woolMerino": {
+        "name": "Laine & mérinos",
+        "description": "Du mérinos fin australien aux laines plus épaisses, nous sélectionnons des fils de laine premium.",
+        "properties": ["Régulation thermique", "Respirant naturellement", "Résistant aux odeurs", "Fibre durable"]
+      },
+      "cotton": {
+        "name": "Coton",
+        "description": "Fils de coton bio et conventionnels en différents titrages pour des pièces toutes saisons.",
+        "properties": ["Doux et confortable", "Hypoallergénique", "Facile d’entretien", "Options biologiques"]
+      },
+      "cashmere": {
+        "name": "Cachemire",
+        "description": "Cachemire et mélanges cachemire au toucher exceptionnellement doux.",
+        "properties": ["Toucher ultra-doux", "Chaleur légère", "Luxe premium", "Qualité durable"]
+      },
+      "silkBlends": {
+        "name": "Soie & mélanges soie",
+        "description": "Fils de soie pure ou mélangée pour un tombé élégant et une brillance naturelle.",
+        "properties": ["Brillance naturelle", "Régulation thermique", "Tombé élégant", "Toucher luxueux"]
+      },
+      "syntheticsBlends": {
+        "name": "Synthétiques & mélanges",
+        "description": "Acrylique, nylon et mélanges performance de haute qualité pour la durabilité.",
+        "properties": ["Facile d’entretien", "Durable", "Bonne tenue des couleurs", "Rentable"]
+      },
+      "specialtyYarns": {
+        "name": "Fils spéciaux",
+        "description": "Alpaga, mohair, lin et fibres innovantes durables pour des effets et performances uniques.",
+        "properties": ["Textures uniques", "Options durables", "Propriétés spécifiques", "Look distinctif"]
+      }
+    },
+    "techniquesList": {
+      "jacquard": {
+        "name": "Tricot jacquard",
+        "description": "Motifs multi-couleurs complexes via la technologie jacquard informatisée."
+      },
+      "intarsia": {
+        "name": "Intarsia",
+        "description": "Blocs de couleur avec transitions nettes pour des motifs graphiques marqués."
+      },
+      "cableAran": {
+        "name": "Torsades & Aran",
+        "description": "Torsades traditionnelles et points Aran pour du relief et un esprit heritage."
+      },
+      "embroidery": {
+        "name": "Broderie",
+        "description": "Broderie main ou machine pour logos, éléments décoratifs et détails raffinés."
+      },
+      "handCrochet": {
+        "name": "Crochet main",
+        "description": "Détails et finitions au crochet main pour une touche artisanale unique."
+      },
+      "printDye": {
+        "name": "Impression & teinture",
+        "description": "Teinture vêtement, teinture pièce et techniques d’impression pour personnaliser les couleurs."
+      }
+    },
     "ctaTitle": "Travaillons ensemble",
     "ctaP": "Que vous développiez une nouvelle collection ou augmentiez la production, nos capacités sont là pour votre marque.",
     "startConversation": "Démarrer une conversation",
     "tourFactory": "Visiter l'usine"
   },
   "factoryTour": {
+    "metaTitle": "Visite d’usine - Découvrez notre site de production",
+    "metaDescription": "Visitez virtuellement notre usine moderne de bonneterie à Shanghai. Plus de 200 machines, contrôle qualité, finitions et logistique.",
     "heroTag": "Visite virtuelle de l'usine",
     "heroTitle": "Au cœur de notre site de fabrication",
     "heroP": "Bienvenue chez Tahui Sweater Factory. Notre usine de 15 000 m² à Shanghai allie technologie de pointe et savoir-faire pour une maille premium pour les marques du monde entier.",
@@ -382,15 +512,94 @@
     "digitalTag": "Usine digitale",
     "digitalTitle": "Gestion de production numérisée",
     "digitalP": "L'usine repose sur un système de gestion intégré offrant une visibilité en temps réel sur chaque aspect de la production.",
+    "digitalImageAlt": "Entrée de l'usine de tricot Tahui à Shanghai",
+    "digitalFeatures": {
+      "productionTracking": {
+        "title": "Suivi de production",
+        "description": "Suivi en temps réel de chaque commande à travers les étapes de production."
+      },
+      "qualityDashboard": {
+        "title": "Tableau de bord qualité",
+        "description": "Indicateurs qualité et données d’inspection en direct pour le pilotage."
+      },
+      "inventoryManagement": {
+        "title": "Gestion des stocks",
+        "description": "Suivi automatisé des stocks de fils et de produits finis."
+      },
+      "orderManagement": {
+        "title": "Gestion des commandes",
+        "description": "Suivi complet des commandes avec mises à jour aux jalons clés."
+      }
+    },
     "visitTag": "Nous rendre visite",
     "visitTitle": "En voir plus ?",
     "visitP": "Planifiez une visite vidéo en direct avec notre équipe pour voir l'usine en action.",
-    "viewCapabilities": "Voir nos capacités"
+    "viewCapabilities": "Voir nos capacités",
+    "facilities": {
+      "productionFloor": {
+        "title": "Atelier de production",
+        "description": "Notre hall principal abrite plus de 200 machines de tricotage sans couture de dernière génération, organisées en lignes efficaces avec un flux optimisé.",
+        "imageAlt": "Atelier de production avec machines de tricotage",
+        "features": [
+          "200+ machines WholeGarment",
+          "Environnement climatisé",
+          "Implantation optimisée",
+          "Systèmes de suivi en temps réel"
+        ]
+      },
+      "sampleCenter": {
+        "title": "Centre de développement d’échantillons",
+        "description": "Notre équipe dédiée travaille dans un espace spécialisé équipé de machines prototypes, d’une bibliothèque de fils et de logiciels de conception.",
+        "imageAlt": "Centre d’échantillonnage et atelier",
+        "features": [
+          "Développement rapide d’échantillons",
+          "Large bibliothèque de fils",
+          "Systèmes de CAO",
+          "Laboratoire d’accord des couleurs"
+        ]
+      },
+      "qualityLab": {
+        "title": "Laboratoire de contrôle qualité",
+        "description": "Notre laboratoire dispose d’équipements avancés pour l’analyse des fils, les tests de solidité des couleurs et l’inspection des vêtements.",
+        "imageAlt": "Laboratoire qualité et équipements d’inspection",
+        "features": [
+          "Équipements de test des fils",
+          "Tests de solidité des couleurs",
+          "Contrôles de stabilité dimensionnelle",
+          "Postes d’inspection AQL"
+        ]
+      },
+      "finishingDept": {
+        "title": "Département finitions",
+        "description": "Après le tricotage, les pièces passent aux finitions : lavage, mise en forme, repassage et derniers ajustements.",
+        "imageAlt": "Atelier finitions : lavage et repassage",
+        "features": [
+          "Machines de lavage professionnelles",
+          "Équipements de repassage vapeur",
+          "Postes de finitions manuelles",
+          "Traitements spécifiques"
+        ]
+      },
+      "warehouseLogistics": {
+        "title": "Entrepôt & logistique",
+        "description": "Notre entrepôt moderne garantit une gestion efficace des stocks et une préparation de commandes dans les délais.",
+        "imageAlt": "Zone d’entrepôt et logistique",
+        "features": [
+          "Stockage climatisé",
+          "Système de gestion des stocks",
+          "Documentation export",
+          "Partenaires d’expédition mondiaux"
+        ]
+      }
+    }
   },
   "quality": {
+    "metaTitle": "Qualité et certifications - Fabricant certifié ISO",
+    "metaDescription": "Découvrez nos certifications ISO 9001, ISO 14001 et ISO 45001 : management de la qualité, environnement et santé/sécurité au travail.",
     "heroTag": "Qualité et certifications",
     "heroTitle": "Fabricant certifié ISO",
     "heroP": "Notre engagement qualité, environnement et sécurité au travail est validé par des certifications internationales et un système de management qualité rigoureux.",
+    "heroImageAlt": "Inspection qualité chez Tahui Sweater Factory",
     "startConversation": "Démarrer la conversation",
     "processTag": "Notre processus",
     "processTitle": "Processus de contrôle qualité",
@@ -398,16 +607,191 @@
     "certificationsTag": "Nos certifications",
     "certificationsTitle": "Certifications et distinctions",
     "certificationsSub": "Certifications et reconnaissances qui démontrent notre engagement pour l'excellence.",
-    "viewCertifications": "Voir nos certifications"
+    "viewCertifications": "Voir nos certifications",
+    "certificationsDetail": {
+      "iso9001": {
+        "title": "Système de management de la qualité",
+        "description": "La certification ISO 9001 démontre notre engagement envers une qualité constante sur l’ensemble des processus.",
+        "imageAlt": "Certification ISO 9001 management de la qualité",
+        "benefits": [
+          "Procédures qualité documentées",
+          "Amélioration continue",
+          "Orientation satisfaction client",
+          "Qualité produit constante",
+          "Approche basée sur les risques",
+          "Audits internes réguliers"
+        ]
+      },
+      "iso14001": {
+        "title": "Système de management environnemental",
+        "description": "Nous réduisons notre impact environnemental grâce à des pratiques de fabrication responsables.",
+        "imageAlt": "Certification ISO 14001 management environnemental",
+        "benefits": [
+          "Programmes de réduction des déchets",
+          "Mesures d’efficacité énergétique",
+          "Options d’approvisionnement durable",
+          "Prévention de la pollution",
+          "Conformité environnementale",
+          "Amélioration continue"
+        ]
+      },
+      "iso45001": {
+        "title": "Santé et sécurité au travail",
+        "description": "La sécurité et le bien-être de nos équipes sont essentiels.",
+        "imageAlt": "Certification ISO 45001 santé et sécurité au travail",
+        "benefits": [
+          "Conditions de travail sûres",
+          "Formations sécurité régulières",
+          "Identification des dangers",
+          "Préparation aux urgences",
+          "Programmes de santé des salariés",
+          "Enquêtes et actions correctives"
+        ]
+      }
+    },
+    "honorsTag": "Distinctions & qualifications",
+    "honorsTitle": "Nos certificats & distinctions",
+    "honorsSub": "Récompenses, certifications et qualifications organisées par catégorie.",
+    "honorCategories": {
+      "iso": {
+        "label": "Certifications ISO",
+        "description": "Nos certifications ISO reconnues internationalement garantissent une gestion constante de la qualité, une responsabilité environnementale et la santé/sécurité au travail."
+      },
+      "bsci": {
+        "label": "Responsabilité sociale & conformité",
+        "description": "Nous maintenons des certifications BSCI et autres conformités sociales, démontrant notre engagement pour une fabrication éthique et une chaîne d’approvisionnement responsable."
+      },
+      "patent": {
+        "label": "Brevets & innovation",
+        "description": "Nos brevets reflètent nos investissements continus en technologie maille et innovation de process."
+      },
+      "honor": {
+        "label": "Distinctions & reconnaissances",
+        "description": "Reconnaissances gouvernementales et sectorielles (Shanghai Famous Brand, statut High-Tech, marque notoire…) qui valident notre excellence."
+      },
+      "green": {
+        "label": "Crédit vert bas-carbone",
+        "description": "Les évaluations de crédit « vert » et bas-carbone reconnaissent nos pratiques de fabrication durables et responsables."
+      },
+      "other": {
+        "label": "Autres certifications",
+        "description": "Qualifications et certifications complémentaires soutenant notre cadre qualité et conformité."
+      }
+    },
+    "processSteps": {
+      "01": {
+        "title": "Contrôle des matières entrantes",
+        "description": "Chaque livraison de fil est testée : vérification du poids, correspondance des couleurs et inspection visuelle."
+      },
+      "02": {
+        "title": "Contrôles en ligne",
+        "description": "Contrôles réguliers pendant la production : constance du calibre, exactitude des motifs et qualité des points."
+      },
+      "03": {
+        "title": "Inspection assemblage",
+        "description": "Couture, assemblage, finitions et ornements inspectés pour garantir la qualité de fabrication."
+      },
+      "04": {
+        "title": "Inspection finale",
+        "description": "Chaque vêtement fini est inspecté à 100 % par rapport aux échantillons approuvés."
+      },
+      "05": {
+        "title": "Échantillonnage AQL",
+        "description": "Échantillonnage statistique selon les normes AQL, généralement AQL 2.5 ou plus strict."
+      },
+      "06": {
+        "title": "Audit pré-expédition",
+        "description": "Audit final : quantités, qualité d’emballage et exactitude de la documentation."
+      }
+    },
+    "commitmentsTag": "Notre promesse",
+    "commitmentsTitle": "Engagements qualité",
+    "commitmentsP": "La qualité n’est pas un simple service : c’est une philosophie d’entreprise intégrée à tout ce que nous faisons.",
+    "commitmentsImageAlt": "Engagement qualité dans l’usine Tahui",
+    "commitments": {
+      "zeroTolerance": {
+        "title": "Tolérance zéro",
+        "description": "Tolérance zéro pour les défauts critiques. Tout article non conforme est rejeté."
+      },
+      "traceability": {
+        "title": "Traçabilité",
+        "description": "Traçabilité complète du lot de fil au vêtement fini pour identifier rapidement les problèmes."
+      },
+      "training": {
+        "title": "Formation continue",
+        "description": "Notre équipe reçoit des formations régulières sur les standards qualité et les techniques d’inspection."
+      },
+      "clientStandards": {
+        "title": "Standards clients",
+        "description": "Nous adaptons nos protocoles qualité aux exigences spécifiques des clients et aux manuels QC de marque."
+      }
+    },
+    "ctaTitle": "Découvrez nos standards qualité",
+    "ctaP": "Travaillez avec un fabricant qui prend la qualité aussi au sérieux que vous."
   },
   "terms": {
+    "metaTitle": "Conditions d'utilisation - Tahui Sweater Factory",
+    "metaDescription": "Conditions d'utilisation du site Tahui Sweater Factory et de nos services de fabrication.",
     "title": "Conditions d'utilisation",
     "lastUpdated": "Dernière mise à jour",
+    "intro": "Bienvenue sur le site de Tahui Sweater Factory. En accédant à ce site ou en l’utilisant, vous acceptez d’être lié par ces conditions d’utilisation. Si vous n’êtes pas d’accord, veuillez ne pas utiliser notre site.",
+    "sections": {
+      "useWebsite": {
+        "title": "Utilisation du site",
+        "body": "Ce site est fourni à des fins d’information et de demandes commerciales. Vous pouvez y découvrir nos services de fabrication maille, consulter nos produits et nous contacter pour des devis ou des partenariats. Vous acceptez de ne pas utiliser le site à des fins illégales ni d’une manière pouvant endommager, perturber ou compromettre le site ou nos opérations."
+      },
+      "ip": {
+        "title": "Contenu et propriété intellectuelle",
+        "body": "Tout le contenu de ce site (textes, images, logos, design) appartient à Tahui Sweater Factory ou à ses concédants et est protégé par les lois de propriété intellectuelle. Vous ne pouvez pas copier, reproduire ou distribuer ce contenu sans autorisation écrite préalable."
+      },
+      "business": {
+        "title": "Demandes commerciales et commandes",
+        "body": "Les demandes envoyées via notre formulaire de contact ou par e-mail ne constituent pas un contrat contraignant. Toute commande OEM/ODM, prix et conditions font l’objet d’accords écrits séparés. Nous nous réservons le droit de refuser ou d’annuler toute demande à notre discrétion."
+      },
+      "disclaimer": {
+        "title": "Avertissement",
+        "body": "Nous nous efforçons de maintenir les informations de ce site exactes et à jour ; toutefois, nous ne garantissons pas l’absence d’erreurs ni l’exhaustivité. Les images et descriptions de produits sont fournies à titre indicatif et peuvent varier. Nous ne saurions être tenus responsables d’une décision commerciale fondée sur le contenu du site."
+      },
+      "liability": {
+        "title": "Limitation de responsabilité",
+        "body": "Dans toute la mesure permise par la loi, Tahui Sweater Factory ne pourra être tenue responsable des dommages indirects, accessoires ou consécutifs résultant de l’utilisation de ce site ou de relations d’affaires avec nous, sauf accord contraire dans un contrat écrit séparé."
+      },
+      "changes": {
+        "title": "Modifications et contact",
+        "bodyBefore": "Nous pouvons mettre à jour ces conditions d’utilisation de temps à autre. La date « Dernière mise à jour » ci-dessus reflétera les changements. La poursuite de l’utilisation du site après modification vaut acceptation. Pour toute question, contactez-nous à"
+      }
+    },
     "contactUs": "Nous contacter"
   },
   "privacy": {
+    "metaTitle": "Politique de confidentialité - Tahui Sweater Factory",
+    "metaDescription": "Politique de confidentialité de Tahui Sweater Factory : comment nous collectons, utilisons et protégeons vos informations.",
     "title": "Politique de confidentialité",
     "lastUpdated": "Dernière mise à jour",
+    "intro": "Tahui Sweater Factory (« nous », « notre ») s’engage à protéger votre vie privée. Cette politique explique comment nous collectons, utilisons, divulguons et protégeons vos informations lorsque vous visitez notre site ou nous contactez pour des demandes commerciales.",
+    "sections": {
+      "collect": {
+        "title": "Informations que nous collectons",
+        "body": "Nous pouvons collecter les informations que vous fournissez directement (nom, société, e-mail, téléphone, message) lorsque vous utilisez notre formulaire, demandez un devis ou communiquez avec nous. Nous pouvons également collecter automatiquement certaines informations techniques lors de votre visite (adresse IP, type de navigateur, pages consultées) à des fins d’analyse et d’amélioration du site."
+      },
+      "use": {
+        "title": "Comment nous utilisons vos informations",
+        "body": "Nous utilisons ces informations pour répondre à vos demandes, traiter les demandes de devis, fournir des services OEM/ODM, améliorer notre site et nos services, et envoyer des communications professionnelles pertinentes. Nous ne vendons pas vos informations personnelles à des tiers."
+      },
+      "security": {
+        "title": "Sécurité et conservation des données",
+        "body": "Nous mettons en œuvre des mesures techniques et organisationnelles appropriées pour protéger vos données. Nous conservons vos informations uniquement le temps nécessaire aux finalités décrites dans cette politique ou selon les exigences légales."
+      },
+      "cookies": {
+        "title": "Cookies et analyse",
+        "body": "Notre site peut utiliser des cookies et des technologies similaires pour améliorer votre expérience et réaliser des analyses. Vous pouvez ajuster les paramètres de votre navigateur pour gérer ou désactiver les cookies."
+      },
+      "rights": {
+        "title": "Vos droits et contact",
+        "bodyBefore": "Selon votre juridiction, vous pouvez disposer de droits d’accès, de rectification ou de suppression de vos données personnelles. Pour exercer ces droits ou poser des questions, contactez-nous à",
+        "bodyAfter": "Nous pouvons mettre à jour cette politique de confidentialité ; la date « Dernière mise à jour » ci-dessus reflétera les changements."
+      }
+    },
     "contactUs": "Nous contacter"
   }
 }

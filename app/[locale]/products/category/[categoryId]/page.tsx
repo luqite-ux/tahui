@@ -3,6 +3,7 @@ import Image from "next/image"
 import { Link } from "@/i18n/routing"
 import { notFound } from "next/navigation"
 import { SITE_URL } from "@/lib/seo"
+import { getTranslations } from "next-intl/server"
 import { ArrowLeft } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Header } from "@/components/header"
@@ -11,11 +12,6 @@ import { client } from "@/sanity/lib/client"
 import { urlFor } from "@/sanity/lib/image"
 
 const CATEGORY_IDS = ["seamless", "multi-material", "craftsmanship"] as const
-const CATEGORY_TITLES: Record<string, string> = {
-  seamless: "Seamless Knitwear",
-  "multi-material": "Multi-Material Collection",
-  craftsmanship: "Advanced Craftsmanship",
-}
 
 const PRODUCTS_BY_CATEGORY_QUERY = `*[_type == "product" && category->id == $categoryId] | order(order asc, name asc) {
   _id,
@@ -28,15 +24,18 @@ const PRODUCTS_BY_CATEGORY_QUERY = `*[_type == "product" && category->id == $cat
 
 export const revalidate = 60
 
-type Props = { params: Promise<{ categoryId: string }> }
+type Props = { params: Promise<{ locale: string; categoryId: string }> }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { categoryId } = await params
-  const title = CATEGORY_TITLES[categoryId]
-  if (!title) return { title: "Products" }
+  const { locale, categoryId } = await params
+  const t = await getTranslations({ locale, namespace: "products" })
+  const title = CATEGORY_IDS.includes(categoryId as (typeof CATEGORY_IDS)[number])
+    ? t(`categories.${categoryId}.title`)
+    : null
+  if (!title) return { title: t("metaTitle") }
   return {
     title: `${title} - TAHUI Sweater Factory`,
-    description: `Browse all ${title} products. OEM & ODM knitwear manufacturing.`,
+    description: t("categoryMetaDescription", { category: title }),
     alternates: { canonical: `${SITE_URL}/products/category/${categoryId}` },
   }
 }
@@ -51,6 +50,9 @@ export default async function CategoryProductsPage({ params }: Props) {
     notFound()
   }
 
+  const t = await getTranslations("products")
+  const tCommon = await getTranslations("common")
+
   const products = await client.fetch<
     Array<{
       _id: string
@@ -62,7 +64,7 @@ export default async function CategoryProductsPage({ params }: Props) {
     }>
   >(PRODUCTS_BY_CATEGORY_QUERY, { categoryId })
 
-  const categoryTitle = CATEGORY_TITLES[categoryId]
+  const categoryTitle = t(`categories.${categoryId}.title`)
 
   return (
     <div className="min-h-screen">
@@ -75,18 +77,18 @@ export default async function CategoryProductsPage({ params }: Props) {
             className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-accent transition-colors mb-8"
           >
             <ArrowLeft className="h-4 w-4" />
-            Back to Products
+            {t("backToProducts")}
           </Link>
 
           <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl mb-4">
             {categoryTitle}
           </h1>
           <p className="text-muted-foreground max-w-2xl mb-12">
-            All products in this collection. Available for OEM & ODM.
+            {t("allInCollection")}
           </p>
 
           {products.length === 0 ? (
-            <p className="text-muted-foreground py-12">No products in this category yet.</p>
+            <p className="text-muted-foreground py-12">{t("noProducts")}</p>
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
               {products.map((product) => {
@@ -108,7 +110,7 @@ export default async function CategoryProductsPage({ params }: Props) {
                           />
                         ) : (
                           <div className="absolute inset-0 flex items-center justify-center text-muted-foreground/50 text-sm">
-                            No image
+                            {tCommon("noImage")}
                           </div>
                         )}
                       </div>
@@ -127,7 +129,7 @@ export default async function CategoryProductsPage({ params }: Props) {
                           </p>
                         )}
                         <span className="inline-flex items-center gap-1 mt-3 text-xs font-medium text-accent/70 group-hover/card:text-accent transition-colors">
-                          View details →
+                          {t("viewDetails")} →
                         </span>
                       </CardContent>
                     </Card>

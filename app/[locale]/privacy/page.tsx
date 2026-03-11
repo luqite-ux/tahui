@@ -5,11 +5,16 @@ import { getTranslations } from "next-intl/server"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 
-export const metadata: Metadata = {
-  title: "Privacy Policy - TAHUI Sweater Factory",
-  description:
-    "Privacy Policy for Tahui Sweater Factory. How we collect, use, and protect your information when you use our website or contact us.",
-  alternates: { canonical: `${SITE_URL}/privacy` },
+type Props = { params: Promise<{ locale: string }> }
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: "privacy" })
+  return {
+    title: t("metaTitle"),
+    description: t("metaDescription"),
+    alternates: { canonical: `${SITE_URL}/privacy` },
+  }
 }
 
 const localeToDateLocale: Record<string, string> = { en: "en-US", zh: "zh-CN", fr: "fr-FR" }
@@ -34,36 +39,36 @@ export default async function PrivacyPage({ params }: { params: Promise<{ locale
 
           <div className="mt-10 prose prose-neutral dark:prose-invert max-w-none">
             <p className="text-muted-foreground leading-relaxed">
-              Tahui Sweater Factory (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;) is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website or contact us for business inquiries.
+              {t("intro")}
             </p>
 
-            <h2 className="mt-8 text-xl font-semibold text-foreground">Information We Collect</h2>
+            <h2 className="mt-8 text-xl font-semibold text-foreground">{t("sections.collect.title")}</h2>
             <p className="mt-2 text-muted-foreground leading-relaxed">
-              We may collect information you provide directly, such as your name, company name, email address, phone number, and message content when you use our contact form, request a quote, or communicate with us. We may also automatically collect certain technical information when you visit our site (e.g., IP address, browser type, pages visited) for analytics and site improvement.
+              {t("sections.collect.body")}
             </p>
 
-            <h2 className="mt-8 text-xl font-semibold text-foreground">How We Use Your Information</h2>
+            <h2 className="mt-8 text-xl font-semibold text-foreground">{t("sections.use.title")}</h2>
             <p className="mt-2 text-muted-foreground leading-relaxed">
-              We use the information we collect to respond to your inquiries, process quote requests, provide OEM/ODM services, improve our website and services, and send relevant business communications. We do not sell your personal information to third parties.
+              {t("sections.use.body")}
             </p>
 
-            <h2 className="mt-8 text-xl font-semibold text-foreground">Data Security and Retention</h2>
+            <h2 className="mt-8 text-xl font-semibold text-foreground">{t("sections.security.title")}</h2>
             <p className="mt-2 text-muted-foreground leading-relaxed">
-              We implement appropriate technical and organizational measures to protect your data. We retain your information only as long as necessary to fulfill the purposes described in this policy or as required by law.
+              {t("sections.security.body")}
             </p>
 
-            <h2 className="mt-8 text-xl font-semibold text-foreground">Cookies and Analytics</h2>
+            <h2 className="mt-8 text-xl font-semibold text-foreground">{t("sections.cookies.title")}</h2>
             <p className="mt-2 text-muted-foreground leading-relaxed">
-              Our website may use cookies and similar technologies to enhance your experience and for analytics. You can adjust your browser settings to manage or disable cookies.
+              {t("sections.cookies.body")}
             </p>
 
-            <h2 className="mt-8 text-xl font-semibold text-foreground">Your Rights and Contact</h2>
+            <h2 className="mt-8 text-xl font-semibold text-foreground">{t("sections.rights.title")}</h2>
             <p className="mt-2 text-muted-foreground leading-relaxed">
-              Depending on your jurisdiction, you may have rights to access, correct, or delete your personal data. To exercise these rights or ask questions about this policy, please contact us at{" "}
+              {t("sections.rights.bodyBefore")}{" "}
               <a href="mailto:info@tahui-factory.cn" className="text-accent hover:underline">
                 info@tahui-factory.cn
               </a>
-              . We may update this Privacy Policy from time to time; the &quot;Last updated&quot; date above will reflect any changes.
+              . {t("sections.rights.bodyAfter")}
             </p>
           </div>
 

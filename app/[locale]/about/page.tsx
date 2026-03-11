@@ -8,10 +8,16 @@ import { Button } from "@/components/ui/button"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 
-export const metadata: Metadata = {
-  title: "About Us - 20+ Years of Knitwear Excellence",
-  description: "Learn about Tahui Sweater Factory's 20+ year history in knitwear manufacturing. Shanghai-based, ISO certified, global export.",
-  alternates: { canonical: `${SITE_URL}/about` },
+type Props = { params: Promise<{ locale: string }> }
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: "about" })
+  return {
+    title: t("metaTitle"),
+    description: t("metaDescription"),
+    alternates: { canonical: `${SITE_URL}/about` },
+  }
 }
 
 export default async function AboutPage() {
@@ -41,7 +47,7 @@ export default async function AboutPage() {
             </div>
             <div className="animate-slide-in-right relative">
               <div className="aspect-[4/3] rounded-2xl overflow-hidden relative shadow-2xl shadow-primary/10">
-                <Image src="/images/factory-gate.jpg" alt="Shanghai Tahui Knitting Factory entrance" fill className="object-cover" priority />
+                <Image src="/images/factory-gate.jpg" alt={t("heroImageAlt")} fill className="object-cover" priority />
                 <div className="absolute inset-0 bg-gradient-to-tr from-accent/5 to-transparent" />
               </div>
               <div className="absolute -bottom-4 -right-4 h-24 w-24 bg-accent/8 rounded-2xl -z-10" />
@@ -146,7 +152,7 @@ export default async function AboutPage() {
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div className="relative">
               <div className="aspect-[4/3] rounded-2xl overflow-hidden relative shadow-xl">
-                <Image src="/images/linking-workshop.jpg" alt="Tahui Sweater Factory production team" fill className="object-cover" />
+                <Image src="/images/linking-workshop.jpg" alt={t("teamImageAlt")} fill className="object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-tr from-accent/5 to-transparent" />
               </div>
               <div className="absolute -bottom-4 -left-4 h-24 w-24 bg-accent/8 rounded-2xl -z-10" />

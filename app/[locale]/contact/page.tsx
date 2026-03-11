@@ -13,8 +13,8 @@ export default async function ContactPage() {
   const contactInfo = [
     { icon: Mail, titleKey: "email" as const, content: "info@tahui-factory.cn", descKey: "emailDesc" as const },
     { icon: Phone, titleKey: "phone" as const, content: "+86 166 2168 4217", descKey: "phoneDesc" as const },
-    { icon: MapPin, titleKey: "address" as const, content: "No. 351 Tahui Road, Songjiang District, Shanghai", descKey: "addressDesc" as const },
-    { icon: Clock, titleKey: "hours" as const, content: "Monday - Saturday", descKey: "hoursDesc" as const },
+    { icon: MapPin, titleKey: "address" as const, content: t("addressContent"), descKey: "addressDesc" as const },
+    { icon: Clock, titleKey: "hours" as const, content: t("hoursContent"), descKey: "hoursDesc" as const },
   ]
 
   const steps = [t("step1"), t("step2"), t("step3"), t("step4")]
@@ -77,7 +77,7 @@ export default async function ContactPage() {
             <div className="space-y-8">
               <div className="relative">
                 <div className="aspect-[4/3] rounded-2xl overflow-hidden relative shadow-lg">
-                  <Image src="/images/contact-map.jpg" alt="Tahui Sweater Factory location" fill className="object-cover" />
+                  <Image src="/images/contact-map.jpg" alt={t("mapImageAlt")} fill className="object-cover" />
                   <div className="absolute inset-0 bg-gradient-to-tr from-accent/5 to-transparent" />
                 </div>
                 <div className="absolute -bottom-3 -right-3 h-20 w-20 bg-accent/8 rounded-2xl -z-10" />

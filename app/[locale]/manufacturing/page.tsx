@@ -9,44 +9,25 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 
-export const metadata: Metadata = {
-  title: "Manufacturing Capability - WholeGarment Technology",
-  description: "Discover our advanced seamless knitting technology, premium materials, and expert craftsmanship. 200+ WholeGarment machines, comprehensive QC, and digitalized production management.",
-  alternates: { canonical: `${SITE_URL}/manufacturing` },
+type Props = { params: Promise<{ locale: string }> }
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: "manufacturing" })
+  return {
+    title: t("metaTitle"),
+    description: t("metaDescription"),
+    alternates: { canonical: `${SITE_URL}/manufacturing` },
+  }
 }
 
-const technologies = [
-  { icon: Layers, title: "WholeGarment Technology", description: "Our 200+ seamless knitting machines produce complete garments without side seams, offering superior comfort, reduced waste, and faster production times." },
-  { icon: Scissors, title: "Fully Fashioned Knitting", description: "Traditional fully fashioned construction for classic knitwear pieces, with shaped panels and precise finishing for timeless elegance." },
-  { icon: Cpu, title: "Computerized Production", description: "State-of-the-art computerized knitting systems enable complex patterns, precise gauge control, and consistent quality across large orders." },
-  { icon: Shield, title: "Digital Management", description: "End-to-end digital production management ensures traceability, quality control, and real-time order tracking for transparent partnerships." },
-]
+const technologyIcons = [Layers, Scissors, Cpu, Shield] as const
+const technologyIds = ["tech1", "tech2", "tech3", "tech4"] as const
 
-const materials = [
-  { name: "Wool & Merino", description: "From fine Australian merino to chunky British wool, we source premium wool yarns.", properties: ["Temperature regulating", "Naturally breathable", "Odor resistant", "Sustainable fiber"] },
-  { name: "Cotton", description: "Organic and conventional cotton yarns in various weights for year-round knitwear.", properties: ["Soft and comfortable", "Hypoallergenic", "Easy care", "Organic options"] },
-  { name: "Cashmere", description: "Luxurious cashmere and cashmere blends offering unparalleled softness.", properties: ["Ultra-soft feel", "Lightweight warmth", "Premium luxury", "Lasting quality"] },
-  { name: "Silk & Silk Blends", description: "Pure silk and silk-blend yarns for elegant drape and natural sheen.", properties: ["Natural luster", "Temperature regulating", "Elegant drape", "Luxurious feel"] },
-  { name: "Synthetics & Blends", description: "High-quality acrylic, nylon, and performance blends for durability.", properties: ["Easy care", "Durable", "Color-fast", "Cost-effective"] },
-  { name: "Specialty Yarns", description: "Alpaca, mohair, linen, and innovative sustainable fibers.", properties: ["Unique textures", "Sustainable options", "Special properties", "Distinctive look"] },
-]
-
-const techniques = [
-  { icon: Sparkles, name: "Jacquard Knitting", description: "Complex multi-color patterns and motifs through computerized jacquard technology." },
-  { icon: Palette, name: "Intarsia", description: "Color-block designs with clean color changes for bold graphic patterns." },
-  { name: "Cable & Aran", description: "Traditional cable patterns and Aran stitches adding texture and heritage appeal." },
-  { name: "Embroidery", description: "Hand and machine embroidery for logos, decorative elements, and intricate detailing." },
-  { name: "Hand Crochet", description: "Artisanal hand crochet details and trim work for unique finishing touches." },
-  { name: "Print & Dye", description: "Garment dyeing, piece dyeing, and various printing techniques for color customization." },
-]
-
-const qcSteps = [
-  { step: "01", title: "Raw Material Inspection", description: "Every yarn batch tested for weight, color consistency, and quality." },
-  { step: "02", title: "In-Process Checking", description: "Continuous monitoring for gauge accuracy, pattern alignment, and stitch quality." },
-  { step: "03", title: "Assembly Quality Control", description: "Linking, finishing, and assembly inspected for precision and craftsmanship." },
-  { step: "04", title: "Final Inspection", description: "100% inspection against approved samples and AQL standards." },
-  { step: "05", title: "Pre-Shipment Audit", description: "Final quality audit and documentation review before shipping." },
-]
+const materialIds = ["woolMerino", "cotton", "cashmere", "silkBlends", "syntheticsBlends", "specialtyYarns"] as const
+const techniqueIds = ["jacquard", "intarsia", "cableAran", "embroidery", "handCrochet", "printDye"] as const
+const techniqueIcons = [Sparkles, Palette, null, null, null, null] as const
+const qcStepIds = ["qc1", "qc2", "qc3", "qc4", "qc5"] as const
 
 export default async function ManufacturingPage() {
   const t = await getTranslations("manufacturing")
@@ -81,7 +62,7 @@ export default async function ManufacturingPage() {
             </div>
             <div className="animate-slide-in-right relative">
               <div className="aspect-[4/3] rounded-2xl overflow-hidden relative shadow-2xl shadow-primary/10">
-                <Image src="/images/manufacturing-hero.jpg" alt="Advanced WholeGarment seamless knitting machines" fill className="object-cover" priority />
+                <Image src="/images/manufacturing-hero.jpg" alt={t("heroImageAlt")} fill className="object-cover" priority />
                 <div className="absolute inset-0 bg-gradient-to-tr from-accent/5 to-transparent" />
               </div>
               <div className="absolute -bottom-4 -right-4 h-24 w-24 bg-accent/8 rounded-2xl -z-10" />
@@ -99,15 +80,18 @@ export default async function ManufacturingPage() {
             <p className="mt-5 text-lg text-muted-foreground leading-relaxed">{t("techSub")}</p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {technologies.map((tech) => (
-              <div key={tech.title} className="group text-center p-6 rounded-xl bg-card border border-border/60 hover:border-accent/30 hover:shadow-lg hover:-translate-y-1 transition-all duration-500">
+            {technologyIds.map((id, i) => {
+              const Icon = technologyIcons[i]
+              return (
+              <div key={id} className="group text-center p-6 rounded-xl bg-card border border-border/60 hover:border-accent/30 hover:shadow-lg hover:-translate-y-1 transition-all duration-500">
                 <div className="mx-auto h-14 w-14 rounded-xl bg-accent/10 flex items-center justify-center mb-5 group-hover:bg-accent/20 transition-colors duration-300">
-                  <tech.icon className="h-7 w-7 text-accent" />
+                  <Icon className="h-7 w-7 text-accent" />
                 </div>
-                <h3 className="text-lg font-bold text-foreground mb-3">{tech.title}</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">{tech.description}</p>
+                <h3 className="text-lg font-bold text-foreground mb-3">{t(`${id}Title`)}</h3>
+                <p className="text-muted-foreground text-sm leading-relaxed">{t(`${id}Desc`)}</p>
               </div>
-            ))}
+              )
+            })}
           </div>
 
           {/* Seamless Machine Gallery */}
@@ -117,7 +101,7 @@ export default async function ManufacturingPage() {
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 lg:gap-6">
               {["/images/seamless-machine-1.png", "/images/seamless-machine-2.png", "/images/seamless-machine-5.png", "/images/seamless-machine-6.png", "/images/seamless-machine-7.png"].map((src, i) => (
                 <div key={src} className="relative aspect-square rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 group">
-                  <Image src={src} alt={`WholeGarment seamless knitting machine ${i + 1}`} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <Image src={src} alt={t("machineImageAlt", { index: i + 1 })} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
                   <div className="absolute inset-0 bg-gradient-to-t from-foreground/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
               ))}
@@ -155,7 +139,7 @@ export default async function ManufacturingPage() {
             </div>
             <div className="relative">
               <div className="aspect-square rounded-2xl overflow-hidden relative shadow-xl">
-                <Image src="/images/wholegarment.jpg" alt="WholeGarment seamless knitting" fill className="object-cover" />
+                <Image src="/images/wholegarment.jpg" alt={t("wholegarmentImageAlt")} fill className="object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-tr from-accent/5 to-transparent" />
               </div>
               <div className="absolute -top-4 -left-4 h-20 w-20 bg-primary/5 rounded-full -z-10" />
@@ -173,13 +157,13 @@ export default async function ManufacturingPage() {
             <p className="mt-5 text-lg text-muted-foreground leading-relaxed">{t("materialsSub")}</p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {materials.map((material) => (
-              <Card key={material.name} className="bg-card border-border/60 hover:border-accent/30 hover:shadow-lg hover:-translate-y-1 transition-all duration-500">
+            {materialIds.map((id) => (
+              <Card key={id} className="bg-card border-border/60 hover:border-accent/30 hover:shadow-lg hover:-translate-y-1 transition-all duration-500">
                 <CardContent className="p-6">
-                  <h3 className="font-bold text-lg text-foreground">{material.name}</h3>
-                  <p className="mt-2 text-muted-foreground text-sm leading-relaxed">{material.description}</p>
+                  <h3 className="font-bold text-lg text-foreground">{t(`materialsCards.${id}.name`)}</h3>
+                  <p className="mt-2 text-muted-foreground text-sm leading-relaxed">{t(`materialsCards.${id}.description`)}</p>
                   <div className="mt-4 flex flex-wrap gap-2">
-                    {material.properties.map((prop) => (
+                    {(t.raw(`materialsCards.${id}.properties`) as string[]).map((prop) => (
                       <span key={prop} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-accent/10 text-accent">{prop}</span>
                     ))}
                   </div>
@@ -199,12 +183,18 @@ export default async function ManufacturingPage() {
             <p className="mt-5 text-lg text-muted-foreground leading-relaxed">{t("techniquesSub")}</p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {techniques.map((technique) => (
-              <div key={technique.name} className="bg-card rounded-xl p-6 border border-border/60 hover:border-accent/30 hover:shadow-lg hover:-translate-y-1 transition-all duration-500">
-                <h3 className="font-bold text-lg text-foreground">{technique.name}</h3>
-                <p className="mt-2 text-muted-foreground text-sm leading-relaxed">{technique.description}</p>
+            {techniqueIds.map((id, i) => {
+              const Icon = techniqueIcons[i]
+              return (
+              <div key={id} className="bg-card rounded-xl p-6 border border-border/60 hover:border-accent/30 hover:shadow-lg hover:-translate-y-1 transition-all duration-500">
+                <div className="flex items-center gap-2">
+                  {Icon ? <Icon className="h-4 w-4 text-accent" strokeWidth={1.5} /> : null}
+                  <h3 className="font-bold text-lg text-foreground">{t(`techniquesList.${id}.name`)}</h3>
+                </div>
+                <p className="mt-2 text-muted-foreground text-sm leading-relaxed">{t(`techniquesList.${id}.description`)}</p>
               </div>
-            ))}
+              )
+            })}
           </div>
         </div>
       </section>
@@ -218,14 +208,14 @@ export default async function ManufacturingPage() {
             <p className="mt-5 text-lg text-muted-foreground leading-relaxed">{t("qcSub")}</p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-6">
-            {qcSteps.map((step, index) => (
-              <div key={step.step} className="relative text-center group">
+            {qcStepIds.map((id, index) => (
+              <div key={id} className="relative text-center group">
                 <div className="mx-auto h-14 w-14 rounded-full bg-primary flex items-center justify-center mb-4 group-hover:bg-accent transition-colors duration-300">
-                  <span className="text-lg font-bold text-primary-foreground">{step.step}</span>
+                  <span className="text-lg font-bold text-primary-foreground">{`0${index + 1}`}</span>
                 </div>
-                <h3 className="font-bold text-foreground mb-2">{step.title}</h3>
-                <p className="text-muted-foreground text-sm">{step.description}</p>
-                {index < qcSteps.length - 1 && (
+                <h3 className="font-bold text-foreground mb-2">{t(`${id}Title`)}</h3>
+                <p className="text-muted-foreground text-sm">{t(`${id}Desc`)}</p>
+                {index < qcStepIds.length - 1 && (
                   <div className="hidden lg:block absolute top-7 left-[calc(50%+2rem)] w-[calc(100%-4rem)] h-0.5 bg-border" />
                 )}
               </div>

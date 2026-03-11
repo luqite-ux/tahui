@@ -92,6 +92,11 @@
     "manufacturingTag": "Manufacturing Excellence",
     "manufacturingTitle": "Advanced Seamless Knitting Technology",
     "manufacturingSubtitle": "Our state-of-the-art facility houses over 200 WholeGarment seamless knitting machines, enabling us to produce premium knitwear with superior comfort, minimal seams, and reduced waste.",
+    "manufacturingImageAlt": "Advanced seamless knitting machines at Tahui factory",
+    "heroFallbackAlt1": "Model wearing cream open-knit cardigan with gold buttons",
+    "heroFallbackAlt2": "Model wearing ivory ruffle-front V-neck knit sweater",
+    "heroFallbackAlt3": "Model wearing brown and pink ombre textured knit sweater",
+    "heroFallbackAlt4": "Model wearing blue lace-trimmed knit turtleneck",
     "certifications": {
       "iso9001": "ISO 9001",
       "qualityMgmt": "Quality Management",
@@ -142,12 +147,30 @@
     }
   },
   "products": {
+    "metaTitle": "Products - Seamless Knitwear Manufacturer",
+    "metaDescription": "Explore our product range: seamless knitwear, multi-material collections, and advanced craftsmanship. OEM & ODM knitwear manufacturing from Shanghai, China.",
     "ourCollections": "Our Collections",
     "premiumKnitwear": "Premium Knitwear for Global Brands",
     "collectionsSubtitle": "From seamless innovation to artisanal craft, explore our three core product lines. All items available for OEM production or full ODM development.",
+    "categoryLabel": "Category {number}",
     "category": "Category",
     "viewMoreProducts": "View More Products",
     "viewDetails": "View details",
+    "categoryImageAlt": "{category} representative product",
+    "categories": {
+      "seamless": {
+        "title": "Seamless Knitwear",
+        "description": "Innovative seamless sweaters and base layers produced using advanced fully automatic seamless knitting technology for ultimate comfort and fit."
+      },
+      "multi-material": {
+        "title": "Multi-Material Collection",
+        "description": "A wide range of premium knitwear and blankets crafted from diverse materials including wool, silk, cotton, linen, and specialized fancy yarns."
+      },
+      "craftsmanship": {
+        "title": "Advanced Craftsmanship",
+        "description": "Showcasing our diverse processing capabilities, from jacquard and hand-knitting to embroidery, beading, and custom dyeing techniques."
+      }
+    },
     "materials": "Materials",
     "premiumMaterials": "Premium Materials & Yarns",
     "materialsSubtitle": "We source the finest yarns from trusted suppliers worldwide, ensuring consistent quality and sustainable sourcing for every order.",
@@ -168,23 +191,58 @@
     "oemTitle": "OEM Services",
     "oemTag": "Custom Manufacturing",
     "oemDesc": "Bring your designs to life. Provide tech packs, samples, or detailed specifications, and our team will produce your knitwear to exact requirements.",
+    "oemBullets": [
+      "Production from your tech packs",
+      "Sample matching and development",
+      "Private label and custom packaging",
+      "Flexible MOQ for qualified brands",
+      "Dedicated production planning"
+    ],
     "odmTitle": "ODM Services",
     "odmTag": "Design Partnership",
     "odmDesc": "Leverage our design expertise. From trend research to sample development, our in-house team creates complete collections tailored to your brand.",
+    "odmBullets": [
+      "Trend research and forecasting",
+      "Original design development",
+      "Material sourcing and selection",
+      "Sample creation and iteration",
+      "Full technical documentation"
+    ],
     "ctaTitle": "Ready to Develop Your Collection?",
     "ctaSubtitle": "Contact our team to discuss your product requirements, request samples, or schedule a virtual factory tour.",
     "getStartedToday": "Get Started Today",
+    "backToCollection": "Back to collection",
     "backToProducts": "Back to Products",
     "allInCollection": "All products in this collection. Available for OEM & ODM.",
-    "noProducts": "No products in this category yet."
+    "noProducts": "No products in this category yet.",
+    "productMetaFallbackTitle": "Product",
+    "categoryMetaDescription": "Browse all {category} products. OEM & ODM knitwear manufacturing.",
+    "productMetaDescriptionFallback": "Product: {name}. OEM & ODM knitwear."
   },
   "common": {
     "getQuote": "Get a Quote",
+    "noImage": "No image",
     "viewMore": "View More",
     "learnMore": "Learn More",
-    "contactUs": "Contact Us"
+    "contactUs": "Contact Us",
+    "openMainMenu": "Open main menu",
+    "closeMenu": "Close menu",
+    "previous": "Previous",
+    "next": "Next",
+    "morePages": "More pages",
+    "goToPreviousPage": "Go to previous page",
+    "goToNextPage": "Go to next page",
+    "previousSlide": "Previous slide",
+    "nextSlide": "Next slide",
+    "more": "More",
+    "close": "Close",
+    "toggleSidebar": "Toggle Sidebar"
   },
   "contact": {
+    "metaTitle": "Contact Us",
+    "metaDescription": "Contact Tahui Sweater Factory for OEM/ODM knitwear, samples, or factory visits. Email, phone, WhatsApp, and Shanghai address. Get a quote for seamless knitwear manufacturing.",
+    "metaOgTitle": "Contact Us | Tahui Sweater Factory",
+    "metaOgDescription": "Contact Tahui for knitwear manufacturing inquiries. Shanghai-based, worldwide export.",
     "heroTag": "Contact Us",
     "heroTitle": "Get In Touch",
     "heroSubtitle": "Ready to start your knitwear project? Contact our team for a free consultation and quote. We typically respond within 24 hours.",
@@ -194,8 +252,11 @@
     "phoneDesc": "Mon-Sat, 9AM-6PM (GMT+8)",
     "address": "Factory Address",
     "addressDesc": "Visits by appointment",
+    "addressContent": "No. 351 Tahui Road, Songjiang District, Shanghai",
     "hours": "Business Hours",
     "hoursDesc": "9:00 AM - 6:00 PM (GMT+8)",
+    "hoursContent": "Monday - Saturday",
+    "mapImageAlt": "Tahui Sweater Factory location",
     "formTag": "Inquiry Form",
     "formTitle": "Send Us an Inquiry",
     "formSubtitle": "Fill out the form below and our sales team will get back to you within 24 hours.",
@@ -257,10 +318,13 @@
     }
   },
   "about": {
+    "metaTitle": "About Us - 20+ Years of Knitwear Excellence",
+    "metaDescription": "Learn about Tahui Sweater Factory's 20+ year history in knitwear manufacturing. Shanghai-based, ISO certified, global export.",
     "heroTag": "About Us",
     "heroTitle": "Two Decades of Knitwear Excellence",
     "heroP1": "For over 20 years, Tahui Sweater Factory has been a trusted partner to fashion brands worldwide. From our roots as a small knitwear workshop in Shanghai, we have grown into a modern manufacturing facility.",
     "heroP2": "Today, we combine traditional knitwear expertise with advanced seamless technology to deliver exceptional products for brands across Europe, North America, and Asia.",
+    "heroImageAlt": "Shanghai Tahui Knitting Factory entrance",
     "statsYears": "Years in Business",
     "statsTeam": "Team Members",
     "statsBrands": "Brand Partners",
@@ -302,6 +366,7 @@
     "teamP1": "Behind every garment is a team of dedicated professionals who take pride in their craft.",
     "teamP2": "We invest in our team through continuous training, safe working conditions, and opportunities for growth. Many of our team members have been with us for over a decade.",
     "meetTeam": "Meet Our Team",
+    "teamImageAlt": "Tahui Sweater Factory production team",
     "partnershipTag": "Long-Term Partnerships",
     "partnershipTitle": "Building Relationships That Last",
     "partnershipP": "We do not just manufacture products - we build partnerships. Many of our clients have worked with us for 10+ years, growing together through changing markets and evolving collections.",
@@ -311,9 +376,12 @@
     "viewProducts": "View Our Products"
   },
   "manufacturing": {
+    "metaTitle": "Manufacturing Capability - WholeGarment Technology",
+    "metaDescription": "Discover our advanced seamless knitting technology, premium materials, and expert craftsmanship. 200+ WholeGarment machines, comprehensive QC, and digitalized production management.",
     "heroTag": "Manufacturing Capability",
     "heroTitle": "Advanced Seamless Knitting Technology",
     "heroP": "Our state-of-the-art manufacturing facility combines cutting-edge WholeGarment technology with traditional craftsmanship. With over 200 seamless knitting machines and comprehensive quality control systems, we deliver exceptional knitwear at scale.",
+    "heroImageAlt": "Advanced WholeGarment seamless knitting machines",
     "discussProject": "Discuss Your Project",
     "equipmentTag": "Our Equipment",
     "techTitle": "Our Technology",
@@ -360,12 +428,74 @@
     "qc4Desc": "100% inspection against approved samples and AQL standards.",
     "qc5Title": "Pre-Shipment Audit",
     "qc5Desc": "Final quality audit and documentation review before shipping.",
+    "machineImageAlt": "WholeGarment seamless knitting machine {index}",
+    "wholegarmentImageAlt": "WholeGarment seamless knitting",
+    "materialsCards": {
+      "woolMerino": {
+        "name": "Wool & Merino",
+        "description": "From fine Australian merino to chunky British wool, we source premium wool yarns.",
+        "properties": ["Temperature regulating", "Naturally breathable", "Odor resistant", "Sustainable fiber"]
+      },
+      "cotton": {
+        "name": "Cotton",
+        "description": "Organic and conventional cotton yarns in various weights for year-round knitwear.",
+        "properties": ["Soft and comfortable", "Hypoallergenic", "Easy care", "Organic options"]
+      },
+      "cashmere": {
+        "name": "Cashmere",
+        "description": "Luxurious cashmere and cashmere blends offering unparalleled softness.",
+        "properties": ["Ultra-soft feel", "Lightweight warmth", "Premium luxury", "Lasting quality"]
+      },
+      "silkBlends": {
+        "name": "Silk & Silk Blends",
+        "description": "Pure silk and silk-blend yarns for elegant drape and natural sheen.",
+        "properties": ["Natural luster", "Temperature regulating", "Elegant drape", "Luxurious feel"]
+      },
+      "syntheticsBlends": {
+        "name": "Synthetics & Blends",
+        "description": "High-quality acrylic, nylon, and performance blends for durability.",
+        "properties": ["Easy care", "Durable", "Color-fast", "Cost-effective"]
+      },
+      "specialtyYarns": {
+        "name": "Specialty Yarns",
+        "description": "Alpaca, mohair, linen, and innovative sustainable fibers.",
+        "properties": ["Unique textures", "Sustainable options", "Special properties", "Distinctive look"]
+      }
+    },
+    "techniquesList": {
+      "jacquard": {
+        "name": "Jacquard Knitting",
+        "description": "Complex multi-color patterns and motifs through computerized jacquard technology."
+      },
+      "intarsia": {
+        "name": "Intarsia",
+        "description": "Color-block designs with clean color changes for bold graphic patterns."
+      },
+      "cableAran": {
+        "name": "Cable & Aran",
+        "description": "Traditional cable patterns and Aran stitches adding texture and heritage appeal."
+      },
+      "embroidery": {
+        "name": "Embroidery",
+        "description": "Hand and machine embroidery for logos, decorative elements, and intricate detailing."
+      },
+      "handCrochet": {
+        "name": "Hand Crochet",
+        "description": "Artisanal hand crochet details and trim work for unique finishing touches."
+      },
+      "printDye": {
+        "name": "Print & Dye",
+        "description": "Garment dyeing, piece dyeing, and various printing techniques for color customization."
+      }
+    },
     "ctaTitle": "Partner With Us",
     "ctaP": "Whether you are developing a new collection or scaling existing production, our manufacturing capabilities are ready to support your brand.",
     "startConversation": "Start a Conversation",
     "tourFactory": "Tour Our Factory"
   },
   "factoryTour": {
+    "metaTitle": "Factory Tour - See Our Production Facility",
+    "metaDescription": "Take a virtual tour of our modern knitwear manufacturing facility in Shanghai. 200+ machines, quality control, finishing and logistics.",
     "heroTag": "Virtual Factory Tour",
     "heroTitle": "Inside Our Manufacturing Facility",
     "heroP": "Welcome to Tahui Sweater Factory. Our modern 15,000 square meter facility in Shanghai combines cutting-edge technology with skilled craftsmanship to produce premium knitwear for brands worldwide.",
@@ -382,15 +512,94 @@
     "digitalTag": "Digital Factory",
     "digitalTitle": "Digitalized Production Management",
     "digitalP": "Our factory operates on a fully integrated digital management system that provides real-time visibility into every aspect of production.",
+    "digitalImageAlt": "Shanghai Tahui Knitting Factory entrance",
+    "digitalFeatures": {
+      "productionTracking": {
+        "title": "Production Tracking",
+        "description": "Real-time tracking of every order through production stages."
+      },
+      "qualityDashboard": {
+        "title": "Quality Dashboard",
+        "description": "Live quality metrics and inspection data for management."
+      },
+      "inventoryManagement": {
+        "title": "Inventory Management",
+        "description": "Automated yarn and finished goods inventory tracking."
+      },
+      "orderManagement": {
+        "title": "Order Management",
+        "description": "Comprehensive order tracking with milestone updates."
+      }
+    },
     "visitTag": "Visit Us",
     "visitTitle": "Want to See More?",
     "visitP": "Schedule a live video tour with our team to see our factory in action.",
-    "viewCapabilities": "View Capabilities"
+    "viewCapabilities": "View Capabilities",
+    "facilities": {
+      "productionFloor": {
+        "title": "Production Floor",
+        "description": "Our main production hall houses over 200 state-of-the-art seamless knitting machines, organized in efficient production lines with optimized workflow.",
+        "imageAlt": "Production floor with seamless knitting machines",
+        "features": [
+          "200+ WholeGarment machines",
+          "Climate-controlled environment",
+          "Optimized production layout",
+          "Real-time monitoring systems"
+        ]
+      },
+      "sampleCenter": {
+        "title": "Sample Development Center",
+        "description": "Our dedicated sample development team works in a specialized facility equipped with prototype machines, yarn libraries, and design software.",
+        "imageAlt": "Sample development center and workshop",
+        "features": [
+          "Rapid sample development",
+          "Extensive yarn library",
+          "CAD design systems",
+          "Color matching lab"
+        ]
+      },
+      "qualityLab": {
+        "title": "Quality Control Lab",
+        "description": "Our quality control laboratory features advanced testing equipment for yarn analysis, color fastness testing, and garment inspection.",
+        "imageAlt": "Quality control lab and inspection equipment",
+        "features": [
+          "Yarn testing equipment",
+          "Color fastness testing",
+          "Dimensional stability checks",
+          "AQL inspection stations"
+        ]
+      },
+      "finishingDept": {
+        "title": "Finishing Department",
+        "description": "After knitting, garments move to our finishing department for washing, blocking, pressing, and final touches.",
+        "imageAlt": "Finishing department for washing and pressing",
+        "features": [
+          "Professional washing machines",
+          "Steam pressing equipment",
+          "Hand finishing stations",
+          "Specialty treatments"
+        ]
+      },
+      "warehouseLogistics": {
+        "title": "Warehouse & Logistics",
+        "description": "Our modern warehouse facility ensures efficient inventory management and timely order fulfillment.",
+        "imageAlt": "Warehouse and logistics area",
+        "features": [
+          "Climate-controlled storage",
+          "Inventory management system",
+          "Export documentation",
+          "Global shipping partners"
+        ]
+      }
+    }
   },
   "quality": {
+    "metaTitle": "Quality & Certifications - ISO Certified Manufacturer",
+    "metaDescription": "Learn about our ISO 9001, ISO 14001, and ISO 45001 certifications. Quality management, environmental and occupational health systems.",
     "heroTag": "Quality & Certifications",
     "heroTitle": "ISO Certified Manufacturer",
     "heroP": "Our commitment to quality, environmental responsibility, and workplace safety is validated by internationally recognized certifications and a rigorous quality management system.",
+    "heroImageAlt": "Quality inspection at Tahui Sweater Factory",
     "startConversation": "Start the Conversation",
     "processTag": "Our Process",
     "processTitle": "Quality Control Process",
@@ -398,16 +607,191 @@
     "certificationsTag": "Our Certifications",
     "certificationsTitle": "Certifications & Honors",
     "certificationsSub": "Internationally recognized certifications and industry recognitions that demonstrate our commitment to excellence.",
-    "viewCertifications": "View Our Certifications"
+    "viewCertifications": "View Our Certifications",
+    "certificationsDetail": {
+      "iso9001": {
+        "title": "Quality Management System",
+        "description": "Our ISO 9001 certification demonstrates our commitment to consistent quality in all processes.",
+        "imageAlt": "ISO 9001 quality management certification",
+        "benefits": [
+          "Documented quality procedures",
+          "Continuous improvement processes",
+          "Customer satisfaction focus",
+          "Consistent product quality",
+          "Risk-based approach",
+          "Regular internal audits"
+        ]
+      },
+      "iso14001": {
+        "title": "Environmental Management System",
+        "description": "We are committed to minimizing our environmental impact through responsible manufacturing practices.",
+        "imageAlt": "ISO 14001 environmental management certification",
+        "benefits": [
+          "Waste reduction programs",
+          "Energy efficiency measures",
+          "Sustainable sourcing options",
+          "Pollution prevention",
+          "Environmental compliance",
+          "Continuous improvement"
+        ]
+      },
+      "iso45001": {
+        "title": "Occupational Health & Safety",
+        "description": "The safety and wellbeing of our workforce is paramount.",
+        "imageAlt": "ISO 45001 occupational health and safety certification",
+        "benefits": [
+          "Safe working conditions",
+          "Regular safety training",
+          "Hazard identification",
+          "Emergency preparedness",
+          "Worker health programs",
+          "Incident investigation"
+        ]
+      }
+    },
+    "honorsTag": "Honors & Qualifications",
+    "honorsTitle": "Our Certificates & Honors",
+    "honorsSub": "Awards, certifications, and qualifications organized by category.",
+    "honorCategories": {
+      "iso": {
+        "label": "ISO Certifications",
+        "description": "Our internationally recognized ISO certifications ensure consistent quality management, environmental responsibility, and occupational health and safety across all operations."
+      },
+      "bsci": {
+        "label": "Social Responsibility & Compliance",
+        "description": "We maintain BSCI and other social compliance certifications, demonstrating our commitment to ethical manufacturing, fair labor practices, and responsible supply chain management."
+      },
+      "patent": {
+        "label": "Patents & Innovation",
+        "description": "Our patents reflect our continuous investment in knitwear technology and process innovation, supporting our position as a leading manufacturer in the industry."
+      },
+      "honor": {
+        "label": "Honors & Recognitions",
+        "description": "Government and industry recognitions including Shanghai Famous Brand, High-Tech Enterprise status, and Well-Known Trademark that validate our excellence."
+      },
+      "green": {
+        "label": "Green Low-Carbon Credit",
+        "description": "Green and low-carbon enterprise credit evaluations recognize our commitment to sustainable and environmentally responsible manufacturing practices."
+      },
+      "other": {
+        "label": "Other Certifications",
+        "description": "Additional qualifications and certifications that support our comprehensive quality and compliance framework."
+      }
+    },
+    "processSteps": {
+      "01": {
+        "title": "Incoming Material Inspection",
+        "description": "Every yarn shipment undergoes comprehensive testing including weight verification, color matching, and visual inspection."
+      },
+      "02": {
+        "title": "In-Line Quality Checks",
+        "description": "Regular checks throughout production monitoring gauge consistency, pattern accuracy, and stitch quality."
+      },
+      "03": {
+        "title": "Assembly Inspection",
+        "description": "All linking, seaming, finishing, and trim operations inspected for workmanship quality."
+      },
+      "04": {
+        "title": "Final Product Inspection",
+        "description": "Every finished garment undergoes 100% inspection against approved samples."
+      },
+      "05": {
+        "title": "AQL Sampling",
+        "description": "Statistical sampling according to AQL standards, typically AQL 2.5 or stricter."
+      },
+      "06": {
+        "title": "Pre-Shipment Audit",
+        "description": "Final audit to verify quantities, packing quality, and documentation accuracy."
+      }
+    },
+    "commitmentsTag": "Our Promise",
+    "commitmentsTitle": "Quality Commitments",
+    "commitmentsP": "Quality is not just a department at Tahui - it is a company-wide philosophy embedded in everything we do.",
+    "commitmentsImageAlt": "Quality commitment at Tahui factory",
+    "commitments": {
+      "zeroTolerance": {
+        "title": "Zero Tolerance Policy",
+        "description": "We maintain zero tolerance for critical defects. Any garment not meeting our standards is rejected."
+      },
+      "traceability": {
+        "title": "Traceability",
+        "description": "Full traceability from yarn lot to finished garment for quick issue identification."
+      },
+      "training": {
+        "title": "Continuous Training",
+        "description": "Our team receives ongoing training in quality standards and inspection techniques."
+      },
+      "clientStandards": {
+        "title": "Client Standards",
+        "description": "We adapt our quality protocols to meet specific client requirements and brand-specific QC manuals."
+      }
+    },
+    "ctaTitle": "Experience Our Quality Standards",
+    "ctaP": "Partner with a manufacturer that takes quality as seriously as you do."
   },
   "terms": {
+    "metaTitle": "Terms of Service - TAHUI Sweater Factory",
+    "metaDescription": "Terms of Service for using the Tahui Sweater Factory website and our manufacturing services.",
     "title": "Terms of Service",
     "lastUpdated": "Last updated",
+    "intro": "Welcome to the Tahui Sweater Factory website. By accessing or using this site, you agree to be bound by these Terms of Service. If you do not agree, please do not use our website.",
+    "sections": {
+      "useWebsite": {
+        "title": "Use of Website",
+        "body": "This website is provided for informational and business inquiry purposes. You may use it to learn about our knitwear manufacturing services, view our products, and contact us for quotes or partnership inquiries. You agree not to use the site for any unlawful purpose or in any way that could damage or impair the site or our operations."
+      },
+      "ip": {
+        "title": "Content and Intellectual Property",
+        "body": "All content on this website, including text, images, logos, and design, is owned by Tahui Sweater Factory or its licensors and is protected by intellectual property laws. You may not copy, reproduce, or distribute our content without prior written permission."
+      },
+      "business": {
+        "title": "Business Inquiries and Orders",
+        "body": "Inquiries submitted through our contact form or by email do not constitute a binding contract. All OEM/ODM orders, pricing, and terms are subject to separate written agreements. We reserve the right to decline or cancel any request at our discretion."
+      },
+      "disclaimer": {
+        "title": "Disclaimer",
+        "body": "We strive to keep the information on this website accurate and up to date; however, we do not warrant that all content is error-free or complete. Product images and descriptions are for reference and may vary. We are not liable for any reliance on website content for business decisions."
+      },
+      "liability": {
+        "title": "Limitation of Liability",
+        "body": "To the fullest extent permitted by law, Tahui Sweater Factory shall not be liable for any indirect, incidental, or consequential damages arising from your use of this website or any business dealings with us, except as otherwise agreed in a separate written contract."
+      },
+      "changes": {
+        "title": "Changes and Contact",
+        "bodyBefore": "We may update these Terms of Service from time to time. The \"Last updated\" date above will reflect changes. Continued use of the site after changes constitutes acceptance. For questions about these terms, contact us at"
+      }
+    },
     "contactUs": "Contact Us"
   },
   "privacy": {
+    "metaTitle": "Privacy Policy - TAHUI Sweater Factory",
+    "metaDescription": "Privacy Policy for Tahui Sweater Factory. How we collect, use, and protect your information when you use our website or contact us.",
     "title": "Privacy Policy",
     "lastUpdated": "Last updated",
+    "intro": "Tahui Sweater Factory (\"we,\" \"our,\" or \"us\") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website or contact us for business inquiries.",
+    "sections": {
+      "collect": {
+        "title": "Information We Collect",
+        "body": "We may collect information you provide directly, such as your name, company name, email address, phone number, and message content when you use our contact form, request a quote, or communicate with us. We may also automatically collect certain technical information when you visit our site (e.g., IP address, browser type, pages visited) for analytics and site improvement."
+      },
+      "use": {
+        "title": "How We Use Your Information",
+        "body": "We use the information we collect to respond to your inquiries, process quote requests, provide OEM/ODM services, improve our website and services, and send relevant business communications. We do not sell your personal information to third parties."
+      },
+      "security": {
+        "title": "Data Security and Retention",
+        "body": "We implement appropriate technical and organizational measures to protect your data. We retain your information only as long as necessary to fulfill the purposes described in this policy or as required by law."
+      },
+      "cookies": {
+        "title": "Cookies and Analytics",
+        "body": "Our website may use cookies and similar technologies to enhance your experience and for analytics. You can adjust your browser settings to manage or disable cookies."
+      },
+      "rights": {
+        "title": "Your Rights and Contact",
+        "bodyBefore": "Depending on your jurisdiction, you may have rights to access, correct, or delete your personal data. To exercise these rights or ask questions about this policy, please contact us at",
+        "bodyAfter": "We may update this Privacy Policy from time to time; the \"Last updated\" date above will reflect any changes."
+      }
+    },
     "contactUs": "Contact Us"
   }
 }

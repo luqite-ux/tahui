@@ -26,10 +26,10 @@ const certKeys = [
 ] as const
 
 const HERO_FALLBACK = [
-  { src: "/images/hero-model.png", alt: "Model wearing cream open-knit cardigan with gold buttons" },
-  { src: "/images/hero-model-2.png", alt: "Model wearing ivory ruffle-front V-neck knit sweater" },
-  { src: "/images/hero-model-3.png", alt: "Model wearing brown and pink ombre textured knit sweater" },
-  { src: "/images/hero-model-4.png", alt: "Model wearing blue lace-trimmed knit turtleneck" },
+  { src: "/images/hero-model.png", altKey: "heroFallbackAlt1" as const },
+  { src: "/images/hero-model-2.png", altKey: "heroFallbackAlt2" as const },
+  { src: "/images/hero-model-3.png", altKey: "heroFallbackAlt3" as const },
+  { src: "/images/hero-model-4.png", altKey: "heroFallbackAlt4" as const },
 ]
 
 const categoryImages = [
@@ -45,7 +45,7 @@ export default async function HomePage() {
   const tProducts = await getTranslations("products")
   const tCommon = await getTranslations("common")
 
-  let heroSlides: { src: string; alt: string }[] = HERO_FALLBACK
+  let heroSlides: { src: string; alt: string }[] = HERO_FALLBACK.map((s) => ({ src: s.src, alt: t(s.altKey) }))
   try {
     const homepage = await client.fetch<{
       heroSlides?: Array<{ image?: unknown; alt?: string | null } | null>
@@ -226,7 +226,7 @@ export default async function HomePage() {
             <div className="order-1 lg:order-2">
               <div className="relative">
                 <div className="aspect-[4/3] rounded-2xl overflow-hidden relative shadow-xl">
-                  <Image src="/images/seamless-machine-1.png" alt="Advanced seamless knitting machines at Tahui factory" fill className="object-cover" />
+                  <Image src="/images/seamless-machine-1.png" alt={t("manufacturingImageAlt")} fill className="object-cover" />
                   <div className="absolute inset-0 bg-gradient-to-tr from-accent/5 to-transparent" />
                 </div>
                 <div className="absolute -bottom-6 -right-6 h-32 w-32 bg-accent/8 rounded-2xl -z-10" />

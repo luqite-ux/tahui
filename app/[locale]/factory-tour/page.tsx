@@ -9,30 +9,32 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { ProductionFloorGallery } from "@/components/production-floor-gallery"
 
-export const metadata: Metadata = {
-  title: "Factory Tour - See Our Production Facility",
-  description: "Take a virtual tour of our modern knitwear manufacturing facility in Shanghai. 200+ machines, quality control, finishing and logistics.",
-  alternates: { canonical: `${SITE_URL}/factory-tour` },
+type Props = { params: Promise<{ locale: string }> }
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: "factoryTour" })
+  return {
+    title: t("metaTitle"),
+    description: t("metaDescription"),
+    alternates: { canonical: `${SITE_URL}/factory-tour` },
+  }
 }
 
 const statKeys = ["statArea", "statMachines", "statWorkers", "statCapacity", "statOperation", "statExport"] as const
 const factoryStatIcons = [Building2, Cpu, Users, Package, Clock, BarChart3]
 const factoryStatValues = ["15,000 m²", "200+", "500+", "100K", "24/7", "$8.3M+"]
 
-const facilities = [
-  { title: "Production Floor", description: "Our main production hall houses over 200 state-of-the-art seamless knitting machines, organized in efficient production lines with optimized workflow.", image: "/images/seamless-machine-1.png", features: ["200+ WholeGarment machines", "Climate-controlled environment", "Optimized production layout", "Real-time monitoring systems"] },
-  { title: "Sample Development Center", description: "Our dedicated sample development team works in a specialized facility equipped with prototype machines, yarn libraries, and design software.", image: "/images/sorting-workshop.jpg", features: ["Rapid sample development", "Extensive yarn library", "CAD design systems", "Color matching lab"] },
-  { title: "Quality Control Lab", description: "Our quality control laboratory features advanced testing equipment for yarn analysis, color fastness testing, and garment inspection.", image: "/images/finishing-workshop.jpg", features: ["Yarn testing equipment", "Color fastness testing", "Dimensional stability checks", "AQL inspection stations"] },
-  { title: "Finishing Department", description: "After knitting, garments move to our finishing department for washing, blocking, pressing, and final touches.", image: "/images/steaming-workshop-1.jpg", features: ["Professional washing machines", "Steam pressing equipment", "Hand finishing stations", "Specialty treatments"] },
-  { title: "Warehouse & Logistics", description: "Our modern warehouse facility ensures efficient inventory management and timely order fulfillment.", image: "/images/warehouse.jpg", features: ["Climate-controlled storage", "Inventory management system", "Export documentation", "Global shipping partners"] },
-]
+const facilityIds = ["productionFloor", "sampleCenter", "qualityLab", "finishingDept", "warehouseLogistics"] as const
+const facilityImages = [
+  "/images/seamless-machine-1.png",
+  "/images/sorting-workshop.jpg",
+  "/images/finishing-workshop.jpg",
+  "/images/steaming-workshop-1.jpg",
+  "/images/warehouse.jpg",
+] as const
 
-const digitalFeatures = [
-  { title: "Production Tracking", description: "Real-time tracking of every order through production stages." },
-  { title: "Quality Dashboard", description: "Live quality metrics and inspection data for management." },
-  { title: "Inventory Management", description: "Automated yarn and finished goods inventory tracking." },
-  { title: "Order Management", description: "Comprehensive order tracking with milestone updates." },
-]
+const digitalFeatureIds = ["productionTracking", "qualityDashboard", "inventoryManagement", "orderManagement"] as const
 
 export default async function FactoryTourPage() {
   const t = await getTranslations("factoryTour")
@@ -88,15 +90,20 @@ export default async function FactoryTourPage() {
             <p className="mt-5 text-lg text-muted-foreground leading-relaxed">{t("facilitiesSub")}</p>
           </div>
           <div className="space-y-24">
-            {facilities.map((facility, index) => (
-              <div key={facility.title} className="grid lg:grid-cols-2 gap-16 items-center">
+            {facilityIds.map((facilityId, index) => (
+              <div key={facilityId} className="grid lg:grid-cols-2 gap-16 items-center">
                 <div className={index % 2 === 1 ? "lg:order-2" : ""}>
                   {index === 0 ? (
                     <ProductionFloorGallery />
                   ) : (
                     <div className="relative">
                       <div className="aspect-[4/3] rounded-2xl overflow-hidden relative shadow-lg">
-                        <Image src={facility.image || "/placeholder.svg"} alt={facility.title} fill className="object-cover" />
+                        <Image
+                          src={facilityImages[index] || "/placeholder.svg"}
+                          alt={t(`facilities.${facilityId}.imageAlt`)}
+                          fill
+                          className="object-cover"
+                        />
                         <div className="absolute inset-0 bg-gradient-to-tr from-accent/5 to-transparent" />
                       </div>
                       <div className={`absolute -bottom-4 ${index % 2 === 0 ? '-right-4' : '-left-4'} h-24 w-24 bg-accent/8 rounded-2xl -z-10`} />
@@ -104,10 +111,10 @@ export default async function FactoryTourPage() {
                   )}
                 </div>
                 <div className={index % 2 === 1 ? "lg:order-1" : ""}>
-                  <h3 className="text-2xl font-bold tracking-tight text-foreground lg:text-3xl">{facility.title}</h3>
-                  <p className="mt-5 text-muted-foreground leading-relaxed">{facility.description}</p>
+                  <h3 className="text-2xl font-bold tracking-tight text-foreground lg:text-3xl">{t(`facilities.${facilityId}.title`)}</h3>
+                  <p className="mt-5 text-muted-foreground leading-relaxed">{t(`facilities.${facilityId}.description`)}</p>
                   <div className="mt-6 grid sm:grid-cols-2 gap-3">
-                    {facility.features.map((feature) => (
+                    {(t.raw(`facilities.${facilityId}.features`) as string[]).map((feature) => (
                       <div key={feature} className="flex items-center gap-2 text-sm text-muted-foreground">
                         <div className="h-2 w-2 rounded-full bg-accent" />
                         {feature}
@@ -130,17 +137,17 @@ export default async function FactoryTourPage() {
               <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl leading-tight">{t("digitalTitle")}</h2>
               <p className="mt-5 text-lg text-muted-foreground leading-relaxed">{t("digitalP")}</p>
               <div className="mt-8 grid sm:grid-cols-2 gap-6">
-                {digitalFeatures.map((feature) => (
-                  <div key={feature.title} className="p-4 rounded-xl bg-card border border-border/60">
-                    <h3 className="font-bold text-foreground">{feature.title}</h3>
-                    <p className="mt-1 text-sm text-muted-foreground">{feature.description}</p>
+                {digitalFeatureIds.map((id) => (
+                  <div key={id} className="p-4 rounded-xl bg-card border border-border/60">
+                    <h3 className="font-bold text-foreground">{t(`digitalFeatures.${id}.title`)}</h3>
+                    <p className="mt-1 text-sm text-muted-foreground">{t(`digitalFeatures.${id}.description`)}</p>
                   </div>
                 ))}
               </div>
             </div>
             <div className="relative">
               <div className="aspect-[4/3] rounded-2xl overflow-hidden relative shadow-xl">
-                <Image src="/images/factory-gate.jpg" alt="Shanghai Tahui Knitting Factory entrance" fill className="object-cover" />
+                <Image src="/images/factory-gate.jpg" alt={t("digitalImageAlt")} fill className="object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-tr from-accent/5 to-transparent" />
               </div>
             </div>

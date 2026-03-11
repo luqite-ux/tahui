@@ -92,6 +92,11 @@
     "manufacturingTag": "制造实力",
     "manufacturingTitle": "先进无缝针织技术",
     "manufacturingSubtitle": "工厂配备 200+ 台全成型无缝针织机，生产高端针织品，舒适贴合、接缝少、废料低。",
+    "manufacturingImageAlt": "塔汇工厂先进无缝针织设备",
+    "heroFallbackAlt1": "模特穿着奶油色镂空开衫（金色纽扣）",
+    "heroFallbackAlt2": "模特穿着象牙白荷叶边 V 领针织衫",
+    "heroFallbackAlt3": "模特穿着棕粉渐变纹理针织衫",
+    "heroFallbackAlt4": "模特穿着蓝色蕾丝边高领针织衫",
     "certifications": {
       "iso9001": "ISO 9001",
       "qualityMgmt": "质量管理",
@@ -142,12 +147,30 @@
     }
   },
   "products": {
+    "metaTitle": "产品 - 无缝针织制造商",
+    "metaDescription": "浏览我们的产品系列：无缝针织、多材质系列与先进工艺。上海 OEM / ODM 针织制造服务。",
     "ourCollections": "产品系列",
     "premiumKnitwear": "全球品牌高端针织",
     "collectionsSubtitle": "从无缝创新到工艺匠心，探索三大核心产品线。所有产品均可 OEM 生产或完整 ODM 开发。",
+    "categoryLabel": "分类 {number}",
     "category": "分类",
     "viewMoreProducts": "查看更多产品",
     "viewDetails": "查看详情",
+    "categoryImageAlt": "{category} 代表性产品",
+    "categories": {
+      "seamless": {
+        "title": "无缝针织",
+        "description": "采用先进全自动无缝针织技术生产的创新无缝毛衣和基础款，舒适贴合，无侧缝设计。"
+      },
+      "multi-material": {
+        "title": "多材质系列",
+        "description": "以羊毛、真丝、棉、亚麻及特种花式纱线等多种材质打造的高端针织及毛毯系列。"
+      },
+      "craftsmanship": {
+        "title": "先进工艺",
+        "description": "展示多元化加工能力：提花、手编、刺绣、珠饰及定制染色工艺（扎染、渐变色等）。"
+      }
+    },
     "materials": "材料",
     "premiumMaterials": "优质材料与纱线",
     "materialsSubtitle": "我们从全球可信供应商采购优质纱线，确保每笔订单品质一致、来源可持续。",
@@ -168,23 +191,58 @@
     "oemTitle": "OEM 服务",
     "oemTag": "定制制造",
     "oemDesc": "将您的设计化为现实。提供技术包、样品或详细规格，我们将按您的要求精确生产针织品。",
+    "oemBullets": [
+      "按技术包/版单生产",
+      "样品对版与开发迭代",
+      "贴牌服务与定制包装",
+      "成熟品牌可协商灵活起订量",
+      "专属生产计划与排期"
+    ],
     "odmTitle": "ODM 服务",
     "odmTag": "设计合作",
     "odmDesc": "借助我们的设计专长。从趋势研究到样品开发，内部团队为您量身打造完整系列。",
+    "odmBullets": [
+      "趋势研究与企划建议",
+      "原创设计开发",
+      "材料采购与选型",
+      "打样制作与反复优化",
+      "完整技术资料与工艺文件"
+    ],
     "ctaTitle": "准备好开发您的系列了吗？",
     "ctaSubtitle": "联系我们的团队，讨论产品需求、索取样品或预约线上工厂参观。",
     "getStartedToday": "立即开始",
+    "backToCollection": "返回本系列",
     "backToProducts": "返回产品",
     "allInCollection": "本系列全部产品。支持 OEM 与 ODM。",
-    "noProducts": "该分类暂无产品。"
+    "noProducts": "该分类暂无产品。",
+    "productMetaFallbackTitle": "产品",
+    "categoryMetaDescription": "浏览全部「{category}」产品。支持 OEM / ODM 针织制造。",
+    "productMetaDescriptionFallback": "产品：{name}。支持 OEM / ODM 针织制造。"
   },
   "common": {
     "getQuote": "获取报价",
+    "noImage": "暂无图片",
     "viewMore": "更多",
     "learnMore": "了解更多",
-    "contactUs": "联系我们"
+    "contactUs": "联系我们",
+    "openMainMenu": "打开主菜单",
+    "closeMenu": "关闭菜单",
+    "previous": "上一页",
+    "next": "下一页",
+    "morePages": "更多页面",
+    "goToPreviousPage": "前往上一页",
+    "goToNextPage": "前往下一页",
+    "previousSlide": "上一张",
+    "nextSlide": "下一张",
+    "more": "更多",
+    "close": "关闭",
+    "toggleSidebar": "切换侧边栏"
   },
   "contact": {
+    "metaTitle": "联系",
+    "metaDescription": "联系塔汇针织厂获取 OEM/ODM 针织制造服务、样品申请或工厂参观预约。支持邮箱、电话/WhatsApp 与上海工厂地址咨询。",
+    "metaOgTitle": "联系 | 塔汇针织厂",
+    "metaOgDescription": "针织制造合作咨询，立足上海，服务全球出口品牌。",
     "heroTag": "联系我们",
     "heroTitle": "与我们联系",
     "heroSubtitle": "准备开始您的针织项目？联系我们的团队获取免费咨询与报价，我们通常在 24 小时内回复。",
@@ -194,8 +252,11 @@
     "phoneDesc": "周一至周六 9:00-18:00（北京时间）",
     "address": "工厂地址",
     "addressDesc": "参观需预约",
+    "addressContent": "上海市松江区塔汇路 351 号",
     "hours": "营业时间",
     "hoursDesc": "上午 9:00 - 下午 6:00（北京时间）",
+    "hoursContent": "周一至周六",
+    "mapImageAlt": "塔汇针织厂位置地图",
     "formTag": "咨询表单",
     "formTitle": "提交咨询",
     "formSubtitle": "填写下方表单，我们的销售团队将在 24 小时内回复。",
@@ -257,10 +318,13 @@
     }
   },
   "about": {
+    "metaTitle": "关于我们 - 二十年针织制造经验",
+    "metaDescription": "了解塔汇针织厂二十余年的针织制造历程。立足上海，ISO 认证体系，服务全球出口。",
     "heroTag": "关于我们",
     "heroTitle": "二十年针织卓越之路",
     "heroP1": "二十多年来，塔汇针织厂一直是全球时尚品牌信赖的合作伙伴。从上海一家小型针织作坊起步，我们已发展成为现代化制造企业。",
     "heroP2": "如今，我们将传统针织工艺与先进无缝技术相结合，为欧洲、北美和亚洲的品牌提供卓越产品。",
+    "heroImageAlt": "塔汇针织厂大门（上海）",
     "statsYears": "年经营",
     "statsTeam": "团队成员",
     "statsBrands": "品牌合作伙伴",
@@ -302,6 +366,7 @@
     "teamP1": "每件成衣背后，都有一支专注并以此为荣的团队。",
     "teamP2": "我们通过持续培训、安全的工作环境与成长机会投资团队。许多成员已与我们共事超过十年。",
     "meetTeam": "了解我们的团队",
+    "teamImageAlt": "塔汇针织厂生产团队",
     "partnershipTag": "长期合作",
     "partnershipTitle": "建立持久关系",
     "partnershipP": "我们不仅制造产品，更建立合作。许多客户与我们合作超过十年，在变化的市场与产品迭代中共同成长。",
@@ -311,9 +376,12 @@
     "viewProducts": "查看产品"
   },
   "manufacturing": {
+    "metaTitle": "制造能力 - 全成型无缝技术",
+    "metaDescription": "了解我们的先进无缝针织技术、优质材料与专业工艺能力。200+ 全成型设备、完善质控与数字化生产管理。",
     "heroTag": "制造能力",
     "heroTitle": "先进无缝针织技术",
     "heroP": "我们的现代化工厂将全成型技术与传统工艺相结合。拥有 200 多台无缝针织机与完善的质量控制体系，我们能够大规模交付优质针织品。",
+    "heroImageAlt": "先进全成型无缝针织设备",
     "discussProject": "洽谈您的项目",
     "equipmentTag": "我们的设备",
     "techTitle": "我们的技术",
@@ -360,12 +428,74 @@
     "qc4Desc": "按确认样与 AQL 标准 100% 检验。",
     "qc5Title": "出货前审核",
     "qc5Desc": "出货前最终质量审核与文件核对。",
+    "machineImageAlt": "全成型无缝针织机（第 {index} 台）",
+    "wholegarmentImageAlt": "全成型无缝针织成衣",
+    "materialsCards": {
+      "woolMerino": {
+        "name": "羊毛与美利奴",
+        "description": "从细支澳洲美利奴到英伦粗纺羊毛，我们采购优质羊毛纱线以满足不同风格需求。",
+        "properties": ["温度调节", "天然透气", "抗异味", "可持续纤维"]
+      },
+      "cotton": {
+        "name": "棉",
+        "description": "有机棉与常规棉多种支数与克重，适配四季针织产品。",
+        "properties": ["柔软亲肤", "低致敏", "易打理", "可选有机棉"]
+      },
+      "cashmere": {
+        "name": "羊绒",
+        "description": "甄选羊绒及混纺纱线，带来细腻柔软的高端触感。",
+        "properties": ["极致柔软", "轻盈保暖", "高端质感", "耐久品质"]
+      },
+      "silkBlends": {
+        "name": "真丝与丝混纺",
+        "description": "真丝及丝混纺纱线，呈现优雅垂坠与自然光泽。",
+        "properties": ["自然光泽", "温度调节", "垂坠优雅", "奢华触感"]
+      },
+      "syntheticsBlends": {
+        "name": "化纤与混纺",
+        "description": "优质腈纶、锦纶及功能性混纺，兼顾耐用性与性价比。",
+        "properties": ["易打理", "更耐用", "不易褪色", "性价比高"]
+      },
+      "specialtyYarns": {
+        "name": "特色纱线",
+        "description": "羊驼毛、马海毛、亚麻与创新可持续纤维，满足差异化风格与功能需求。",
+        "properties": ["独特纹理", "可持续选项", "特殊功能", "风格辨识度"]
+      }
+    },
+    "techniquesList": {
+      "jacquard": {
+        "name": "提花针织",
+        "description": "通过电脑提花实现复杂多色图案与纹样。"
+      },
+      "intarsia": {
+        "name": "嵌花（Intarsia）",
+        "description": "色块拼接与清晰换色，适合大胆图形设计。"
+      },
+      "cableAran": {
+        "name": "麻花与阿兰纹",
+        "description": "经典麻花与阿兰纹理，增强立体感与传统质感。"
+      },
+      "embroidery": {
+        "name": "刺绣",
+        "description": "手工/机绣用于 Logo、装饰元素与精细细节。"
+      },
+      "handCrochet": {
+        "name": "手工钩编",
+        "description": "手工钩编细节与饰边处理，带来独特的工艺感。"
+      },
+      "printDye": {
+        "name": "印花与染色",
+        "description": "成衣染、片染及多种印花工艺，实现个性化色彩方案。"
+      }
+    },
     "ctaTitle": "与我们合作",
     "ctaP": "无论开发新系列还是扩大现有生产，我们的制造能力随时支持您的品牌。",
     "startConversation": "开始沟通",
     "tourFactory": "参观工厂"
   },
   "factoryTour": {
+    "metaTitle": "工厂参观 - 走进我们的生产基地",
+    "metaDescription": "线上参观我们位于上海的现代化针织制造基地。200+ 设备、质量管控、后整理与物流一体化。",
     "heroTag": "线上工厂参观",
     "heroTitle": "走进我们的制造基地",
     "heroP": "欢迎了解塔汇针织厂。我们位于上海、占地 1.5 万平方米的现代化工厂，将前沿技术与精湛工艺相结合，为全球品牌生产优质针织品。",
@@ -382,15 +512,94 @@
     "digitalTag": "数字化工厂",
     "digitalTitle": "数字化生产管理",
     "digitalP": "工厂采用全集成数字化管理系统，实现生产各环节的实时可视。",
+    "digitalImageAlt": "塔汇针织厂大门（上海）",
+    "digitalFeatures": {
+      "productionTracking": {
+        "title": "生产进度跟踪",
+        "description": "生产各环节实时追踪每一笔订单的进度与状态。"
+      },
+      "qualityDashboard": {
+        "title": "品质数据看板",
+        "description": "实时呈现质量指标与检验数据，便于管理决策。"
+      },
+      "inventoryManagement": {
+        "title": "库存管理",
+        "description": "纱线与成品库存自动化管理与追踪。"
+      },
+      "orderManagement": {
+        "title": "订单管理",
+        "description": "里程碑节点清晰可视，订单全过程跟踪更新。"
+      }
+    },
     "visitTag": "参观我们",
     "visitTitle": "想了解更多？",
     "visitP": "预约与团队的实时视频参观，亲眼看看工厂运转。",
-    "viewCapabilities": "查看能力"
+    "viewCapabilities": "查看能力",
+    "facilities": {
+      "productionFloor": {
+        "title": "生产车间",
+        "description": "主生产车间配备 200+ 台先进全成型无缝针织机，按高效产线布局组织生产，流程更顺畅。",
+        "imageAlt": "生产车间无缝针织设备",
+        "features": [
+          "200+ 台全成型无缝针织机",
+          "恒温恒湿生产环境",
+          "优化的产线与动线布局",
+          "实时生产监控系统"
+        ]
+      },
+      "sampleCenter": {
+        "title": "样品开发中心",
+        "description": "专业打样团队在配备样机、纱线库与设计软件的专属区域内开展快速开发与迭代。",
+        "imageAlt": "样品开发中心与打样区域",
+        "features": [
+          "快速打样开发",
+          "丰富的纱线库",
+          "CAD 设计系统",
+          "配色与对色实验"
+        ]
+      },
+      "qualityLab": {
+        "title": "质量检测实验室",
+        "description": "质检实验室配备检测设备，覆盖纱线分析、色牢度测试与成衣检验等关键项目。",
+        "imageAlt": "质量检测实验室与检验设备",
+        "features": [
+          "纱线检测设备",
+          "色牢度测试",
+          "尺寸稳定性检测",
+          "AQL 抽检工位"
+        ]
+      },
+      "finishingDept": {
+        "title": "后整理部门",
+        "description": "针织完成后，成衣进入后整理流程，包括水洗、定型、整烫与细节处理。",
+        "imageAlt": "后整理车间水洗与整烫区域",
+        "features": [
+          "专业水洗设备",
+          "蒸汽整烫设备",
+          "手工修整工位",
+          "特色后整理处理"
+        ]
+      },
+      "warehouseLogistics": {
+        "title": "仓储与物流",
+        "description": "现代化仓储与物流体系，保障库存管理高效、订单履约及时。",
+        "imageAlt": "仓库与物流作业区域",
+        "features": [
+          "恒温恒湿仓储",
+          "库存管理系统",
+          "出口单证与资料",
+          "全球物流合作伙伴"
+        ]
+      }
+    }
   },
   "quality": {
+    "metaTitle": "品质与认证 - ISO 认证制造商",
+    "metaDescription": "了解我们的 ISO 9001、ISO 14001 与 ISO 45001 认证体系：质量管理、环境管理与职业健康安全管理。",
     "heroTag": "品质与认证",
     "heroTitle": "ISO 认证制造商",
     "heroP": "我们对品质、环保与职业安全的承诺，通过国际认证与严格的质量管理体系得以体现。",
+    "heroImageAlt": "塔汇针织厂质量检验现场",
     "startConversation": "开始沟通",
     "processTag": "我们的流程",
     "processTitle": "质量控制流程",
@@ -398,16 +607,191 @@
     "certificationsTag": "我们的认证",
     "certificationsTitle": "认证与荣誉",
     "certificationsSub": "国际认证与行业荣誉，彰显我们对卓越的承诺。",
-    "viewCertifications": "查看我们的认证"
+    "viewCertifications": "查看我们的认证",
+    "certificationsDetail": {
+      "iso9001": {
+        "title": "质量管理体系",
+        "description": "ISO 9001 认证体现我们对全过程品质一致性与持续改进的承诺。",
+        "imageAlt": "ISO 9001 质量管理体系认证",
+        "benefits": [
+          "标准化质量流程文件",
+          "持续改进机制",
+          "以客户满意为导向",
+          "产品质量稳定一致",
+          "风险识别与预防",
+          "定期内部审核"
+        ]
+      },
+      "iso14001": {
+        "title": "环境管理体系",
+        "description": "通过 ISO 14001，我们以负责任的制造实践降低环境影响。",
+        "imageAlt": "ISO 14001 环境管理体系认证",
+        "benefits": [
+          "废弃物减量计划",
+          "节能与效率提升",
+          "可持续采购选项",
+          "污染预防措施",
+          "环境合规管理",
+          "持续改进"
+        ]
+      },
+      "iso45001": {
+        "title": "职业健康安全管理",
+        "description": "员工的安全与健康是我们最优先的事项之一。",
+        "imageAlt": "ISO 45001 职业健康安全管理体系认证",
+        "benefits": [
+          "安全的工作条件",
+          "定期安全培训",
+          "危险源识别",
+          "应急预案与演练",
+          "员工健康管理",
+          "事故调查与改进"
+        ]
+      }
+    },
+    "honorsTag": "荣誉与资质",
+    "honorsTitle": "证书与荣誉展示",
+    "honorsSub": "按类别整理的奖项、认证与资质文件。",
+    "honorCategories": {
+      "iso": {
+        "label": "ISO 体系认证",
+        "description": "国际认可的 ISO 体系认证，覆盖质量管理、环境管理与职业健康安全管理，确保运营稳定合规。"
+      },
+      "bsci": {
+        "label": "社会责任与合规",
+        "description": "BSCI 等社会责任与合规认证，体现我们对道德制造、公平用工与负责任供应链的承诺。"
+      },
+      "patent": {
+        "label": "专利与创新",
+        "description": "专利成果体现我们在针织技术与工艺创新上的持续投入。"
+      },
+      "honor": {
+        "label": "荣誉与表彰",
+        "description": "来自政府与行业的认可（如名牌、高新技术企业、知名商标等），验证我们的综合实力。"
+      },
+      "green": {
+        "label": "绿色低碳信用",
+        "description": "绿色与低碳企业信用评价，体现我们对可持续与环保制造的长期投入。"
+      },
+      "other": {
+        "label": "其他资质",
+        "description": "支撑我们质量与合规体系的其他资质与证明文件。"
+      }
+    },
+    "processSteps": {
+      "01": {
+        "title": "来料检验",
+        "description": "每批纱线/辅料到货后进行克重、颜色一致性与外观等综合检测。"
+      },
+      "02": {
+        "title": "产线过程巡检",
+        "description": "生产过程中定期检查机号、花型准确性与针迹质量，及时纠偏。"
+      },
+      "03": {
+        "title": "组装与后道检验",
+        "description": "套口、缝合、整烫与辅料工序逐项检验，确保工艺质量。"
+      },
+      "04": {
+        "title": "成品全检",
+        "description": "每件成衣按确认样与标准进行 100% 检验。"
+      },
+      "05": {
+        "title": "AQL 抽检",
+        "description": "按 AQL 标准进行统计抽样（常用 AQL 2.5 或更严格）。"
+      },
+      "06": {
+        "title": "出货前审核",
+        "description": "核对数量、包装质量与单证资料，确保出货准确无误。"
+      }
+    },
+    "commitmentsTag": "我们的承诺",
+    "commitmentsTitle": "品质承诺",
+    "commitmentsP": "品质不只是一个部门的职责，而是贯穿全公司的理念，融入我们每一道流程与每一个细节。",
+    "commitmentsImageAlt": "塔汇工厂品质承诺与质检场景",
+    "commitments": {
+      "zeroTolerance": {
+        "title": "零容忍原则",
+        "description": "对关键缺陷零容忍。任何不符合标准的成衣均不予放行。"
+      },
+      "traceability": {
+        "title": "全程可追溯",
+        "description": "从纱线批次到成衣出货全流程可追溯，便于快速定位与解决问题。"
+      },
+      "training": {
+        "title": "持续培训",
+        "description": "团队持续接受质量标准与检验技能培训，确保执行一致。"
+      },
+      "clientStandards": {
+        "title": "客户标准对齐",
+        "description": "可根据客户要求与品牌 QC 手册调整质量流程与检验标准。"
+      }
+    },
+    "ctaTitle": "体验我们的质量标准",
+    "ctaP": "选择对品质同样严谨的制造伙伴，与我们一起把控每一件成衣。"
   },
   "terms": {
+    "metaTitle": "服务条款 - 塔汇针织厂",
+    "metaDescription": "关于使用塔汇针织厂网站及相关制造服务的服务条款说明。",
     "title": "服务条款",
     "lastUpdated": "最后更新",
+    "intro": "欢迎访问塔汇针织厂网站。访问或使用本网站即表示您同意受本服务条款约束。如您不同意，请勿使用本网站。",
+    "sections": {
+      "useWebsite": {
+        "title": "网站使用",
+        "body": "本网站用于信息展示与商务咨询。您可以了解我们的针织制造服务、浏览产品，并联系我们获取报价或合作咨询。您同意不将本网站用于任何非法目的，或以任何可能损害网站或影响我们运营的方式使用。"
+      },
+      "ip": {
+        "title": "内容与知识产权",
+        "body": "本网站上的所有内容（包括文字、图片、标识与设计）均归塔汇针织厂或其许可方所有，并受相关知识产权法律保护。未经书面许可，您不得复制、转载或传播本网站内容。"
+      },
+      "business": {
+        "title": "商务咨询与订单",
+        "body": "通过网站表单或邮件提交的咨询不构成具有约束力的合同。所有 OEM/ODM 订单、价格与条款以双方另行签署的书面协议为准。我们保留在合理范围内拒绝或取消任何请求的权利。"
+      },
+      "disclaimer": {
+        "title": "免责声明",
+        "body": "我们会尽力确保网站信息准确且及时更新，但不保证所有内容完全无误或完整。产品图片与描述仅供参考，可能因批次与工艺调整而有所变化。因依赖网站信息作出商业决策而产生的损失，我们不承担责任。"
+      },
+      "liability": {
+        "title": "责任限制",
+        "body": "在法律允许的最大范围内，除双方另有书面协议约定外，塔汇针织厂对因您使用本网站或与我们开展业务往来而产生的任何间接、附带或后果性损失不承担责任。"
+      },
+      "changes": {
+        "title": "变更与联系",
+        "bodyBefore": "我们可能不定期更新本服务条款。上方“最后更新”日期将反映变更情况。条款变更后继续使用本网站即视为接受变更。如对本条款有任何疑问，请通过以下邮箱联系我们："
+      }
+    },
     "contactUs": "联系我们"
   },
   "privacy": {
+    "metaTitle": "隐私政策 - 塔汇针织厂",
+    "metaDescription": "塔汇针织厂隐私政策：说明我们在您访问网站或进行商务咨询时如何收集、使用并保护您的信息。",
     "title": "隐私政策",
     "lastUpdated": "最后更新",
+    "intro": "塔汇针织厂（下称“我们”）重视并保护您的隐私。本隐私政策说明您访问我们的网站或进行商务咨询时，我们如何收集、使用、披露并保护您的信息。",
+    "sections": {
+      "collect": {
+        "title": "我们收集的信息",
+        "body": "当您使用联系表单、请求报价或与我们沟通时，我们可能会收集您主动提供的信息，例如姓名、公司名称、邮箱、电话与留言内容。您访问网站时，我们也可能自动收集部分技术信息（如 IP 地址、浏览器类型、访问页面等），用于网站分析与优化。"
+      },
+      "use": {
+        "title": "我们如何使用信息",
+        "body": "我们使用所收集的信息用于回复咨询、处理报价需求、提供 OEM/ODM 服务、改进网站与服务，以及发送与业务相关的沟通信息。我们不会向第三方出售您的个人信息。"
+      },
+      "security": {
+        "title": "数据安全与保存期限",
+        "body": "我们采取适当的技术与组织措施保护您的数据安全。我们仅在实现本政策所述目的所需期限内保存您的信息，或在法律要求的期限内保存。"
+      },
+      "cookies": {
+        "title": "Cookie 与分析",
+        "body": "我们的网站可能使用 Cookie 或类似技术以提升体验并进行数据分析。您可以通过浏览器设置管理或禁用 Cookie。"
+      },
+      "rights": {
+        "title": "您的权利与联系",
+        "bodyBefore": "根据您所在司法辖区的规定，您可能拥有访问、更正或删除个人数据等权利。如需行使相关权利或对本政策有任何疑问，请联系：",
+        "bodyAfter": "我们可能不定期更新本隐私政策；上方“最后更新”日期将反映变更情况。"
+      }
+    },
     "contactUs": "联系我们"
   }
 }
