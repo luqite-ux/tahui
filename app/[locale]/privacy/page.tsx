@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { Link } from "@/i18n/routing"
-import { SITE_URL } from "@/lib/seo"
+import { SITE_URL, canonicalPath } from "@/lib/seo"
 import { getTranslations } from "next-intl/server"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: t("metaTitle"),
     description: t("metaDescription"),
-    alternates: { canonical: `${SITE_URL}/privacy` },
+    alternates: { canonical: `${SITE_URL}${canonicalPath("/privacy", locale)}` },
   }
 }
 

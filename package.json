@@ -10,7 +10,8 @@
     "download-images": "node scripts/download-images-from-vercel.js",
     "sanity:populate": "node scripts/populate-sanity-initial.mjs",
     "sanity:populate-honors": "node scripts/populate-honors.mjs",
-    "sanity:fix-honor-titles": "node scripts/fix-honor-uuid-titles.mjs"
+    "sanity:fix-honor-titles": "node scripts/fix-honor-uuid-titles.mjs",
+    "translate-products": "node --env-file=.env.local scripts/translate-products.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",

@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import Image from "next/image"
 import { Link } from "@/i18n/routing"
-import { SITE_URL } from "@/lib/seo"
+import { SITE_URL, canonicalPath } from "@/lib/seo"
 import { getTranslations } from "next-intl/server"
 import { ArrowRight, Building2, Cpu, Users, Package, BarChart3, Clock } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: t("metaTitle"),
     description: t("metaDescription"),
-    alternates: { canonical: `${SITE_URL}/factory-tour` },
+    alternates: { canonical: `${SITE_URL}${canonicalPath("/factory-tour", locale)}` },
   }
 }
 

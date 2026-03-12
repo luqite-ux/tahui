@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import Image from "next/image"
 import { Link } from "@/i18n/routing"
 import { notFound } from "next/navigation"
-import { SITE_URL } from "@/lib/seo"
+import { SITE_URL, canonicalPath } from "@/lib/seo"
 import { getTranslations } from "next-intl/server"
 import { ArrowLeft } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
@@ -10,14 +10,19 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { client } from "@/sanity/lib/client"
 import { urlFor } from "@/sanity/lib/image"
+import { getProductDisplayName, getProductDisplayDescription } from "@/lib/product-locale"
 
 const CATEGORY_IDS = ["seamless", "multi-material", "craftsmanship"] as const
 
 const PRODUCTS_BY_CATEGORY_QUERY = `*[_type == "product" && category->id == $categoryId] | order(order asc, name asc) {
   _id,
   name,
+  nameZh,
+  nameFr,
   "slug": slug.current,
   description,
+  descriptionZh,
+  descriptionFr,
   "categoryTitle": category->title,
   images
 }`
@@ -33,10 +38,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     ? t(`categories.${categoryId}.title`)
     : null
   if (!title) return { title: t("metaTitle") }
+  const path = canonicalPath(`/products/category/${categoryId}`, locale)
   return {
     title: `${title} - TAHUI Sweater Factory`,
     description: t("categoryMetaDescription", { category: title }),
-    alternates: { canonical: `${SITE_URL}/products/category/${categoryId}` },
+    alternates: { canonical: `${SITE_URL}${path}` },
   }
 }
 
@@ -45,20 +51,24 @@ export async function generateStaticParams() {
 }
 
 export default async function CategoryProductsPage({ params }: Props) {
-  const { categoryId } = await params
+  const { locale, categoryId } = await params
   if (!CATEGORY_IDS.includes(categoryId as (typeof CATEGORY_IDS)[number])) {
     notFound()
   }
 
-  const t = await getTranslations("products")
-  const tCommon = await getTranslations("common")
+  const t = await getTranslations({ locale, namespace: "products" })
+  const tCommon = await getTranslations({ locale, namespace: "common" })
 
   const products = await client.fetch<
     Array<{
       _id: string
       name: string
+      nameZh?: string | null
+      nameFr?: string | null
       slug?: string | null
       description?: string | null
+      descriptionZh?: string | null
+      descriptionFr?: string | null
       categoryTitle?: string | null
       images?: Array<{ asset?: { _ref?: string }; alt?: string | null } | null>
     }>
@@ -103,7 +113,7 @@ export default async function CategoryProductsPage({ params }: Props) {
                         {firstImage?.asset ? (
                           <Image
                             src={urlFor(firstImage).width(800).height(600).url()}
-                            alt={firstImage?.alt ?? product.name}
+                            alt={firstImage?.alt ?? getProductDisplayName(product, locale)}
                             fill
                             className="object-cover transition-transform duration-700 ease-out group-hover/card:scale-105"
                             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
@@ -115,17 +125,15 @@ export default async function CategoryProductsPage({ params }: Props) {
                         )}
                       </div>
                       <CardContent className="p-5">
-                        {product.categoryTitle && (
-                          <p className="text-xs font-medium text-accent uppercase tracking-wider mb-1">
-                            {product.categoryTitle}
-                          </p>
-                        )}
+                        <p className="text-xs font-medium text-accent uppercase tracking-wider mb-1">
+                          {categoryTitle}
+                        </p>
                         <h2 className="font-bold text-foreground text-base leading-tight">
-                          {product.name}
+                          {getProductDisplayName(product, locale)}
                         </h2>
-                        {product.description && (
+                        {getProductDisplayDescription(product, locale) && (
                           <p className="mt-2 text-sm text-muted-foreground leading-relaxed line-clamp-3">
-                            {product.description}
+                            {getProductDisplayDescription(product, locale)}
                           </p>
                         )}
                         <span className="inline-flex items-center gap-1 mt-3 text-xs font-medium text-accent/70 group-hover/card:text-accent transition-colors">

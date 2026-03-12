@@ -5,6 +5,11 @@ import { routing } from '@/i18n/routing'
 
 type Props = { children: React.ReactNode; params: Promise<{ locale: string }> }
 
+/** 为所有语言生成静态路径，确保 /zh/products/xxx、/fr/... 等可访问 */
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }))
+}
+
 export default async function LocaleLayout({ children, params }: Props) {
   const { locale } = await params
   if (!routing.locales.includes(locale as 'en' | 'zh' | 'fr')) notFound()

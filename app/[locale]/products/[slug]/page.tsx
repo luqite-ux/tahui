@@ -2,33 +2,18 @@ import type { Metadata } from "next"
 import Image from "next/image"
 import { Link } from "@/i18n/routing"
 import { notFound } from "next/navigation"
-import { SITE_URL } from "@/lib/seo"
+import { SITE_URL, canonicalPath } from "@/lib/seo"
 import { getTranslations } from "next-intl/server"
 import { ArrowLeft } from "lucide-react"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { client } from "@/sanity/lib/client"
 import { urlFor } from "@/sanity/lib/image"
+import { getProductDisplayName, getProductDisplayDescription } from "@/lib/product-locale"
 
-const PRODUCT_BY_SLUG_QUERY = `*[_type == "product" && slug.current == $slug][0] {
-  _id,
-  name,
-  "slug": slug.current,
-  description,
-  "categoryId": category->id,
-  "categoryTitle": category->title,
-  images
-}`
-
-const PRODUCT_BY_ID_QUERY = `*[_type == "product" && _id == $id][0] {
-  _id,
-  name,
-  "slug": slug.current,
-  description,
-  "categoryId": category->id,
-  "categoryTitle": category->title,
-  images
-}`
+const PRODUCT_FIELDS = `_id, name, nameZh, nameFr, "slug": slug.current, description, descriptionZh, descriptionFr, "categoryId": category->id, "categoryTitle": category->title, images`
+const PRODUCT_BY_SLUG_QUERY = `*[_type == "product" && slug.current == $slug][0] { ${PRODUCT_FIELDS} }`
+const PRODUCT_BY_ID_QUERY = `*[_type == "product" && _id == $id][0] { ${PRODUCT_FIELDS} }`
 
 const ALL_PRODUCT_SLUGS_QUERY = `*[_type == "product" && defined(slug.current)]{ "slug": slug.current }`
 const ALL_PRODUCT_IDS_QUERY = `*[_type == "product" && !defined(slug.current)]{ "_id": _id }`
@@ -37,24 +22,35 @@ export const revalidate = 60
 
 type Props = { params: Promise<{ locale: string; slug: string }> }
 
+const META_PRODUCT_FIELDS = "name, nameZh, nameFr, description, descriptionZh, descriptionFr"
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params
   const tProducts = await getTranslations({ locale, namespace: "products" })
-  let product = await client.fetch<{ name?: string; description?: string | null } | null>(
-    `*[_type == "product" && slug.current == $slug][0]{ name, description }`,
+  let product = await client.fetch<{
+    name?: string
+    nameZh?: string | null
+    nameFr?: string | null
+    description?: string | null
+    descriptionZh?: string | null
+    descriptionFr?: string | null
+  } | null>(
+    `*[_type == "product" && slug.current == $slug][0]{ ${META_PRODUCT_FIELDS} }`,
     { slug }
   )
   if (!product) {
-    product = await client.fetch(
-      `*[_type == "product" && _id == $id][0]{ name, description }`,
+    product = await client.fetch<typeof product>(
+      `*[_type == "product" && _id == $id][0]{ ${META_PRODUCT_FIELDS} }`,
       { id: slug }
     )
   }
   if (!product?.name) return { title: tProducts("productMetaFallbackTitle") }
+  const displayName = getProductDisplayName(product, locale)
+  const displayDesc = getProductDisplayDescription(product, locale)
+  const path = canonicalPath(`/products/${slug}`, locale)
   return {
-    title: `${product.name} - TAHUI Sweater Factory`,
-    description: product.description ?? tProducts("productMetaDescriptionFallback", { name: product.name }),
-    alternates: { canonical: `${SITE_URL}/products/${slug}` },
+    title: `${displayName} - TAHUI Sweater Factory`,
+    description: displayDesc ?? tProducts("productMetaDescriptionFallback", { name: displayName }),
+    alternates: { canonical: `${SITE_URL}${path}` },
   }
 }
 
@@ -67,12 +63,16 @@ export async function generateStaticParams() {
 }
 
 export default async function ProductDetailPage({ params }: Props) {
-  const { slug } = await params
+  const { locale, slug } = await params
   let product = await client.fetch<{
     _id: string
     name: string
+    nameZh?: string | null
+    nameFr?: string | null
     slug?: string | null
     description?: string | null
+    descriptionZh?: string | null
+    descriptionFr?: string | null
     categoryId?: string | null
     categoryTitle?: string | null
     images?: Array<{ asset?: { _ref?: string }; alt?: string | null } | null>
@@ -83,11 +83,18 @@ export default async function ProductDetailPage({ params }: Props) {
 
   if (!product) notFound()
 
-  const tNav = await getTranslations("nav")
-  const tProducts = await getTranslations("products")
-  const tCommon = await getTranslations("common")
+  const tNav = await getTranslations({ locale, namespace: "nav" })
+  const tProducts = await getTranslations({ locale, namespace: "products" })
+  const tCommon = await getTranslations({ locale, namespace: "common" })
 
   const categoryHref = product.categoryId ? `/products/category/${product.categoryId}` : "/products"
+  const displayName = getProductDisplayName(product, locale)
+  const displayDescription = getProductDisplayDescription(product, locale)
+  const CATEGORY_IDS = ["seamless", "multi-material", "craftsmanship"] as const
+  const categoryTitle =
+    product.categoryId && CATEGORY_IDS.includes(product.categoryId as (typeof CATEGORY_IDS)[number])
+      ? tProducts(`categories.${product.categoryId}.title`)
+      : product.categoryTitle ?? null
 
   return (
     <div className="min-h-screen">
@@ -100,16 +107,16 @@ export default async function ProductDetailPage({ params }: Props) {
             <Link href="/products" className="hover:text-accent transition-colors">
               {tNav("products")}
             </Link>
-            {product.categoryTitle && (
+            {categoryTitle && (
               <>
                 <span aria-hidden>/</span>
                 <Link href={categoryHref} className="hover:text-accent transition-colors">
-                  {product.categoryTitle}
+                  {categoryTitle}
                 </Link>
               </>
             )}
             <span aria-hidden>/</span>
-            <span className="text-foreground font-medium">{product.name}</span>
+            <span className="text-foreground font-medium">{displayName}</span>
           </nav>
 
           <div className="grid lg:grid-cols-2 gap-10 lg:gap-14">
@@ -120,7 +127,7 @@ export default async function ProductDetailPage({ params }: Props) {
                   <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-warm/30 shadow-md ring-1 ring-border/20">
                     <Image
                       src={urlFor(product.images[0]).width(1200).height(900).url()}
-                      alt={product.images[0]?.alt ?? product.name}
+                      alt={product.images[0]?.alt ?? displayName}
                       fill
                       className="object-cover"
                       sizes="(max-width: 1024px) 100vw, 50vw"
@@ -137,7 +144,7 @@ export default async function ProductDetailPage({ params }: Props) {
                           {img?.asset ? (
                             <Image
                               src={urlFor(img).width(600).height(600).url()}
-                              alt={img?.alt ?? `${product.name} ${i + 2}`}
+                              alt={img?.alt ?? `${displayName} ${i + 2}`}
                               fill
                               className="object-cover"
                               sizes="(max-width: 640px) 50vw, 20vw"
@@ -157,19 +164,19 @@ export default async function ProductDetailPage({ params }: Props) {
 
             {/* 介绍区 */}
             <div>
-              {product.categoryTitle && (
+              {categoryTitle && (
                 <p className="text-sm font-semibold text-accent tracking-[0.15em] uppercase mb-2">
-                  {product.categoryTitle}
+                  {categoryTitle}
                 </p>
               )}
               <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl leading-tight">
-                {product.name}
+                {displayName}
               </h1>
 
-              {product.description && (
+              {displayDescription && (
                 <div className="mt-6 prose prose-neutral dark:prose-invert max-w-none">
                   <p className="text-muted-foreground leading-relaxed whitespace-pre-line">
-                    {product.description}
+                    {displayDescription}
                   </p>
                 </div>
               )}

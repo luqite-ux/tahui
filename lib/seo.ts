@@ -1,6 +1,17 @@
 /**
  * 全站 SEO 常量，用于 metadata、sitemap、JSON-LD 等
  */
+
+/** 默认语言（与 i18n/routing 一致），该语言不显示在 URL 前缀中 */
+const DEFAULT_LOCALE = 'en'
+
+/**
+ * 带语言的 canonical 路径：默认语言不加前缀，其它语言加 /locale 前缀
+ */
+export function canonicalPath(path: string, locale: string): string {
+  return locale === DEFAULT_LOCALE ? path : `/${locale}${path}`
+}
+
 export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ||
   (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null) ||

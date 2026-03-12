@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import Image from "next/image"
 import { Link } from "@/i18n/routing"
-import { SITE_URL } from "@/lib/seo"
+import { SITE_URL, canonicalPath } from "@/lib/seo"
 import { ArrowRight, CheckCircle, Sparkles, Palette, Scissors } from "lucide-react"
 import { getTranslations } from "next-intl/server"
 import { Button } from "@/components/ui/button"
@@ -10,6 +10,7 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { client } from "@/sanity/lib/client"
 import { urlFor } from "@/sanity/lib/image"
+import { getProductDisplayName, getProductDisplayDescription } from "@/lib/product-locale"
 
 type Props = { params: Promise<{ locale: string }> }
 
@@ -19,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: t("metaTitle"),
     description: t("metaDescription"),
-    alternates: { canonical: `${SITE_URL}/products` },
+    alternates: { canonical: `${SITE_URL}${canonicalPath("/products", locale)}` },
   }
 }
 
@@ -29,8 +30,12 @@ export const revalidate = 60
 const PRODUCTS_QUERY = `*[_type == "product"] | order(order asc, name asc) {
   _id,
   name,
+  nameZh,
+  nameFr,
   "slug": slug.current,
   description,
+  descriptionZh,
+  descriptionFr,
   "categoryId": category->id,
   "categoryTitle": category->title,
   images
@@ -47,8 +52,12 @@ const categoryNav = [
 type SanityProduct = {
   _id: string
   name: string
+  nameZh?: string | null
+  nameFr?: string | null
   slug?: string | null
   description?: string | null
+  descriptionZh?: string | null
+  descriptionFr?: string | null
   categoryId?: string | null
   categoryTitle?: string | null
   images?: Array<{ asset?: { _ref?: string }; alt?: string | null } | null>
@@ -96,12 +105,14 @@ const materialIds = ["wool", "cotton", "cashmere", "silk", "linen", "fancyYarns"
 function CategorySection({
   category,
   products,
+  locale,
   bgClass,
   t,
   tCommon,
 }: {
   category: CategoryConfig
   products: SanityProduct[]
+  locale: string
   bgClass?: string
   t: Awaited<ReturnType<typeof getTranslations>>
   tCommon: Awaited<ReturnType<typeof getTranslations>>
@@ -169,7 +180,7 @@ function CategorySection({
                       {firstImage?.asset ? (
                         <Image
                           src={urlFor(firstImage).width(800).height(600).url()}
-                          alt={firstImage?.alt ?? product.name}
+                          alt={firstImage?.alt ?? getProductDisplayName(product, locale)}
                           fill
                           className="object-cover transition-transform duration-700 ease-out group-hover/card:scale-105"
                           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
@@ -184,11 +195,11 @@ function CategorySection({
                     <div className="absolute top-0 left-1/2 -translate-x-1/2 h-[2px] w-0 group-hover/card:w-2/3 bg-gradient-to-r from-transparent via-accent to-transparent rounded-b-full transition-all duration-500" />
                     <CardContent className="p-5">
                       <h3 className="font-bold text-foreground group-hover/card:text-primary transition-colors duration-300 leading-tight text-base">
-                        {product.name}
+                        {getProductDisplayName(product, locale)}
                       </h3>
-                      {product.description && (
+                      {getProductDisplayDescription(product, locale) && (
                         <p className="mt-2 text-sm text-muted-foreground leading-relaxed line-clamp-2">
-                          {product.description}
+                          {getProductDisplayDescription(product, locale)}
                         </p>
                       )}
                       <span className="inline-flex items-center gap-1 mt-3 text-xs font-medium text-accent/70 group-hover/card:text-accent transition-colors duration-300">
@@ -209,19 +220,12 @@ function CategorySection({
 
 /* ─── Page ─── */
 
-export default async function ProductsPage() {
-  const t = await getTranslations("products")
-  const tCommon = await getTranslations("common")
+export default async function ProductsPage({ params }: Props) {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: "products" })
+  const tCommon = await getTranslations({ locale, namespace: "common" })
 
-  let sanityProducts: Array<{
-    _id: string
-    name: string
-    slug?: string | null
-    description?: string | null
-    categoryId?: string | null
-    categoryTitle?: string | null
-    images?: Array<{ asset?: { _ref?: string }; alt?: string | null } | null>
-  }> = []
+  let sanityProducts: SanityProduct[] = []
   try {
     sanityProducts = await client.fetch(PRODUCTS_QUERY)
   } catch {
@@ -283,6 +287,7 @@ export default async function ProductsPage() {
           <CategorySection
             category={category}
             products={products}
+            locale={locale}
             bgClass={i % 2 === 1 ? "bg-secondary/50" : ""}
             t={t}
             tCommon={tCommon}

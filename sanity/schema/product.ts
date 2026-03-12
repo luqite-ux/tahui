@@ -8,9 +8,22 @@ export const product = defineType({
   fields: [
     defineField({
       name: 'name',
-      title: '产品名称',
+      title: '产品名称（英文）',
       type: 'string',
+      description: '默认显示名称，也用于生成 URL',
       validation: (r) => r.required(),
+    }),
+    defineField({
+      name: 'nameZh',
+      title: '产品名称（中文）',
+      type: 'string',
+      description: '留空则显示英文名称',
+    }),
+    defineField({
+      name: 'nameFr',
+      title: '产品名称（法文）',
+      type: 'string',
+      description: '留空则显示英文名称',
     }),
     defineField({
       name: 'slug',
@@ -27,8 +40,20 @@ export const product = defineType({
     }),
     defineField({
       name: 'description',
-      title: '描述',
+      title: '描述（英文）',
       type: 'text',
+    }),
+    defineField({
+      name: 'descriptionZh',
+      title: '描述（中文）',
+      type: 'text',
+      description: '留空则显示英文描述',
+    }),
+    defineField({
+      name: 'descriptionFr',
+      title: '描述（法文）',
+      type: 'text',
+      description: '留空则显示英文描述',
     }),
     defineField({
       name: 'images',
