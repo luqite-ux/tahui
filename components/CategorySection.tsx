@@ -18,23 +18,18 @@ export type ProductCategory = {
 export function CategorySection({
   locale,
   categories,
-  heroCategoryId = "seamless",
 }: {
   locale: string
   categories: ProductCategory[]
-  heroCategoryId?: string
 }) {
   const items = categories.slice(0, 12)
-  const heroIndex = Math.max(0, items.findIndex((c) => c.id === heroCategoryId))
-  const ordered = heroIndex === 0 ? items : [items[heroIndex], ...items.slice(0, heroIndex), ...items.slice(heroIndex + 1)]
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-5">
-      {ordered.map((cat, idx) => {
-        const isHero = idx === 0
+      {items.map((cat, idx) => {
         const href = cat.id ? `/products/category/${cat.id}` : "/products"
         const title = getCategoryDisplayTitle(cat, locale)
-        const imageUrl = cat.image ? urlFor(cat.image).width(isHero ? 1400 : 900).height(isHero ? 1400 : 1125).url() : null
+        const imageUrl = cat.image ? urlFor(cat.image).width(900).height(1125).url() : null
 
         return (
           <Link
@@ -43,21 +38,16 @@ export function CategorySection({
             className={[
               "group relative overflow-hidden rounded-2xl border border-border/40 bg-card shadow-sm",
               "hover:shadow-xl hover:shadow-foreground/[0.04] hover:-translate-y-0.5 transition-all duration-500 ease-out",
-              isHero ? "lg:col-span-2 lg:row-span-2" : "",
             ].join(" ")}
           >
-            <div className={isHero ? "relative h-full min-h-[340px] lg:min-h-[520px]" : "relative aspect-[4/5]"}>
+            <div className="relative aspect-[4/5]">
               {imageUrl ? (
                 <Image
                   src={imageUrl}
                   alt={title}
                   fill
                   className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-                  sizes={
-                    isHero
-                      ? "(max-width: 1024px) 100vw, 50vw"
-                      : "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                  }
+                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                 />
               ) : (
                 <div className="absolute inset-0 bg-warm/30" />
@@ -79,12 +69,12 @@ export function CategorySection({
               <div className="absolute inset-x-0 bottom-0 p-4 lg:p-5">
                 <div className="max-w-[90%]">
                   <p className="text-white/90 text-[11px] tracking-[0.22em] uppercase font-semibold">
-                    {cat.number ? `${cat.number}` : isHero ? "01" : ""}
+                    {cat.number ? `${cat.number}` : String(idx + 1).padStart(2, "0")}
                   </p>
                   <h3
                     className={[
                       "mt-1 text-white font-semibold tracking-tight leading-[1.05] transition-transform duration-500 ease-out group-hover:-translate-y-0.5",
-                      isHero ? "text-[1.75rem] sm:text-3xl lg:text-[2.75rem]" : "text-lg sm:text-xl",
+                      "text-lg sm:text-xl",
                     ].join(" ")}
                   >
                     {title}

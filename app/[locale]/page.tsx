@@ -155,7 +155,7 @@ export default async function HomePage({ params }: Props) {
             <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">{t("collectionsTitle")}</h2>
             <p className="mt-5 text-lg text-muted-foreground leading-relaxed">{t("collectionsSubtitle")}</p>
           </div>
-          <CategorySection locale={locale} categories={productCategories} heroCategoryId="seamless" />
+          <CategorySection locale={locale} categories={productCategories} />
           <div className="mt-14 text-center">
             <Button variant="outline" className="border-accent/30 hover:bg-accent/10 hover:border-accent/50 transition-all duration-300 bg-transparent" asChild>
               <Link href="/products">
