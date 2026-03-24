@@ -11,6 +11,8 @@ import { Footer } from "@/components/footer"
 import { client } from "@/sanity/lib/client"
 import { urlFor } from "@/sanity/lib/image"
 import { getProductDisplayName, getProductDisplayDescription } from "@/lib/product-locale"
+import { PRODUCT_CATEGORIES_QUERY } from "@/sanity/lib/queries"
+import { getCategoryDisplayTitle } from "@/lib/category-locale"
 
 type Props = { params: Promise<{ locale: string }> }
 
@@ -42,12 +44,7 @@ const PRODUCTS_QUERY = `*[_type == "product"] | order(order asc, name asc) {
 }`
 
 /* ─── Category Data ─── */
-
-const categoryNav = [
-  { id: "seamless", icon: Sparkles },
-  { id: "multi-material", icon: Palette },
-  { id: "craftsmanship", icon: Scissors },
-]
+const categoryIcons = [Sparkles, Palette, Scissors]
 
 type SanityProduct = {
   _id: string
@@ -67,37 +64,12 @@ interface CategoryConfig {
   id: string
   number: string
   title: string
-  description: string
-  image: string
+  titleZh?: string | null
+  titleFr?: string | null
+  description?: string | null
+  image?: unknown
   icon: typeof Sparkles
 }
-
-const categoryConfigs: CategoryConfig[] = [
-  {
-    id: "seamless",
-    number: "01",
-    title: "seamless",
-    description: "seamless",
-    image: "/images/category-seamless.jpg",
-    icon: Sparkles,
-  },
-  {
-    id: "multi-material",
-    number: "02",
-    title: "multi-material",
-    description: "multi-material",
-    image: "/images/category-materials.jpg",
-    icon: Palette,
-  },
-  {
-    id: "craftsmanship",
-    number: "03",
-    title: "craftsmanship",
-    description: "craftsmanship",
-    image: "/images/category-craftsmanship.jpg",
-    icon: Scissors,
-  },
-]
 const materialIds = ["wool", "cotton", "cashmere", "silk", "linen", "fancyYarns"] as const
 
 /* ─── Category Section Component ─── */
@@ -119,8 +91,11 @@ function CategorySection({
 }) {
   const Icon = category.icon
   const categoryHref = `/products/category/${category.id}`
-  const title = t(`categories.${category.id}.title`)
-  const description = t(`categories.${category.id}.description`)
+  const title = getCategoryDisplayTitle(category, locale)
+  const description = category.description ?? ""
+  const categoryImageUrl = category.image
+    ? urlFor(category.image).width(1800).height(900).url()
+    : "/placeholder.svg"
 
   return (
     <section id={category.id} className={`scroll-mt-20 py-20 lg:py-28 ${bgClass || ""}`}>
@@ -156,7 +131,7 @@ function CategorySection({
         <Link href={categoryHref} className="group block relative mb-14 lg:mb-16">
           <div className="aspect-[16/9] lg:aspect-[21/9] rounded-2xl overflow-hidden bg-warm/40 shadow-md ring-1 ring-border/20 relative">
             <Image
-              src={category.image || "/placeholder.svg"}
+              src={categoryImageUrl}
               alt={t("categoryImageAlt", { category: title })}
               fill
               className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.02]"
@@ -226,8 +201,37 @@ export default async function ProductsPage({ params }: Props) {
   const tCommon = await getTranslations({ locale, namespace: "common" })
 
   let sanityProducts: SanityProduct[] = []
+  let categoryConfigs: CategoryConfig[] = []
   try {
-    sanityProducts = await client.fetch(PRODUCTS_QUERY)
+    const [products, categories] = await Promise.all([
+      client.fetch<SanityProduct[]>(PRODUCTS_QUERY),
+      client.fetch<
+        Array<{
+          _id: string
+          id?: string | null
+          number?: string | null
+          title: string
+          titleZh?: string | null
+          titleFr?: string | null
+          description?: string | null
+          image?: unknown
+        }>
+      >(PRODUCT_CATEGORIES_QUERY),
+    ])
+    sanityProducts = products
+    categoryConfigs = categories
+      .filter((c) => Boolean(c.id))
+      .slice(0, 12)
+      .map((c, i) => ({
+        id: c.id!,
+        number: c.number ?? String(i + 1).padStart(2, "0"),
+        title: c.title,
+        titleZh: c.titleZh,
+        titleFr: c.titleFr,
+        description: c.description,
+        image: c.image,
+        icon: categoryIcons[i % categoryIcons.length],
+      }))
   } catch {
     // 无 Sanity 或未配置时使用空列表
   }
@@ -262,14 +266,14 @@ export default async function ProductsPage({ params }: Props) {
 
           {/* Anchor tabs */}
           <div className="mt-12 animate-fade-up-delay-2 flex flex-wrap gap-3">
-            {categoryNav.map((cat) => (
+            {categoryConfigs.map((cat) => (
               <a
                 key={cat.id}
                 href={`#${cat.id}`}
                 className="group/tab inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-border/60 bg-card/80 backdrop-blur-sm text-sm font-medium text-foreground/80 hover:border-accent/50 hover:text-accent hover:shadow-md hover:shadow-accent/5 transition-all duration-300"
               >
                 <cat.icon className="h-4 w-4 text-primary/60 group-hover/tab:text-accent transition-colors duration-300" strokeWidth={1.5} />
-                {t(`categories.${cat.id}.title`)}
+                {getCategoryDisplayTitle(cat, locale)}
               </a>
             ))}
           </div>

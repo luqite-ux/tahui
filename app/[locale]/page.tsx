@@ -9,6 +9,8 @@ import { Footer } from "@/components/footer"
 import { HeroCarousel } from "@/components/hero-carousel"
 import { client } from "@/sanity/lib/client"
 import { urlFor } from "@/sanity/lib/image"
+import { PRODUCT_CATEGORIES_QUERY } from "@/sanity/lib/queries"
+import { CategorySection } from "@/components/CategorySection"
 
 const statsKeys = [
   { value: "20+", key: "yearsExperience", icon: Calendar },
@@ -17,7 +19,6 @@ const statsKeys = [
   { value: "200+", key: "knittingMachines", icon: Cpu },
 ] as const
 
-const categoryKeys = ["seamless", "multiMaterial", "advancedCraftsmanship"] as const
 const advantageKeys = ["wholegarment", "oemOdm", "globalExport", "isoCertified"] as const
 const certKeys = [
   { nameKey: "iso9001", descKey: "qualityMgmt" },
@@ -32,18 +33,15 @@ const HERO_FALLBACK = [
   { src: "/images/hero-model-4.png", altKey: "heroFallbackAlt4" as const },
 ]
 
-const categoryImages = [
-  "/images/category-seamless.jpg",
-  "/images/category-materials.jpg",
-  "/images/category-craftsmanship.jpg",
-]
-
 const advantageIcons = [Layers, Settings, Globe, Shield]
 
-export default async function HomePage() {
-  const t = await getTranslations("home")
-  const tProducts = await getTranslations("products")
-  const tCommon = await getTranslations("common")
+type Props = { params: Promise<{ locale: string }> }
+
+export default async function HomePage({ params }: Props) {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: "home" })
+  const tProducts = await getTranslations({ locale, namespace: "products" })
+  const tCommon = await getTranslations({ locale, namespace: "common" })
 
   let heroSlides: { src: string; alt: string }[] = HERO_FALLBACK.map((s) => ({ src: s.src, alt: t(s.altKey) }))
   try {
@@ -60,6 +58,22 @@ export default async function HomePage() {
     }
   } catch {
     /* fallback */
+  }
+
+  let productCategories: Array<{
+    _id: string
+    id?: string | null
+    number?: string | null
+    order?: number | null
+    title: string
+    titleZh?: string | null
+    titleFr?: string | null
+    image?: unknown
+  }> = []
+  try {
+    productCategories = await client.fetch(PRODUCT_CATEGORIES_QUERY)
+  } catch {
+    /* empty */
   }
 
   return (
@@ -141,28 +155,7 @@ export default async function HomePage() {
             <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">{t("collectionsTitle")}</h2>
             <p className="mt-5 text-lg text-muted-foreground leading-relaxed">{t("collectionsSubtitle")}</p>
           </div>
-          <div className="grid md:grid-cols-3 gap-8 lg:gap-10">
-            {categoryKeys.map((key, i) => (
-              <Link key={key} href="/products" className="group">
-                <Card className="overflow-hidden rounded-2xl border-border/50 bg-card shadow-sm hover:shadow-2xl hover:shadow-accent/8 hover:-translate-y-2 transition-all duration-500 ease-out relative">
-                  <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-accent via-accent/40 to-transparent rounded-l-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  <div className="aspect-[4/3] bg-warm/50 relative overflow-hidden">
-                    <Image src={categoryImages[i] || "/placeholder.svg"} alt={t(`categories.${key}.title`)} fill className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-foreground/20 via-transparent to-accent/[0.04]" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-primary/25 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  </div>
-                  <CardContent className="p-6 lg:p-7">
-                    <h3 className="text-xl font-bold text-foreground group-hover:text-accent transition-colors duration-300">{t(`categories.${key}.title`)}</h3>
-                    <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{t(`categories.${key}.description`)}</p>
-                    <span className="inline-flex items-center gap-1 mt-4 text-xs font-medium text-accent/0 group-hover:text-accent transition-all duration-300">
-                      {t("explore")}
-                      <ArrowRight className="h-3 w-3 -translate-x-1 group-hover:translate-x-0 transition-transform duration-300" />
-                    </span>
-                  </CardContent>
-                </Card>
-              </Link>
-            ))}
-          </div>
+          <CategorySection locale={locale} categories={productCategories} heroCategoryId="seamless" />
           <div className="mt-14 text-center">
             <Button variant="outline" className="border-accent/30 hover:bg-accent/10 hover:border-accent/50 transition-all duration-300 bg-transparent" asChild>
               <Link href="/products">

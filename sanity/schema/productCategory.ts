@@ -26,7 +26,10 @@ export const productCategory = defineType({
   fields: [
     defineField({ name: 'id', type: 'string', title: 'ID（用于锚点）', description: '如 seamless, multi-material, craftsmanship' }),
     defineField({ name: 'number', type: 'string', title: '序号', description: '如 01, 02, 03' }),
-    defineField({ name: 'title', type: 'string', title: '标题' }),
+    defineField({ name: 'order', type: 'number', title: '排序', description: '数字越小越靠前（用于前台展示顺序）' }),
+    defineField({ name: 'title', type: 'string', title: '标题（英文）', description: '默认显示标题' }),
+    defineField({ name: 'titleZh', type: 'string', title: '标题（中文）', description: '留空则显示英文标题' }),
+    defineField({ name: 'titleFr', type: 'string', title: '标题（法文）', description: '留空则显示英文标题' }),
     defineField({ name: 'description', type: 'text', title: '描述' }),
     defineField({
       name: 'image',
