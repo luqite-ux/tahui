@@ -1,15 +1,12 @@
 import Image from "next/image";
 import { Mail, Phone, MapPin } from "lucide-react";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
+import { client } from "@/sanity/lib/client";
+import { PRODUCT_CATEGORIES_QUERY } from "@/sanity/lib/queries";
+import { getCategoryDisplayTitle } from "@/lib/category-locale";
 
 const footerNav = {
-  products: [
-    { key: "allProducts", href: "/products" },
-    { key: "seamlessKnitwear", href: "/products/category/seamless" },
-    { key: "multiMaterial", href: "/products/category/multi-material" },
-    { key: "advancedCraftsmanship", href: "/products/category/craftsmanship" },
-  ],
   company: [
     { key: "aboutUs", href: "/about" },
     { key: "manufacturing", href: "/manufacturing" },
@@ -25,7 +22,21 @@ const footerNav = {
 } as const;
 
 export async function Footer() {
-  const t = await getTranslations("footer");
+  const locale = await getLocale();
+  const t = await getTranslations({ locale, namespace: "footer" });
+  const productCategories = await client.fetch<
+    Array<{
+      _id: string;
+      id?: string | null;
+      title: string;
+      titleZh?: string | null;
+      titleFr?: string | null;
+      order?: number | null;
+      number?: string | null;
+    }>
+  >(PRODUCT_CATEGORIES_QUERY);
+  const footerCategories = productCategories.filter((c) => !!c?.id).slice(0, 12);
+
   return (
     <footer className="bg-primary text-primary-foreground relative overflow-hidden">
       <div className="absolute top-0 right-0 w-80 h-80 bg-accent/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
@@ -89,18 +100,32 @@ export async function Footer() {
             <h3 className="text-sm font-bold tracking-wider uppercase text-accent">
               {t("products")}
             </h3>
-            <ul className="mt-5 space-y-3">
-              {footerNav.products.map((item) => (
-                <li key={item.key}>
+            <div className="mt-5">
+              <ul className="space-y-3">
+                <li>
                   <Link
-                    href={item.href}
+                    href="/products"
                     className="text-sm opacity-70 hover:opacity-100 hover:text-accent transition-all duration-300"
                   >
-                    {t(item.key)}
+                    {t("allProducts")}
                   </Link>
                 </li>
-              ))}
-            </ul>
+              </ul>
+              {footerCategories.length > 0 && (
+                <ul className="mt-4 grid grid-cols-2 gap-x-6 gap-y-3">
+                  {footerCategories.map((cat) => (
+                    <li key={cat._id}>
+                      <Link
+                        href={`/products/category/${encodeURIComponent(cat.id as string)}`}
+                        className="text-sm opacity-70 hover:opacity-100 hover:text-accent transition-all duration-300"
+                      >
+                        {getCategoryDisplayTitle(cat, locale)}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </div>
 
           <div>

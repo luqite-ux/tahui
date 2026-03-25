@@ -42,18 +42,27 @@ type Props = { params: Promise<{ locale: string; categoryId: string }> }
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, categoryId } = await params
   const t = await getTranslations({ locale, namespace: "products" })
-  const category = await client.fetch<{
-    title?: string
-    titleZh?: string | null
-    titleFr?: string | null
-  } | null>(CATEGORY_BY_ID_QUERY, { categoryId })
-  const title = category?.title ? getCategoryDisplayTitle({ title: category.title, titleZh: category.titleZh, titleFr: category.titleFr }, locale) : null
-  if (!title) return { title: t("metaTitle") }
-  const path = canonicalPath(`/products/category/${categoryId}`, locale)
-  return {
-    title: `${title} - TAHUI Sweater Factory`,
-    description: t("categoryMetaDescription", { category: title }),
-    alternates: { canonical: `${SITE_URL}${path}` },
+  try {
+    const category = await client.fetch<{
+      title?: string
+      titleZh?: string | null
+      titleFr?: string | null
+    } | null>(CATEGORY_BY_ID_QUERY, { categoryId })
+    const title = category?.title
+      ? getCategoryDisplayTitle(
+          { title: category.title, titleZh: category.titleZh, titleFr: category.titleFr },
+          locale
+        )
+      : null
+    if (!title) return { title: t("metaTitle") }
+    const path = canonicalPath(`/products/category/${encodeURIComponent(categoryId)}`, locale)
+    return {
+      title: `${title} - TAHUI Sweater Factory`,
+      description: t("categoryMetaDescription", { category: title }),
+      alternates: { canonical: `${SITE_URL}${path}` },
+    }
+  } catch {
+    return { title: t("metaTitle") }
   }
 }
 
@@ -68,29 +77,38 @@ export default async function CategoryProductsPage({ params }: Props) {
   const t = await getTranslations({ locale, namespace: "products" })
   const tCommon = await getTranslations({ locale, namespace: "common" })
 
-  const category = await client.fetch<{
-    id?: string
-    number?: string | null
-    title?: string
-    titleZh?: string | null
-    titleFr?: string | null
-  } | null>(CATEGORY_BY_ID_QUERY, { categoryId })
-  if (!category?.id || !category.title) notFound()
+  let category:
+    | {
+        id?: string
+        number?: string | null
+        title?: string
+        titleZh?: string | null
+        titleFr?: string | null
+      }
+    | null = null
 
-  const products = await client.fetch<
-    Array<{
-      _id: string
-      name: string
-      nameZh?: string | null
-      nameFr?: string | null
-      slug?: string | null
-      description?: string | null
-      descriptionZh?: string | null
-      descriptionFr?: string | null
-      categoryTitle?: string | null
-      images?: Array<{ asset?: { _ref?: string }; alt?: string | null } | null>
-    }>
-  >(PRODUCTS_BY_CATEGORY_QUERY, { categoryId })
+  let products:
+    | Array<{
+        _id: string
+        name: string
+        nameZh?: string | null
+        nameFr?: string | null
+        slug?: string | null
+        description?: string | null
+        descriptionZh?: string | null
+        descriptionFr?: string | null
+        categoryTitle?: string | null
+        images?: Array<{ asset?: { _ref?: string }; alt?: string | null } | null>
+      }>
+    | null = null
+
+  try {
+    category = await client.fetch(CATEGORY_BY_ID_QUERY, { categoryId })
+    if (!category?.id || !category.title) notFound()
+    products = await client.fetch(PRODUCTS_BY_CATEGORY_QUERY, { categoryId })
+  } catch {
+    notFound()
+  }
 
   const categoryTitle = getCategoryDisplayTitle(
     { title: category.title, titleZh: category.titleZh, titleFr: category.titleFr },

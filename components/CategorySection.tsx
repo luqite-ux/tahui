@@ -84,9 +84,8 @@ export function CategorySection({
 
               {/* hover CTA */}
               <div className="absolute right-4 bottom-4 lg:right-5 lg:bottom-5 opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
-                <span className="inline-flex items-center justify-center gap-2 rounded-full bg-white/10 backdrop-blur-md px-3 py-2 text-xs font-semibold text-white ring-1 ring-white/15 leading-none">
-                  Explore Collection
-                  <ArrowRight className="h-3.5 w-3.5 translate-y-[0.5px]" />
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/10 backdrop-blur-md text-white ring-1 ring-white/15">
+                  <ArrowRight className="h-4 w-4" />
                 </span>
               </div>
             </div>
