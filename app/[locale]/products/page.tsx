@@ -90,7 +90,7 @@ function CategorySection({
   tCommon: Awaited<ReturnType<typeof getTranslations>>
 }) {
   const Icon = category.icon
-  const categoryHref = `/products/category/${category.id}`
+  const categoryHref = `/products/category/${encodeURIComponent(category.id)}`
   const title = getCategoryDisplayTitle(category, locale)
   const description = category.description ?? ""
   const categoryImageUrl = category.image
@@ -145,7 +145,9 @@ function CategorySection({
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6">
             {products.map((product) => {
               const firstImage = product.images?.[0]
-              const detailHref = product.slug ? `/products/${product.slug}` : `/products/${product._id}`
+              const detailHref = product.slug
+                ? `/products/${encodeURIComponent(product.slug)}`
+                : `/products/${encodeURIComponent(product._id)}`
               return (
                 <Link key={product._id} href={detailHref} className="block h-full">
                   <Card

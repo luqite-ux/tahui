@@ -24,7 +24,20 @@ export const productCategory = defineType({
   title: '产品分类',
   type: 'document',
   fields: [
-    defineField({ name: 'id', type: 'string', title: 'ID（用于锚点）', description: '如 seamless, multi-material, craftsmanship' }),
+    defineField({
+      name: 'id',
+      type: 'string',
+      title: 'ID（用于锚点/URL）',
+      description: '建议仅使用小写字母、数字与短横线，如 seamless, multi-material, craftsmanship',
+      validation: (r) =>
+        r
+          .required()
+          .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, {
+            name: 'slug-like',
+            invert: false,
+          })
+          .error('ID 必须为 URL 安全格式（仅小写字母/数字/短横线），不要包含空格'),
+    }),
     defineField({ name: 'number', type: 'string', title: '序号', description: '如 01, 02, 03' }),
     defineField({ name: 'order', type: 'number', title: '排序', description: '数字越小越靠前（用于前台展示顺序）' }),
     defineField({ name: 'title', type: 'string', title: '标题（英文）', description: '默认显示标题' }),

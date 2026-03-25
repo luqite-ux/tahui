@@ -27,7 +27,7 @@ export function CategorySection({
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-5">
       {items.map((cat, idx) => {
-        const href = cat.id ? `/products/category/${cat.id}` : "/products"
+        const href = cat.id ? `/products/category/${encodeURIComponent(cat.id)}` : "/products"
         const title = getCategoryDisplayTitle(cat, locale)
         const imageUrl = cat.image ? urlFor(cat.image).width(900).height(1125).url() : null
 

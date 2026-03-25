@@ -11,8 +11,7 @@ import { Footer } from "@/components/footer"
 import { client } from "@/sanity/lib/client"
 import { urlFor } from "@/sanity/lib/image"
 import { getProductDisplayName, getProductDisplayDescription } from "@/lib/product-locale"
-
-const CATEGORY_IDS = ["seamless", "multi-material", "craftsmanship"] as const
+import { getCategoryDisplayTitle } from "@/lib/category-locale"
 
 const PRODUCTS_BY_CATEGORY_QUERY = `*[_type == "product" && category->id == $categoryId] | order(order asc, name asc) {
   _id,
@@ -27,16 +26,28 @@ const PRODUCTS_BY_CATEGORY_QUERY = `*[_type == "product" && category->id == $cat
   images
 }`
 
+const CATEGORY_BY_ID_QUERY = `*[_type == "productCategory" && id == $categoryId][0]{
+  id,
+  number,
+  title,
+  titleZh,
+  titleFr
+}`
+
 export const revalidate = 60
+export const dynamicParams = true
 
 type Props = { params: Promise<{ locale: string; categoryId: string }> }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, categoryId } = await params
   const t = await getTranslations({ locale, namespace: "products" })
-  const title = CATEGORY_IDS.includes(categoryId as (typeof CATEGORY_IDS)[number])
-    ? t(`categories.${categoryId}.title`)
-    : null
+  const category = await client.fetch<{
+    title?: string
+    titleZh?: string | null
+    titleFr?: string | null
+  } | null>(CATEGORY_BY_ID_QUERY, { categoryId })
+  const title = category?.title ? getCategoryDisplayTitle({ title: category.title, titleZh: category.titleZh, titleFr: category.titleFr }, locale) : null
   if (!title) return { title: t("metaTitle") }
   const path = canonicalPath(`/products/category/${categoryId}`, locale)
   return {
@@ -47,17 +58,24 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export async function generateStaticParams() {
-  return CATEGORY_IDS.map((categoryId) => ({ categoryId }))
+  // allow runtime categories; keep empty for dynamic generation
+  return []
 }
 
 export default async function CategoryProductsPage({ params }: Props) {
   const { locale, categoryId } = await params
-  if (!CATEGORY_IDS.includes(categoryId as (typeof CATEGORY_IDS)[number])) {
-    notFound()
-  }
 
   const t = await getTranslations({ locale, namespace: "products" })
   const tCommon = await getTranslations({ locale, namespace: "common" })
+
+  const category = await client.fetch<{
+    id?: string
+    number?: string | null
+    title?: string
+    titleZh?: string | null
+    titleFr?: string | null
+  } | null>(CATEGORY_BY_ID_QUERY, { categoryId })
+  if (!category?.id || !category.title) notFound()
 
   const products = await client.fetch<
     Array<{
@@ -74,7 +92,10 @@ export default async function CategoryProductsPage({ params }: Props) {
     }>
   >(PRODUCTS_BY_CATEGORY_QUERY, { categoryId })
 
-  const categoryTitle = t(`categories.${categoryId}.title`)
+  const categoryTitle = getCategoryDisplayTitle(
+    { title: category.title, titleZh: category.titleZh, titleFr: category.titleFr },
+    locale
+  )
 
   return (
     <div className="min-h-screen">
@@ -103,7 +124,9 @@ export default async function CategoryProductsPage({ params }: Props) {
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
               {products.map((product) => {
                 const firstImage = product.images?.[0]
-                const detailHref = product.slug ? `/products/${product.slug}` : `/products/${product._id}`
+                const detailHref = product.slug
+                  ? `/products/${encodeURIComponent(product.slug)}`
+                  : `/products/${encodeURIComponent(product._id)}`
                 return (
                   <Link key={product._id} href={detailHref} className="block h-full">
                     <Card

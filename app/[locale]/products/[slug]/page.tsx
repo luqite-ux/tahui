@@ -10,8 +10,9 @@ import { Footer } from "@/components/footer"
 import { client } from "@/sanity/lib/client"
 import { urlFor } from "@/sanity/lib/image"
 import { getProductDisplayName, getProductDisplayDescription } from "@/lib/product-locale"
+import { getCategoryDisplayTitle } from "@/lib/category-locale"
 
-const PRODUCT_FIELDS = `_id, name, nameZh, nameFr, "slug": slug.current, description, descriptionZh, descriptionFr, "categoryId": category->id, "categoryTitle": category->title, images`
+const PRODUCT_FIELDS = `_id, name, nameZh, nameFr, "slug": slug.current, description, descriptionZh, descriptionFr, "categoryId": category->id, "categoryTitle": category->title, "categoryTitleZh": category->titleZh, "categoryTitleFr": category->titleFr, images`
 const PRODUCT_BY_SLUG_QUERY = `*[_type == "product" && slug.current == $slug][0] { ${PRODUCT_FIELDS} }`
 const PRODUCT_BY_ID_QUERY = `*[_type == "product" && _id == $id][0] { ${PRODUCT_FIELDS} }`
 
@@ -75,6 +76,8 @@ export default async function ProductDetailPage({ params }: Props) {
     descriptionFr?: string | null
     categoryId?: string | null
     categoryTitle?: string | null
+    categoryTitleZh?: string | null
+    categoryTitleFr?: string | null
     images?: Array<{ asset?: { _ref?: string }; alt?: string | null } | null>
   } | null>(PRODUCT_BY_SLUG_QUERY, { slug })
   if (!product) {
@@ -87,14 +90,21 @@ export default async function ProductDetailPage({ params }: Props) {
   const tProducts = await getTranslations({ locale, namespace: "products" })
   const tCommon = await getTranslations({ locale, namespace: "common" })
 
-  const categoryHref = product.categoryId ? `/products/category/${product.categoryId}` : "/products"
+  const categoryHref = product.categoryId
+    ? `/products/category/${encodeURIComponent(product.categoryId)}`
+    : "/products"
   const displayName = getProductDisplayName(product, locale)
   const displayDescription = getProductDisplayDescription(product, locale)
-  const CATEGORY_IDS = ["seamless", "multi-material", "craftsmanship"] as const
-  const categoryTitle =
-    product.categoryId && CATEGORY_IDS.includes(product.categoryId as (typeof CATEGORY_IDS)[number])
-      ? tProducts(`categories.${product.categoryId}.title`)
-      : product.categoryTitle ?? null
+  const categoryTitle = product.categoryId
+    ? getCategoryDisplayTitle(
+        {
+          title: product.categoryTitle ?? product.categoryId,
+          titleZh: product.categoryTitleZh,
+          titleFr: product.categoryTitleFr,
+        },
+        locale
+      )
+    : null
 
   return (
     <div className="min-h-screen">
