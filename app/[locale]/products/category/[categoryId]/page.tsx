@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import Image from "next/image"
 import { Link } from "@/i18n/routing"
-import { notFound } from "next/navigation"
+import { notFound, redirect } from "next/navigation"
 import { SITE_URL, canonicalPath } from "@/lib/seo"
 import { getTranslations } from "next-intl/server"
 import { ArrowLeft } from "lucide-react"
@@ -12,6 +12,7 @@ import { client } from "@/sanity/lib/client"
 import { urlFor } from "@/sanity/lib/image"
 import { getProductDisplayName, getProductDisplayDescription } from "@/lib/product-locale"
 import { getCategoryDisplayTitle } from "@/lib/category-locale"
+import { normalizeId } from "@/lib/normalize-id"
 
 const PRODUCTS_BY_CATEGORY_QUERY = `*[_type == "product" && category->id == $categoryId] | order(order asc, name asc) {
   _id,
@@ -42,12 +43,13 @@ type Props = { params: Promise<{ locale: string; categoryId: string }> }
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, categoryId } = await params
   const t = await getTranslations({ locale, namespace: "products" })
+  const normalizedCategoryId = normalizeId(categoryId)
   try {
     const category = await client.fetch<{
       title?: string
       titleZh?: string | null
       titleFr?: string | null
-    } | null>(CATEGORY_BY_ID_QUERY, { categoryId })
+    } | null>(CATEGORY_BY_ID_QUERY, { categoryId: normalizedCategoryId })
     const title = category?.title
       ? getCategoryDisplayTitle(
           { title: category.title, titleZh: category.titleZh, titleFr: category.titleFr },
@@ -55,7 +57,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         )
       : null
     if (!title) return { title: t("metaTitle") }
-    const path = canonicalPath(`/products/category/${encodeURIComponent(categoryId)}`, locale)
+    const path = canonicalPath(
+      `/products/category/${encodeURIComponent(normalizedCategoryId)}`,
+      locale
+    )
     return {
       title: `${title} - TAHUI Sweater Factory`,
       description: t("categoryMetaDescription", { category: title }),
@@ -73,6 +78,10 @@ export async function generateStaticParams() {
 
 export default async function CategoryProductsPage({ params }: Props) {
   const { locale, categoryId } = await params
+  const normalizedCategoryId = normalizeId(categoryId)
+  if (normalizedCategoryId && normalizedCategoryId !== categoryId) {
+    redirect(canonicalPath(`/products/category/${normalizedCategoryId}`, locale))
+  }
 
   const t = await getTranslations({ locale, namespace: "products" })
   const tCommon = await getTranslations({ locale, namespace: "common" })
@@ -103,9 +112,9 @@ export default async function CategoryProductsPage({ params }: Props) {
     | null = null
 
   try {
-    category = await client.fetch(CATEGORY_BY_ID_QUERY, { categoryId })
+    category = await client.fetch(CATEGORY_BY_ID_QUERY, { categoryId: normalizedCategoryId })
     if (!category?.id || !category.title) notFound()
-    products = await client.fetch(PRODUCTS_BY_CATEGORY_QUERY, { categoryId })
+    products = await client.fetch(PRODUCTS_BY_CATEGORY_QUERY, { categoryId: normalizedCategoryId })
   } catch {
     notFound()
   }
