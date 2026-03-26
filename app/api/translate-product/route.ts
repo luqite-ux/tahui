@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { getServerClient } from "@/sanity/lib/serverClient"
-import { translateProductFields } from "@/lib/translate"
+import { translateText } from "@/lib/translate"
 import { projectId, dataset, writeToken } from "@/sanity/env"
 
 /** 校验请求（可选：设置 TRANSLATE_API_SECRET 后需在 Header 或 body 中携带） */
@@ -55,20 +55,29 @@ export async function POST(request: Request) {
 
         const name = (doc as { name?: string }).name
         const description = (doc as { description?: string | null }).description
+        const nameZhExisting = (doc as { nameZh?: string | null }).nameZh
+        const nameFrExisting = (doc as { nameFr?: string | null }).nameFr
+        const descriptionZhExisting = (doc as { descriptionZh?: string | null }).descriptionZh
+        const descriptionFrExisting = (doc as { descriptionFr?: string | null }).descriptionFr
         if (!name?.trim()) {
           results.push({ id: cleanId, ok: false, error: "Product has no name" })
           continue
         }
 
-        const { nameZh, nameFr, descriptionZh, descriptionFr } =
-          await translateProductFields(name, description ?? undefined)
+        const patch: Record<string, unknown> = {}
+        if (!nameZhExisting?.trim()) patch.nameZh = await translateText(name, "zh")
+        if (!nameFrExisting?.trim()) patch.nameFr = await translateText(name, "fr")
+        if (description?.trim()) {
+          if (!descriptionZhExisting?.trim()) patch.descriptionZh = await translateText(description, "zh")
+          if (!descriptionFrExisting?.trim()) patch.descriptionFr = await translateText(description, "fr")
+        }
 
-        await client.patch(cleanId).set({
-          nameZh: nameZh || undefined,
-          nameFr: nameFr || undefined,
-          descriptionZh: descriptionZh ?? undefined,
-          descriptionFr: descriptionFr ?? undefined,
-        }).commit()
+        if (Object.keys(patch).length === 0) {
+          results.push({ id: cleanId, ok: true })
+          continue
+        }
+
+        await client.patch(cleanId).set(patch).commit()
 
         results.push({ id: cleanId, ok: true })
       } catch (e) {
