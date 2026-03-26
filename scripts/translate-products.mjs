@@ -28,6 +28,29 @@ const siteUrl = process.env.SITE_URL || 'http://localhost:3000'
 const secret = process.env.TRANSLATE_API_SECRET
 const useSiteApi = Boolean(siteUrl && siteUrl !== 'http://localhost:3000')
 
+async function fetchJsonWithRetry(url, init, { retries = 5, timeoutMs = 120000 } = {}) {
+  let lastErr
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      const res = await fetch(url, { ...init, signal: AbortSignal.timeout(timeoutMs) })
+      const text = await res.text()
+      let data = {}
+      try {
+        data = text ? JSON.parse(text) : {}
+      } catch {
+        data = { _raw: text }
+      }
+      return { ok: res.ok, status: res.status, data }
+    } catch (e) {
+      lastErr = e
+      const waitMs = Math.min(15000, 1000 * Math.pow(2, attempt - 1))
+      console.warn(`请求失败（第 ${attempt}/${retries} 次），${waitMs}ms 后重试：`, url)
+      await new Promise((r) => setTimeout(r, waitMs))
+    }
+  }
+  throw lastErr
+}
+
 async function main() {
   let ids = []
   const headers = { 'Content-Type': 'application/json' }
@@ -36,12 +59,11 @@ async function main() {
 
   if (useSiteApi) {
     console.log('从站点拉取产品 ID：', base + '/api/product-ids')
-    const res = await fetch(base + '/api/product-ids', { headers })
-    if (!res.ok) {
-      console.error('拉取产品 ID 失败:', res.status, await res.text())
+    const { ok, status, data } = await fetchJsonWithRetry(base + '/api/product-ids', { headers }, { timeoutMs: 60000 })
+    if (!ok) {
+      console.error('拉取产品 ID 失败:', status, data)
       process.exit(1)
     }
-    const data = await res.json()
     ids = data.ids || []
   } else {
     const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID
@@ -78,15 +100,23 @@ async function main() {
   for (let i = 0; i < chunks.length; i++) {
     const batch = chunks[i]
     console.log(`批次 ${i + 1}/${chunks.length}：${batch.length} 个产品`)
-    const apiRes = await fetch(base + '/api/translate-product', {
-      method: 'POST',
-      headers,
-      body: JSON.stringify({ ids: batch }),
-    })
-    const data = await apiRes.json().catch(() => ({}))
-    if (!apiRes.ok) {
-      console.error('API 错误:', apiRes.status, data)
-      batch.forEach((id) => fail.push({ id, error: `API ${apiRes.status}` }))
+    let out
+    try {
+      out = await fetchJsonWithRetry(
+        base + '/api/translate-product',
+        { method: 'POST', headers, body: JSON.stringify({ ids: batch }) },
+        { retries: 4, timeoutMs: 180000 }
+      )
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e)
+      console.error('API 请求失败:', msg)
+      batch.forEach((id) => fail.push({ id, error: msg }))
+      continue
+    }
+    const data = out.data || {}
+    if (!out.ok) {
+      console.error('API 错误:', out.status, data)
+      batch.forEach((id) => fail.push({ id, error: `API ${out.status}` }))
       continue
     }
     const results = data.results || []
