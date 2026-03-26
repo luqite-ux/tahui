@@ -32,7 +32,8 @@ const CATEGORY_BY_ID_QUERY = `*[_type == "productCategory" && id == $categoryId]
   number,
   title,
   titleZh,
-  titleFr
+  titleFr,
+  image
 }`
 
 export const revalidate = 60
@@ -81,6 +82,7 @@ export default async function CategoryProductsPage({ params }: Props) {
   }
 
   const t = await getTranslations({ locale, namespace: "products" })
+  const tNav = await getTranslations({ locale, namespace: "nav" })
   const tCommon = await getTranslations({ locale, namespace: "common" })
 
   let category:
@@ -120,12 +122,70 @@ export default async function CategoryProductsPage({ params }: Props) {
     { title: category.title, titleZh: category.titleZh, titleFr: category.titleFr },
     locale
   )
+  const headerImageUrl = (category as { image?: unknown } | null)?.image
+    ? urlFor((category as { image: unknown }).image).width(2400).height(1200).url()
+    : null
 
   return (
     <div className="min-h-screen">
       <Header />
 
-      <section className="pt-24 pb-16 lg:pt-28 lg:pb-24">
+      {/* Category Header */}
+      <section className="pt-20 lg:pt-24">
+        <div className="relative w-full shadow-sm overflow-hidden">
+          <div
+            className="relative w-full h-[32vh] sm:h-[34vh] lg:h-[38vh] max-h-[40vh] min-h-[30vh]"
+          >
+            {headerImageUrl ? (
+              <Image
+                src={headerImageUrl}
+                alt={categoryTitle}
+                fill
+                priority
+                sizes="100vw"
+                className="object-cover [object-position:50%_30%] brightness-75"
+              />
+            ) : (
+              <div className="absolute inset-0 bg-primary/10" />
+            )}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/10 to-black/45" />
+
+            <div className="absolute inset-0">
+              <div className="mx-auto max-w-7xl h-full px-6 lg:px-8 flex items-end">
+                <div className="pb-8 lg:pb-10 max-w-3xl">
+                  <p className="text-white/85 text-xs tracking-[0.28em] font-semibold">
+                    NEW COLLECTION
+                  </p>
+                  <h1 className="mt-2 text-white font-bold tracking-tight text-3xl sm:text-4xl lg:text-5xl">
+                    {categoryTitle}
+                  </h1>
+                  <nav className="mt-3 text-sm text-white/80">
+                    <ol className="flex flex-wrap items-center gap-2">
+                      <li>
+                        <Link href="/" className="hover:text-white transition-colors">
+                          {tNav("home")}
+                        </Link>
+                      </li>
+                      <li className="opacity-70">/</li>
+                      <li>
+                        <Link href="/products" className="hover:text-white transition-colors">
+                          {tNav("products")}
+                        </Link>
+                      </li>
+                      <li className="opacity-70">/</li>
+                      <li className="text-white font-semibold">
+                        {categoryTitle}
+                      </li>
+                    </ol>
+                  </nav>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-14 lg:py-20">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <Link
             href="/products"
@@ -135,9 +195,6 @@ export default async function CategoryProductsPage({ params }: Props) {
             {t("backToProducts")}
           </Link>
 
-          <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl mb-4">
-            {categoryTitle}
-          </h1>
           <p className="text-muted-foreground max-w-2xl mb-12">
             {t("allInCollection")}
           </p>

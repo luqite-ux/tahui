@@ -66,24 +66,36 @@ async function main() {
     return
   }
 
-  console.log(`正在请求自动翻译 ${ids.length} 个产品：${base}/api/translate-product`)
-  const apiRes = await fetch(base + '/api/translate-product', {
-    method: 'POST',
-    headers,
-    body: JSON.stringify({ ids }),
-  })
+  // 批量分段，避免一次请求超时（尤其是 MyMemory / DeepL 翻译较慢时）
+  const chunkSize = Number(process.env.TRANSLATE_BATCH_SIZE || 10)
+  const chunks = []
+  for (let i = 0; i < ids.length; i += chunkSize) chunks.push(ids.slice(i, i + chunkSize))
 
-  const data = await apiRes.json().catch(() => ({}))
-  if (!apiRes.ok) {
-    console.error('API 错误:', apiRes.status, data)
-    process.exit(1)
+  let ok = 0
+  const fail = []
+  console.log(`将分 ${chunks.length} 批请求翻译（每批 ${chunkSize}）：${base}/api/translate-product`)
+
+  for (let i = 0; i < chunks.length; i++) {
+    const batch = chunks[i]
+    console.log(`批次 ${i + 1}/${chunks.length}：${batch.length} 个产品`)
+    const apiRes = await fetch(base + '/api/translate-product', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ ids: batch }),
+    })
+    const data = await apiRes.json().catch(() => ({}))
+    if (!apiRes.ok) {
+      console.error('API 错误:', apiRes.status, data)
+      batch.forEach((id) => fail.push({ id, error: `API ${apiRes.status}` }))
+      continue
+    }
+    const results = data.results || []
+    ok += results.filter((r) => r.ok).length
+    results.filter((r) => !r.ok).forEach((r) => fail.push(r))
   }
 
-  const results = data.results || []
-  const ok = results.filter((r) => r.ok).length
-  const fail = results.filter((r) => !r.ok)
   console.log(`完成：成功 ${ok}，失败 ${fail.length}`)
-  if (fail.length) fail.forEach((r) => console.log('  -', r.id, r.error))
+  if (fail.length) fail.slice(0, 50).forEach((r) => console.log('  -', r.id, r.error))
 }
 
 main()
