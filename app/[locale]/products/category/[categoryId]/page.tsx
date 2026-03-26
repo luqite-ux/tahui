@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import Image from "next/image"
-import { Link } from "@/i18n/routing"
-import { notFound, redirect } from "next/navigation"
+import { Link, redirect } from "@/i18n/routing"
+import { notFound } from "next/navigation"
 import { SITE_URL, canonicalPath } from "@/lib/seo"
 import { getTranslations } from "next-intl/server"
 import { ArrowLeft } from "lucide-react"
@@ -37,6 +37,8 @@ const CATEGORY_BY_ID_QUERY = `*[_type == "productCategory" && id == $categoryId]
 
 export const revalidate = 60
 export const dynamicParams = true
+/** Footer 等组件使用 getLocale()/headers；禁止把本页当静态段渲染，否则会 DYNAMIC_SERVER_USAGE → 500 */
+export const dynamic = "force-dynamic"
 
 type Props = { params: Promise<{ locale: string; categoryId: string }> }
 
@@ -71,16 +73,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export async function generateStaticParams() {
-  // allow runtime categories; keep empty for dynamic generation
-  return []
-}
-
 export default async function CategoryProductsPage({ params }: Props) {
   const { locale, categoryId } = await params
   const normalizedCategoryId = normalizeId(categoryId)
   if (normalizedCategoryId && normalizedCategoryId !== categoryId) {
-    redirect(canonicalPath(`/products/category/${normalizedCategoryId}`, locale))
+    redirect({ href: `/products/category/${normalizedCategoryId}`, locale })
   }
 
   const t = await getTranslations({ locale, namespace: "products" })
