@@ -72,73 +72,112 @@ interface CategoryConfig {
 }
 const materialIds = ["wool", "cotton", "cashmere", "silk", "linen", "fancyYarns"] as const
 
+function normalizeCategoryId(value: string): string {
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+}
+
+function buildFallbackCategoriesFromProducts(products: SanityProduct[]): CategoryConfig[] {
+  const byKey = new Map<string, { id: string; title: string }>()
+  for (const p of products) {
+    const rawId = p.categoryId?.trim() || p.categoryTitle?.trim() || ""
+    const rawTitle = p.categoryTitle?.trim() || p.categoryId?.trim() || ""
+    if (!rawId || !rawTitle) continue
+    const id = normalizeCategoryId(rawId)
+    if (!id) continue
+    if (!byKey.has(id)) byKey.set(id, { id, title: rawTitle })
+  }
+  return Array.from(byKey.values())
+    .slice(0, 12)
+    .map((c, i) => ({
+      id: c.id,
+      number: String(i + 1).padStart(2, "0"),
+      title: c.title,
+      description: "",
+      icon: categoryIcons[i % categoryIcons.length],
+    }))
+}
+
 /* ─── Category Section Component ─── */
 
 function CategorySection({
   category,
   products,
   locale,
-  bgClass,
+  reverse,
+  altBackground,
   t,
   tCommon,
 }: {
   category: CategoryConfig
   products: SanityProduct[]
   locale: string
-  bgClass?: string
+  reverse?: boolean
+  altBackground?: boolean
   t: Awaited<ReturnType<typeof getTranslations>>
   tCommon: Awaited<ReturnType<typeof getTranslations>>
 }) {
   const Icon = category.icon
   const categoryHref = `/products/category/${encodeURIComponent(category.id)}`
   const title = getCategoryDisplayTitle(category, locale)
-  const description = category.description ?? ""
+  const description = category.description?.trim() || "Timeless design meets exceptional comfort."
   const categoryImageUrl = category.image
-    ? urlFor(category.image).width(1800).height(900).url()
+    ? urlFor(category.image).width(1200).height(1200).url()
     : "/placeholder.svg"
 
   return (
-    <section id={category.id} className={`scroll-mt-20 py-20 lg:py-28 ${bgClass || ""}`}>
+    <section
+      id={category.id}
+      className={`scroll-mt-20 py-24 lg:py-32 ${altBackground ? "bg-[#F8F8F7]" : ""}`}
+    >
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        {/* Header row: number + title + View More */}
-        <div className="flex items-start justify-between gap-6 mb-5">
-          <div className="flex items-center gap-3">
+        <div
+          className={[
+            "group flex flex-col md:flex-row items-center gap-10 lg:gap-14 mb-14 lg:mb-16 max-w-6xl mx-auto",
+            reverse ? "md:flex-row-reverse" : "",
+          ].join(" ")}
+        >
+          <div
+            className={[
+              "w-full md:w-1/2 flex flex-col justify-center",
+              reverse ? "md:items-end md:text-right" : "md:items-start md:text-left",
+            ].join(" ")}
+          >
             <span className="text-sm font-semibold text-accent tracking-[0.15em] uppercase flex items-center gap-2">
               <Icon className="h-4 w-4" strokeWidth={1.5} />
               {t("categoryLabel", { number: category.number })}
             </span>
+            <h2 className="mt-4 mb-6 text-4xl sm:text-5xl font-bold tracking-tight text-foreground leading-[1.08]">
+              {title}
+            </h2>
+            <p className="text-xl text-gray-400 leading-relaxed max-w-xl">
+              {description}
+            </p>
+            <div className="mt-7">
+              <Link
+                href={categoryHref}
+                className="group/more inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-accent text-accent-foreground text-sm font-semibold shadow-sm hover:bg-accent/90 hover:shadow-md transition-all duration-300 border border-accent"
+              >
+                {t("viewMoreProducts")}
+                <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover/more:translate-x-0.5" />
+              </Link>
+            </div>
           </div>
-          <Link
-            href={categoryHref}
-            className="group/more inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-accent text-accent-foreground text-sm font-semibold shadow-sm hover:bg-accent/90 hover:shadow-md transition-all duration-300 shrink-0 border border-accent"
-          >
-            {t("viewMoreProducts")}
-            <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover/more:translate-x-0.5" />
+
+          <Link href={categoryHref} className="block relative w-full md:w-1/2">
+            <div className="relative aspect-square w-full max-w-[450px] max-h-[450px] mx-auto rounded-2xl overflow-hidden bg-secondary/50 shadow-md border border-gray-100">
+              <Image
+                src={categoryImageUrl}
+                alt={t("categoryImageAlt", { category: title })}
+                fill
+                className="object-cover [object-position:50%_28%] transition-transform duration-700 ease-out group-hover:scale-105"
+              />
+            </div>
           </Link>
         </div>
-
-        {/* Title */}
-        <h2 className="text-3xl font-bold tracking-tight text-foreground lg:text-4xl leading-[1.1] mb-4">
-          {title}
-        </h2>
-
-        {/* Description */}
-        <p className="text-muted-foreground leading-relaxed max-w-2xl mb-10">
-          {description}
-        </p>
-
-        {/* 分类主图：点击进入该分类全部产品 */}
-        <Link href={categoryHref} className="group block relative mb-14 lg:mb-16">
-          <div className="aspect-[16/9] lg:aspect-[21/9] rounded-2xl overflow-hidden bg-warm/40 shadow-md ring-1 ring-border/20 relative">
-            <Image
-              src={categoryImageUrl}
-              alt={t("categoryImageAlt", { category: title })}
-              fill
-              className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.02]"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-foreground/10 via-transparent to-transparent" />
-          </div>
-        </Link>
 
         {/* 该分类下前几个产品（最多 6 个），点击进入详情页 */}
         {products.length > 0 && (
@@ -204,24 +243,24 @@ export default async function ProductsPage({ params }: Props) {
 
   let sanityProducts: SanityProduct[] = []
   let categoryConfigs: CategoryConfig[] = []
-  try {
-    const [products, categories] = await Promise.all([
-      client.fetch<SanityProduct[]>(PRODUCTS_QUERY),
-      client.fetch<
-        Array<{
-          _id: string
-          id?: string | null
-          number?: string | null
-          title: string
-          titleZh?: string | null
-          titleFr?: string | null
-          description?: string | null
-          image?: unknown
-        }>
-      >(PRODUCT_CATEGORIES_QUERY),
-    ])
-    sanityProducts = products
-    categoryConfigs = categories
+  const [productsResult, categoriesResult] = await Promise.allSettled([
+    client.fetch<SanityProduct[]>(PRODUCTS_QUERY),
+    client.fetch<
+      Array<{
+        _id: string
+        id?: string | null
+        number?: string | null
+        title: string
+        titleZh?: string | null
+        titleFr?: string | null
+        description?: string | null
+        image?: unknown
+      }>
+    >(PRODUCT_CATEGORIES_QUERY),
+  ])
+  if (productsResult.status === "fulfilled") sanityProducts = productsResult.value
+  if (categoriesResult.status === "fulfilled") {
+    categoryConfigs = categoriesResult.value
       .filter((c) => Boolean(c.id))
       .slice(0, 12)
       .map((c, i) => ({
@@ -234,8 +273,9 @@ export default async function ProductsPage({ params }: Props) {
         image: c.image,
         icon: categoryIcons[i % categoryIcons.length],
       }))
-  } catch {
-    // 无 Sanity 或未配置时使用空列表
+  }
+  if (categoryConfigs.length === 0 && sanityProducts.length > 0) {
+    categoryConfigs = buildFallbackCategoriesFromProducts(sanityProducts)
   }
 
   // 按分类分组，每个分类最多取前 6 个产品
@@ -284,21 +324,16 @@ export default async function ProductsPage({ params }: Props) {
 
       {/* ── Category Sections：每类展示前几个产品，主图与「更多」进入分类产品集 ── */}
       {productsByCategory.map(({ category, products }, i) => (
-        <div key={category.id}>
-          {i > 0 && (
-            <div className="mx-auto max-w-7xl px-6 lg:px-8">
-              <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
-            </div>
-          )}
-          <CategorySection
-            category={category}
-            products={products}
-            locale={locale}
-            bgClass={i % 2 === 1 ? "bg-secondary/50" : ""}
-            t={t}
-            tCommon={tCommon}
-          />
-        </div>
+        <CategorySection
+          key={category.id}
+          category={category}
+          products={products}
+          locale={locale}
+          reverse={i % 2 === 1}
+          altBackground={i % 2 === 1}
+          t={t}
+          tCommon={tCommon}
+        />
       ))}
 
       {/* ── Materials & Yarns ── */}

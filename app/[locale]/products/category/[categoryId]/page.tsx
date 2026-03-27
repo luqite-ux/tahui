@@ -132,17 +132,20 @@ export default async function CategoryProductsPage({ params }: Props) {
 
       {/* Category Header */}
       <section className="pt-20 lg:pt-24">
-        <div className="w-full shadow-sm overflow-hidden bg-[#F7F7F7]">
+        <div className="w-full rounded-2xl shadow-sm overflow-hidden bg-gray-50">
           <div className="mx-auto max-w-7xl px-6 lg:px-8">
-            <div className="grid items-center gap-8 py-10 lg:py-12 lg:grid-cols-12 min-h-[30vh] max-h-[40vh]">
-              <div className="lg:col-span-7 xl:col-span-7">
-                <p className="text-foreground/70 text-xs tracking-[0.28em] font-semibold">
-                  {t("categoryHeaderTagline")}
+            <div className="flex flex-col md:flex-row items-center md:items-stretch gap-8 md:gap-10 py-8 sm:py-10 lg:py-12 min-h-[30vh] max-h-[40vh]">
+              <div className="w-full md:w-1/2 flex flex-col justify-center">
+                <p className="text-foreground/60 text-xs tracking-[0.22em] font-semibold uppercase">
+                  {category.number ? `${t("categoryLabel", { number: category.number })}` : t("category")}
                 </p>
                 <h1 className="mt-2 text-foreground font-bold tracking-tight text-3xl sm:text-4xl lg:text-5xl">
                   {categoryTitle}
                 </h1>
-                <nav className="mt-3 text-sm text-foreground/70">
+                <p className="mt-3 text-foreground/70 text-xs tracking-[0.28em] font-semibold">
+                  {t("categoryHeaderTagline")}
+                </p>
+                <nav className="mt-4 text-sm text-foreground/70">
                   <ol className="flex flex-wrap items-center gap-2">
                     <li>
                       <Link href="/" className="hover:text-foreground transition-colors">
@@ -159,19 +162,28 @@ export default async function CategoryProductsPage({ params }: Props) {
                     <li className="text-foreground font-semibold">{categoryTitle}</li>
                   </ol>
                 </nav>
+                <div className="mt-6">
+                  <Link
+                    href="/products"
+                    className="inline-flex items-center gap-2 rounded-full border border-border/60 px-4 py-2 text-sm font-medium text-foreground hover:bg-white/70 transition-colors"
+                  >
+                    {t("viewMoreProducts")}
+                    <ArrowLeft className="h-4 w-4 rotate-180" />
+                  </Link>
+                </div>
               </div>
 
-              <div className="lg:col-span-5 xl:col-span-5">
-                <div className="w-full flex justify-center lg:justify-end">
-                  <div className="relative aspect-square w-[70vw] max-w-[320px] sm:max-w-[360px] lg:max-w-[420px]">
+              <div className="w-full md:w-1/2 flex items-center justify-center">
+                <div className="w-full max-w-[400px]">
+                  <div className="relative aspect-square max-h-[400px] rounded-2xl bg-white shadow-md overflow-hidden">
                     {headerImageUrl ? (
                       <Image
                         src={headerImageUrl}
                         alt={categoryTitle}
                         fill
                         priority
-                        sizes="(max-width: 1024px) 70vw, 420px"
-                        className="object-contain drop-shadow-md [filter:brightness(0.92)]"
+                        sizes="(max-width: 768px) 85vw, 400px"
+                        className="object-contain p-3 sm:p-4 [object-position:50%_35%]"
                       />
                     ) : (
                       <div className="absolute inset-0 rounded-2xl bg-primary/10" />
@@ -186,15 +198,7 @@ export default async function CategoryProductsPage({ params }: Props) {
 
       <section className="py-14 lg:py-20">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <Link
-            href="/products"
-            className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-accent transition-colors mb-8"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            {t("backToProducts")}
-          </Link>
-
-          <p className="text-muted-foreground max-w-2xl mb-12">
+          <p className="text-muted-foreground max-w-2xl mb-10">
             {t("allInCollection")}
           </p>
 
