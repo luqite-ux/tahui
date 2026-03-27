@@ -59,7 +59,7 @@
       },
       "multiMaterial": {
         "title": "多材质系列",
-        "description": "以羊毛、真丝、棉、亚麻及特种花式纱线等多种材质打造的 premium 针织及毛毯系列。"
+        "description": "以羊毛、真丝、棉、亚麻及特种花式纱线等多种材质打造的高端针织及毛毯系列。"
       },
       "advancedCraftsmanship": {
         "title": "先进工艺",
@@ -217,7 +217,8 @@
     "noProducts": "该分类暂无产品。",
     "productMetaFallbackTitle": "产品",
     "categoryMetaDescription": "浏览全部「{category}」产品。支持 OEM / ODM 针织制造。",
-    "productMetaDescriptionFallback": "产品：{name}。支持 OEM / ODM 针织制造。"
+    "productMetaDescriptionFallback": "产品：{name}。支持 OEM / ODM 针织制造。",
+    "categoryHeaderTagline": "新品系列"
   },
   "common": {
     "getQuote": "获取报价",

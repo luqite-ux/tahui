@@ -132,52 +132,51 @@ export default async function CategoryProductsPage({ params }: Props) {
 
       {/* Category Header */}
       <section className="pt-20 lg:pt-24">
-        <div className="relative w-full shadow-sm overflow-hidden">
-          <div
-            className="relative w-full h-[32vh] sm:h-[34vh] lg:h-[38vh] max-h-[40vh] min-h-[30vh]"
-          >
-            {headerImageUrl ? (
-              <Image
-                src={headerImageUrl}
-                alt={categoryTitle}
-                fill
-                priority
-                sizes="100vw"
-                className="object-cover [object-position:50%_30%] brightness-75"
-              />
-            ) : (
-              <div className="absolute inset-0 bg-primary/10" />
-            )}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/10 to-black/45" />
+        <div className="w-full shadow-sm overflow-hidden bg-[#F7F7F7]">
+          <div className="mx-auto max-w-7xl px-6 lg:px-8">
+            <div className="grid items-center gap-8 py-10 lg:py-12 lg:grid-cols-12 min-h-[30vh] max-h-[40vh]">
+              <div className="lg:col-span-7 xl:col-span-7">
+                <p className="text-foreground/70 text-xs tracking-[0.28em] font-semibold">
+                  {t("categoryHeaderTagline")}
+                </p>
+                <h1 className="mt-2 text-foreground font-bold tracking-tight text-3xl sm:text-4xl lg:text-5xl">
+                  {categoryTitle}
+                </h1>
+                <nav className="mt-3 text-sm text-foreground/70">
+                  <ol className="flex flex-wrap items-center gap-2">
+                    <li>
+                      <Link href="/" className="hover:text-foreground transition-colors">
+                        {tNav("home")}
+                      </Link>
+                    </li>
+                    <li className="opacity-60">/</li>
+                    <li>
+                      <Link href="/products" className="hover:text-foreground transition-colors">
+                        {tNav("products")}
+                      </Link>
+                    </li>
+                    <li className="opacity-60">/</li>
+                    <li className="text-foreground font-semibold">{categoryTitle}</li>
+                  </ol>
+                </nav>
+              </div>
 
-            <div className="absolute inset-0">
-              <div className="mx-auto max-w-7xl h-full px-6 lg:px-8 flex items-end">
-                <div className="pb-8 lg:pb-10 max-w-3xl">
-                  <p className="text-white/85 text-xs tracking-[0.28em] font-semibold">
-                    NEW COLLECTION
-                  </p>
-                  <h1 className="mt-2 text-white font-bold tracking-tight text-3xl sm:text-4xl lg:text-5xl">
-                    {categoryTitle}
-                  </h1>
-                  <nav className="mt-3 text-sm text-white/80">
-                    <ol className="flex flex-wrap items-center gap-2">
-                      <li>
-                        <Link href="/" className="hover:text-white transition-colors">
-                          {tNav("home")}
-                        </Link>
-                      </li>
-                      <li className="opacity-70">/</li>
-                      <li>
-                        <Link href="/products" className="hover:text-white transition-colors">
-                          {tNav("products")}
-                        </Link>
-                      </li>
-                      <li className="opacity-70">/</li>
-                      <li className="text-white font-semibold">
-                        {categoryTitle}
-                      </li>
-                    </ol>
-                  </nav>
+              <div className="lg:col-span-5 xl:col-span-5">
+                <div className="w-full flex justify-center lg:justify-end">
+                  <div className="relative aspect-square w-[70vw] max-w-[320px] sm:max-w-[360px] lg:max-w-[420px]">
+                    {headerImageUrl ? (
+                      <Image
+                        src={headerImageUrl}
+                        alt={categoryTitle}
+                        fill
+                        priority
+                        sizes="(max-width: 1024px) 70vw, 420px"
+                        className="object-contain drop-shadow-md [filter:brightness(0.92)]"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 rounded-2xl bg-primary/10" />
+                    )}
+                  </div>
                 </div>
               </div>
             </div>

@@ -217,7 +217,8 @@
     "noProducts": "Aucun produit dans cette catégorie pour le moment.",
     "productMetaFallbackTitle": "Produit",
     "categoryMetaDescription": "Parcourez tous les produits « {category} ». Fabrication maille OEM/ODM.",
-    "productMetaDescriptionFallback": "Produit : {name}. Fabrication maille OEM/ODM."
+    "productMetaDescriptionFallback": "Produit : {name}. Fabrication maille OEM/ODM.",
+    "categoryHeaderTagline": "NOUVELLE COLLECTION"
   },
   "common": {
     "getQuote": "Demander un devis",

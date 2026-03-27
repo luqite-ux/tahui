@@ -217,7 +217,8 @@
     "noProducts": "No products in this category yet.",
     "productMetaFallbackTitle": "Product",
     "categoryMetaDescription": "Browse all {category} products. OEM & ODM knitwear manufacturing.",
-    "productMetaDescriptionFallback": "Product: {name}. OEM & ODM knitwear."
+    "productMetaDescriptionFallback": "Product: {name}. OEM & ODM knitwear.",
+    "categoryHeaderTagline": "NEW COLLECTION"
   },
   "common": {
     "getQuote": "Get a Quote",
