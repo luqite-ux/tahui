@@ -132,7 +132,7 @@ export default async function CategoryProductsPage({ params }: Props) {
 
       {/* Category Header */}
       <section className="pt-20 lg:pt-24">
-        <div className="w-full rounded-2xl shadow-sm overflow-hidden bg-gray-50">
+        <div className="w-full rounded-2xl overflow-hidden bg-[#F3F0EB]">
           <div className="mx-auto max-w-7xl px-6 lg:px-8">
             <div className="flex flex-col md:flex-row items-center md:items-stretch gap-8 md:gap-10 py-8 sm:py-10 lg:py-12 min-h-[30vh] max-h-[40vh]">
               <div className="w-full md:w-1/2 flex flex-col justify-center">
@@ -175,7 +175,7 @@ export default async function CategoryProductsPage({ params }: Props) {
 
               <div className="w-full md:w-1/2 flex items-center justify-center">
                 <div className="w-full max-w-[400px]">
-                  <div className="relative aspect-square max-h-[400px] rounded-2xl bg-white shadow-md overflow-hidden">
+                  <div className="relative aspect-square max-h-[400px] rounded-2xl bg-white overflow-hidden border border-stone-200/60">
                     {headerImageUrl ? (
                       <Image
                         src={headerImageUrl}

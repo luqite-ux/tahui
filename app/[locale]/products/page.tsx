@@ -13,6 +13,8 @@ import { urlFor } from "@/sanity/lib/image"
 import { getProductDisplayName, getProductDisplayDescription } from "@/lib/product-locale"
 import { PRODUCT_CATEGORIES_QUERY } from "@/sanity/lib/queries"
 import { getCategoryDisplayTitle } from "@/lib/category-locale"
+import { ProductCategoryHero } from "@/components/product-category-hero"
+import { getProductCategoryHeroCopy } from "@/lib/data/product-category-heroes"
 
 type Props = { params: Promise<{ locale: string }> }
 
@@ -72,6 +74,24 @@ interface CategoryConfig {
 }
 const materialIds = ["wool", "cotton", "cashmere", "silk", "linen", "fancyYarns"] as const
 
+/** 仅 seamless 使用「一体成型」；其它分类用通用卖点，避免误导 */
+function getCategoryFeatures(locale: string, categoryId: string): string[] {
+  const isSeamless = categoryId === "seamless"
+  if (locale === "zh") {
+    return isSeamless
+      ? ["一体成型", "高弹舒适", "支持定制"]
+      : ["精湛工艺", "高弹舒适", "支持定制"]
+  }
+  if (locale === "fr") {
+    return isSeamless
+      ? ["Confection intégrale", "Confort extensible", "OEM & ODM"]
+      : ["Savoir-faire soigné", "Confort extensible", "OEM & ODM"]
+  }
+  return isSeamless
+    ? ["Whole-garment construction", "Stretch comfort", "OEM & ODM"]
+    : ["Fine craftsmanship", "Stretch comfort", "OEM & ODM"]
+}
+
 function normalizeCategoryId(value: string): string {
   return value
     .trim()
@@ -110,6 +130,7 @@ function CategorySection({
   reverse,
   altBackground,
   t,
+  tNav,
   tCommon,
 }: {
   category: CategoryConfig
@@ -118,115 +139,157 @@ function CategorySection({
   reverse?: boolean
   altBackground?: boolean
   t: Awaited<ReturnType<typeof getTranslations>>
+  tNav: Awaited<ReturnType<typeof getTranslations>>
   tCommon: Awaited<ReturnType<typeof getTranslations>>
 }) {
   const Icon = category.icon
   const categoryHref = `/products/category/${encodeURIComponent(category.id)}`
   const title = getCategoryDisplayTitle(category, locale)
   const description = category.description?.trim() || "Timeless design meets exceptional comfort."
+  const features = getCategoryFeatures(locale, category.id)
   const categoryImageUrl = category.image
     ? urlFor(category.image).width(1200).height(1200).url()
     : "/placeholder.svg"
+  const heroCopy = getProductCategoryHeroCopy(category.id, locale)
+  const categoryNumberLabel = t("categoryLabel", { number: category.number })
+
+  const productGrid =
+    products.length > 0 ? (
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+        {products.map((product) => {
+          const firstImage = product.images?.[0]
+          const detailHref = product.slug
+            ? `/products/${encodeURIComponent(product.slug)}`
+            : `/products/${encodeURIComponent(product._id)}`
+          return (
+            <Link key={product._id} href={detailHref} className="block h-full">
+              <Card className="group/card relative h-full overflow-hidden rounded-2xl border-border/40 bg-card shadow-sm transition-all duration-500 ease-out hover:-translate-y-0.5 hover:shadow-lg hover:shadow-accent/[0.04]">
+                <div className="relative aspect-[4/3] overflow-hidden bg-warm/30">
+                  {firstImage?.asset ? (
+                    <Image
+                      src={urlFor(firstImage).width(800).height(600).url()}
+                      alt={firstImage?.alt ?? getProductDisplayName(product, locale)}
+                      fill
+                      className="object-cover transition-transform duration-700 ease-out group-hover/card:scale-105"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center text-sm text-muted-foreground/50">
+                      {tCommon("noImage")}
+                    </div>
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-foreground/5 via-transparent to-transparent" />
+                </div>
+                <div className="absolute left-1/2 top-0 h-[2px] w-0 -translate-x-1/2 rounded-b-full bg-gradient-to-r from-transparent via-accent to-transparent transition-all duration-500 group-hover/card:w-2/3" />
+                <CardContent className="p-5">
+                  <h3 className="text-base font-bold leading-tight text-foreground transition-colors duration-300 group-hover/card:text-primary">
+                    {getProductDisplayName(product, locale)}
+                  </h3>
+                  {getProductDisplayDescription(product, locale) && (
+                    <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
+                      {getProductDisplayDescription(product, locale)}
+                    </p>
+                  )}
+                  <span className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-accent/70 transition-colors duration-300 group-hover/card:text-accent">
+                    {t("viewDetails")}
+                    <ArrowRight className="h-3 w-3" />
+                  </span>
+                </CardContent>
+              </Card>
+            </Link>
+          )
+        })}
+      </div>
+    ) : null
 
   return (
-    <section
-      id={category.id}
-      className={`scroll-mt-20 py-24 lg:py-32 ${altBackground ? "bg-[#F8F8F7]" : ""}`}
-    >
+    <section id={category.id} className={`scroll-mt-20 py-16 lg:py-20 ${altBackground ? "bg-[#F8F8F7]" : ""}`}>
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <div
-          className={[
-            "group flex flex-col md:flex-row items-center gap-10 lg:gap-14 mb-14 lg:mb-16 max-w-6xl mx-auto",
-            reverse ? "md:flex-row-reverse" : "",
-          ].join(" ")}
-        >
-          <div
-            className={[
-              "w-full md:w-1/2 flex flex-col justify-center",
-              reverse ? "md:items-end md:text-right" : "md:items-start md:text-left",
-            ].join(" ")}
-          >
-            <span className="text-sm font-semibold text-accent tracking-[0.15em] uppercase flex items-center gap-2">
-              <Icon className="h-4 w-4" strokeWidth={1.5} />
-              {t("categoryLabel", { number: category.number })}
-            </span>
-            <h2 className="mt-4 mb-6 text-4xl sm:text-5xl font-bold tracking-tight text-foreground leading-[1.08]">
-              {title}
-            </h2>
-            <p className="text-xl text-gray-400 leading-relaxed max-w-xl">
-              {description}
-            </p>
-            <div className="mt-7">
-              <Link
-                href={categoryHref}
-                className="group/more inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-accent text-accent-foreground text-sm font-semibold shadow-sm hover:bg-accent/90 hover:shadow-md transition-all duration-300 border border-accent"
+        {heroCopy ? (
+          <>
+            <ProductCategoryHero
+              locale={locale}
+              copy={heroCopy}
+              categoryNumberLabel={categoryNumberLabel}
+              imageUrl={categoryImageUrl}
+              imageAlt={t("categoryImageAlt", { category: title })}
+              linkHref={categoryHref}
+              buttonText={t("viewMoreProducts")}
+              reverse={reverse}
+              imagePriority={category.id === "seamless"}
+            />
+            {productGrid ? <div className="mt-12">{productGrid}</div> : null}
+          </>
+        ) : (
+          <div className="mx-auto mb-12 max-w-7xl rounded-[40px] bg-[#F3F0EB] p-6 sm:p-8 lg:p-12">
+            <div
+              className={[
+                "group flex flex-col items-center gap-8 md:flex-row md:items-center lg:gap-12",
+                reverse ? "md:flex-row-reverse" : "",
+              ].join(" ")}
+            >
+              <div
+                className={[
+                  "flex w-full flex-col justify-center md:w-1/2",
+                  reverse ? "md:items-end md:text-right" : "md:items-start md:text-left",
+                ].join(" ")}
               >
-                {t("viewMoreProducts")}
-                <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover/more:translate-x-0.5" />
+                <p className="text-xs uppercase tracking-[0.18em] text-foreground/45">
+                  {category.title.toUpperCase()} · {t("categoryHeaderTagline")}
+                </p>
+                <span className="mt-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.15em] text-accent">
+                  <Icon className="h-4 w-4" strokeWidth={1.5} />
+                  {categoryNumberLabel}
+                </span>
+                <h2 className="mt-3 text-4xl font-bold leading-[1.08] tracking-tight text-foreground sm:text-5xl">
+                  {title}
+                </h2>
+                <p className="mt-2 text-lg font-light text-foreground/55">{description}</p>
+                <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-foreground/60">
+                  {features.map((feature, idx) => (
+                    <span key={feature} className="inline-flex items-center gap-2">
+                      {idx === 0 ? (
+                        <Sparkles className="h-3.5 w-3.5 text-foreground/50" strokeWidth={1.5} />
+                      ) : idx === 1 ? (
+                        <CheckCircle className="h-3.5 w-3.5 text-foreground/50" strokeWidth={1.5} />
+                      ) : (
+                        <Palette className="h-3.5 w-3.5 text-foreground/50" strokeWidth={1.5} />
+                      )}
+                      {feature}
+                    </span>
+                  ))}
+                </div>
+                <nav className="mt-5 text-sm text-foreground/50">
+                  <ol className="flex flex-wrap items-center gap-2">
+                    <li>{tNav("products")}</li>
+                    <li>/</li>
+                    <li className="text-foreground/70">{title}</li>
+                  </ol>
+                </nav>
+                <div className="mt-7">
+                  <Link
+                    href={categoryHref}
+                    className="group/more inline-flex items-center gap-2 rounded-full border border-accent bg-accent px-5 py-2.5 text-sm font-semibold text-accent-foreground shadow-sm transition-all duration-300 hover:bg-accent/90 hover:shadow-md"
+                  >
+                    {t("viewMoreProducts")}
+                    <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover/more:translate-x-0.5" />
+                  </Link>
+                </div>
+              </div>
+
+              <Link href={categoryHref} className="relative block w-full md:w-1/2">
+                <div className="relative mx-auto aspect-[4/3] w-full max-h-[450px] max-w-[560px] overflow-hidden rounded-3xl border border-gray-100 bg-secondary/40 shadow-sm">
+                  <Image
+                    src={categoryImageUrl}
+                    alt={t("categoryImageAlt", { category: title })}
+                    fill
+                    className="object-cover [object-position:50%_28%] transition-transform duration-700 ease-out group-hover:scale-105"
+                  />
+                </div>
               </Link>
             </div>
-          </div>
 
-          <Link href={categoryHref} className="block relative w-full md:w-1/2">
-            <div className="relative aspect-square w-full max-w-[450px] max-h-[450px] mx-auto rounded-2xl overflow-hidden bg-secondary/50 shadow-md border border-gray-100">
-              <Image
-                src={categoryImageUrl}
-                alt={t("categoryImageAlt", { category: title })}
-                fill
-                className="object-cover [object-position:50%_28%] transition-transform duration-700 ease-out group-hover:scale-105"
-              />
-            </div>
-          </Link>
-        </div>
-
-        {/* 该分类下前几个产品（最多 6 个），点击进入详情页 */}
-        {products.length > 0 && (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6">
-            {products.map((product) => {
-              const firstImage = product.images?.[0]
-              const detailHref = product.slug
-                ? `/products/${encodeURIComponent(product.slug)}`
-                : `/products/${encodeURIComponent(product._id)}`
-              return (
-                <Link key={product._id} href={detailHref} className="block h-full">
-                  <Card
-                    className="group/card h-full bg-card rounded-2xl border-border/40 shadow-sm hover:shadow-lg hover:shadow-accent/[0.04] hover:-translate-y-0.5 transition-all duration-500 ease-out overflow-hidden relative"
-                  >
-                    <div className="relative aspect-[4/3] overflow-hidden bg-warm/30">
-                      {firstImage?.asset ? (
-                        <Image
-                          src={urlFor(firstImage).width(800).height(600).url()}
-                          alt={firstImage?.alt ?? getProductDisplayName(product, locale)}
-                          fill
-                          className="object-cover transition-transform duration-700 ease-out group-hover/card:scale-105"
-                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                        />
-                      ) : (
-                        <div className="absolute inset-0 flex items-center justify-center text-muted-foreground/50 text-sm">
-                          {tCommon("noImage")}
-                        </div>
-                      )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-foreground/5 via-transparent to-transparent" />
-                    </div>
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 h-[2px] w-0 group-hover/card:w-2/3 bg-gradient-to-r from-transparent via-accent to-transparent rounded-b-full transition-all duration-500" />
-                    <CardContent className="p-5">
-                      <h3 className="font-bold text-foreground group-hover/card:text-primary transition-colors duration-300 leading-tight text-base">
-                        {getProductDisplayName(product, locale)}
-                      </h3>
-                      {getProductDisplayDescription(product, locale) && (
-                        <p className="mt-2 text-sm text-muted-foreground leading-relaxed line-clamp-2">
-                          {getProductDisplayDescription(product, locale)}
-                        </p>
-                      )}
-                      <span className="inline-flex items-center gap-1 mt-3 text-xs font-medium text-accent/70 group-hover/card:text-accent transition-colors duration-300">
-                        {t("viewDetails")}
-                        <ArrowRight className="h-3 w-3" />
-                      </span>
-                    </CardContent>
-                  </Card>
-                </Link>
-              )
-            })}
+            {productGrid ? <div className="mt-12">{productGrid}</div> : null}
           </div>
         )}
       </div>
@@ -239,6 +302,7 @@ function CategorySection({
 export default async function ProductsPage({ params }: Props) {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: "products" })
+  const tNav = await getTranslations({ locale, namespace: "nav" })
   const tCommon = await getTranslations({ locale, namespace: "common" })
 
   let sanityProducts: SanityProduct[] = []
@@ -332,6 +396,7 @@ export default async function ProductsPage({ params }: Props) {
           reverse={i % 2 === 1}
           altBackground={i % 2 === 1}
           t={t}
+          tNav={tNav}
           tCommon={tCommon}
         />
       ))}
