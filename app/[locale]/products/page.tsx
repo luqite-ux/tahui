@@ -13,6 +13,9 @@ import { urlFor } from "@/sanity/lib/image"
 import { getProductDisplayName, getProductDisplayDescription } from "@/lib/product-locale"
 import { PRODUCT_CATEGORIES_QUERY } from "@/sanity/lib/queries"
 import { getCategoryDisplayTitle } from "@/lib/category-locale"
+import { ProductCategoryHero } from "@/components/product-category-hero"
+import { getProductCategoryHeroCopyResolved } from "@/lib/data/product-category-heroes"
+import { isSeamlessProductCategory } from "@/lib/is-seamless-product-category"
 
 type Props = { params: Promise<{ locale: string }> }
 
@@ -72,122 +75,227 @@ interface CategoryConfig {
 }
 const materialIds = ["wool", "cotton", "cashmere", "silk", "linen", "fancyYarns"] as const
 
+/** 仅无缝大类使用「一体成型」；其它分类用通用卖点，避免误导 */
+function getCategoryFeatures(locale: string, isSeamless: boolean): string[] {
+  if (locale === "zh") {
+    return isSeamless
+      ? ["一体成型", "高弹舒适", "支持定制"]
+      : ["精湛工艺", "高弹舒适", "支持定制"]
+  }
+  if (locale === "fr") {
+    return isSeamless
+      ? ["Confection intégrale", "Confort extensible", "OEM & ODM"]
+      : ["Savoir-faire soigné", "Confort extensible", "OEM & ODM"]
+  }
+  return isSeamless
+    ? ["Whole-garment construction", "Stretch comfort", "OEM & ODM"]
+    : ["Fine craftsmanship", "Stretch comfort", "OEM & ODM"]
+}
+
+function normalizeCategoryId(value: string): string {
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+}
+
+function buildFallbackCategoriesFromProducts(products: SanityProduct[]): CategoryConfig[] {
+  const byKey = new Map<string, { id: string; title: string }>()
+  for (const p of products) {
+    const rawId = p.categoryId?.trim() || p.categoryTitle?.trim() || ""
+    const rawTitle = p.categoryTitle?.trim() || p.categoryId?.trim() || ""
+    if (!rawId || !rawTitle) continue
+    const id = normalizeCategoryId(rawId)
+    if (!id) continue
+    if (!byKey.has(id)) byKey.set(id, { id, title: rawTitle })
+  }
+  return Array.from(byKey.values())
+    .slice(0, 12)
+    .map((c, i) => ({
+      id: c.id,
+      number: String(i + 1).padStart(2, "0"),
+      title: c.title,
+      description: "",
+      icon: categoryIcons[i % categoryIcons.length],
+    }))
+}
+
 /* ─── Category Section Component ─── */
 
 function CategorySection({
   category,
   products,
   locale,
-  bgClass,
+  reverse,
+  altBackground,
   t,
+  tNav,
   tCommon,
 }: {
   category: CategoryConfig
   products: SanityProduct[]
   locale: string
-  bgClass?: string
+  reverse?: boolean
+  altBackground?: boolean
   t: Awaited<ReturnType<typeof getTranslations>>
+  tNav: Awaited<ReturnType<typeof getTranslations>>
   tCommon: Awaited<ReturnType<typeof getTranslations>>
 }) {
   const Icon = category.icon
   const categoryHref = `/products/category/${encodeURIComponent(category.id)}`
   const title = getCategoryDisplayTitle(category, locale)
-  const description = category.description ?? ""
+  const description = category.description?.trim() || "Timeless design meets exceptional comfort."
+  const seamlessMeta = {
+    title: category.title,
+    titleZh: category.titleZh,
+    titleFr: category.titleFr,
+  }
+  const isSeamlessCategory = isSeamlessProductCategory(category.id, seamlessMeta)
+  const features = getCategoryFeatures(locale, isSeamlessCategory)
   const categoryImageUrl = category.image
-    ? urlFor(category.image).width(1800).height(900).url()
+    ? urlFor(category.image).width(1200).height(1200).url()
     : "/placeholder.svg"
+  const heroCopy = getProductCategoryHeroCopyResolved(category.id, locale, seamlessMeta)
+  const categoryNumberLabel = t("categoryLabel", { number: category.number })
+
+  const productGrid =
+    products.length > 0 ? (
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+        {products.map((product) => {
+          const firstImage = product.images?.[0]
+          const detailHref = product.slug
+            ? `/products/${encodeURIComponent(product.slug)}`
+            : `/products/${encodeURIComponent(product._id)}`
+          return (
+            <Link key={product._id} href={detailHref} className="block h-full">
+              <Card className="group/card relative h-full overflow-hidden rounded-2xl border-border/40 bg-card shadow-sm transition-all duration-500 ease-out hover:-translate-y-0.5 hover:shadow-lg hover:shadow-accent/[0.04]">
+                <div className="relative aspect-[4/3] overflow-hidden bg-warm/30">
+                  {firstImage?.asset ? (
+                    <Image
+                      src={urlFor(firstImage).width(800).height(600).url()}
+                      alt={firstImage?.alt ?? getProductDisplayName(product, locale)}
+                      fill
+                      className="object-cover transition-transform duration-700 ease-out group-hover/card:scale-105"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center text-sm text-muted-foreground/50">
+                      {tCommon("noImage")}
+                    </div>
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-foreground/5 via-transparent to-transparent" />
+                </div>
+                <div className="absolute left-1/2 top-0 h-[2px] w-0 -translate-x-1/2 rounded-b-full bg-gradient-to-r from-transparent via-accent to-transparent transition-all duration-500 group-hover/card:w-2/3" />
+                <CardContent className="p-5">
+                  <h3 className="text-base font-bold leading-tight text-foreground transition-colors duration-300 group-hover/card:text-primary">
+                    {getProductDisplayName(product, locale)}
+                  </h3>
+                  {getProductDisplayDescription(product, locale) && (
+                    <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
+                      {getProductDisplayDescription(product, locale)}
+                    </p>
+                  )}
+                  <span className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-accent/70 transition-colors duration-300 group-hover/card:text-accent">
+                    {t("viewDetails")}
+                    <ArrowRight className="h-3 w-3" />
+                  </span>
+                </CardContent>
+              </Card>
+            </Link>
+          )
+        })}
+      </div>
+    ) : null
 
   return (
-    <section id={category.id} className={`scroll-mt-20 py-20 lg:py-28 ${bgClass || ""}`}>
+    <section id={category.id} className={`scroll-mt-20 py-16 lg:py-20 ${altBackground ? "bg-[#F8F8F7]" : ""}`}>
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        {/* Header row: number + title + View More */}
-        <div className="flex items-start justify-between gap-6 mb-5">
-          <div className="flex items-center gap-3">
-            <span className="text-sm font-semibold text-accent tracking-[0.15em] uppercase flex items-center gap-2">
-              <Icon className="h-4 w-4" strokeWidth={1.5} />
-              {t("categoryLabel", { number: category.number })}
-            </span>
-          </div>
-          <Link
-            href={categoryHref}
-            className="group/more inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-accent text-accent-foreground text-sm font-semibold shadow-sm hover:bg-accent/90 hover:shadow-md transition-all duration-300 shrink-0 border border-accent"
-          >
-            {t("viewMoreProducts")}
-            <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover/more:translate-x-0.5" />
-          </Link>
-        </div>
-
-        {/* Title */}
-        <h2 className="text-3xl font-bold tracking-tight text-foreground lg:text-4xl leading-[1.1] mb-4">
-          {title}
-        </h2>
-
-        {/* Description */}
-        <p className="text-muted-foreground leading-relaxed max-w-2xl mb-10">
-          {description}
-        </p>
-
-        {/* 分类主图：点击进入该分类全部产品 */}
-        <Link href={categoryHref} className="group block relative mb-14 lg:mb-16">
-          <div className="aspect-[16/9] lg:aspect-[21/9] rounded-2xl overflow-hidden bg-warm/40 shadow-md ring-1 ring-border/20 relative">
-            <Image
-              src={categoryImageUrl}
-              alt={t("categoryImageAlt", { category: title })}
-              fill
-              className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.02]"
+        {heroCopy ? (
+          <>
+            <ProductCategoryHero
+              locale={locale}
+              copy={heroCopy}
+              categoryNumberLabel={categoryNumberLabel}
+              imageUrl={categoryImageUrl}
+              imageAlt={t("categoryImageAlt", { category: title })}
+              linkHref={categoryHref}
+              buttonText={t("viewMoreProducts")}
+              reverse={reverse}
+              imagePriority={isSeamlessCategory}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-foreground/10 via-transparent to-transparent" />
-          </div>
-        </Link>
-
-        {/* 该分类下前几个产品（最多 6 个），点击进入详情页 */}
-        {products.length > 0 && (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6">
-            {products.map((product) => {
-              const firstImage = product.images?.[0]
-              const detailHref = product.slug
-                ? `/products/${encodeURIComponent(product.slug)}`
-                : `/products/${encodeURIComponent(product._id)}`
-              return (
-                <Link key={product._id} href={detailHref} className="block h-full">
-                  <Card
-                    className="group/card h-full bg-card rounded-2xl border-border/40 shadow-sm hover:shadow-lg hover:shadow-accent/[0.04] hover:-translate-y-0.5 transition-all duration-500 ease-out overflow-hidden relative"
-                  >
-                    <div className="relative aspect-[4/3] overflow-hidden bg-warm/30">
-                      {firstImage?.asset ? (
-                        <Image
-                          src={urlFor(firstImage).width(800).height(600).url()}
-                          alt={firstImage?.alt ?? getProductDisplayName(product, locale)}
-                          fill
-                          className="object-cover transition-transform duration-700 ease-out group-hover/card:scale-105"
-                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                        />
+            {productGrid ? <div className="mt-12">{productGrid}</div> : null}
+          </>
+        ) : (
+          <div className="mx-auto mb-12 max-w-7xl rounded-[40px] bg-[#F3F0EB] p-6 sm:p-8 lg:p-12">
+            <div
+              className={[
+                "group flex flex-col items-center gap-8 md:flex-row md:items-center lg:gap-12",
+                reverse ? "md:flex-row-reverse" : "",
+              ].join(" ")}
+            >
+              <div
+                className={[
+                  "flex w-full flex-col justify-center md:w-1/2",
+                  reverse ? "md:items-end md:text-right" : "md:items-start md:text-left",
+                ].join(" ")}
+              >
+                <p className="text-xs uppercase tracking-[0.18em] text-foreground/45">
+                  {category.title.toUpperCase()} · {t("categoryHeaderTagline")}
+                </p>
+                <span className="mt-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.15em] text-accent">
+                  <Icon className="h-4 w-4" strokeWidth={1.5} />
+                  {categoryNumberLabel}
+                </span>
+                <h2 className="mt-3 text-4xl font-bold leading-[1.08] tracking-tight text-foreground sm:text-5xl">
+                  {title}
+                </h2>
+                <p className="mt-2 text-lg font-light text-foreground/55">{description}</p>
+                <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-foreground/60">
+                  {features.map((feature, idx) => (
+                    <span key={feature} className="inline-flex items-center gap-2">
+                      {idx === 0 ? (
+                        <Sparkles className="h-3.5 w-3.5 text-foreground/50" strokeWidth={1.5} />
+                      ) : idx === 1 ? (
+                        <CheckCircle className="h-3.5 w-3.5 text-foreground/50" strokeWidth={1.5} />
                       ) : (
-                        <div className="absolute inset-0 flex items-center justify-center text-muted-foreground/50 text-sm">
-                          {tCommon("noImage")}
-                        </div>
+                        <Palette className="h-3.5 w-3.5 text-foreground/50" strokeWidth={1.5} />
                       )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-foreground/5 via-transparent to-transparent" />
-                    </div>
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 h-[2px] w-0 group-hover/card:w-2/3 bg-gradient-to-r from-transparent via-accent to-transparent rounded-b-full transition-all duration-500" />
-                    <CardContent className="p-5">
-                      <h3 className="font-bold text-foreground group-hover/card:text-primary transition-colors duration-300 leading-tight text-base">
-                        {getProductDisplayName(product, locale)}
-                      </h3>
-                      {getProductDisplayDescription(product, locale) && (
-                        <p className="mt-2 text-sm text-muted-foreground leading-relaxed line-clamp-2">
-                          {getProductDisplayDescription(product, locale)}
-                        </p>
-                      )}
-                      <span className="inline-flex items-center gap-1 mt-3 text-xs font-medium text-accent/70 group-hover/card:text-accent transition-colors duration-300">
-                        {t("viewDetails")}
-                        <ArrowRight className="h-3 w-3" />
-                      </span>
-                    </CardContent>
-                  </Card>
-                </Link>
-              )
-            })}
+                      {feature}
+                    </span>
+                  ))}
+                </div>
+                <nav className="mt-5 text-sm text-foreground/50">
+                  <ol className="flex flex-wrap items-center gap-2">
+                    <li>{tNav("products")}</li>
+                    <li>/</li>
+                    <li className="text-foreground/70">{title}</li>
+                  </ol>
+                </nav>
+                <div className="mt-7">
+                  <Link
+                    href={categoryHref}
+                    className="group/more inline-flex items-center gap-2 rounded-full border border-accent bg-accent px-5 py-2.5 text-sm font-semibold text-accent-foreground shadow-sm transition-all duration-300 hover:bg-accent/90 hover:shadow-md"
+                  >
+                    {t("viewMoreProducts")}
+                    <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover/more:translate-x-0.5" />
+                  </Link>
+                </div>
+              </div>
+
+              <Link href={categoryHref} className="relative block w-full md:w-1/2">
+                <div className="relative mx-auto aspect-[4/3] w-full max-h-[450px] max-w-[560px] overflow-hidden rounded-3xl border border-gray-100 bg-secondary/40 shadow-sm">
+                  <Image
+                    src={categoryImageUrl}
+                    alt={t("categoryImageAlt", { category: title })}
+                    fill
+                    className="object-cover [object-position:50%_28%] transition-transform duration-700 ease-out group-hover:scale-105"
+                  />
+                </div>
+              </Link>
+            </div>
+
+            {productGrid ? <div className="mt-12">{productGrid}</div> : null}
           </div>
         )}
       </div>
@@ -200,28 +308,29 @@ function CategorySection({
 export default async function ProductsPage({ params }: Props) {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: "products" })
+  const tNav = await getTranslations({ locale, namespace: "nav" })
   const tCommon = await getTranslations({ locale, namespace: "common" })
 
   let sanityProducts: SanityProduct[] = []
   let categoryConfigs: CategoryConfig[] = []
-  try {
-    const [products, categories] = await Promise.all([
-      client.fetch<SanityProduct[]>(PRODUCTS_QUERY),
-      client.fetch<
-        Array<{
-          _id: string
-          id?: string | null
-          number?: string | null
-          title: string
-          titleZh?: string | null
-          titleFr?: string | null
-          description?: string | null
-          image?: unknown
-        }>
-      >(PRODUCT_CATEGORIES_QUERY),
-    ])
-    sanityProducts = products
-    categoryConfigs = categories
+  const [productsResult, categoriesResult] = await Promise.allSettled([
+    client.fetch<SanityProduct[]>(PRODUCTS_QUERY),
+    client.fetch<
+      Array<{
+        _id: string
+        id?: string | null
+        number?: string | null
+        title: string
+        titleZh?: string | null
+        titleFr?: string | null
+        description?: string | null
+        image?: unknown
+      }>
+    >(PRODUCT_CATEGORIES_QUERY),
+  ])
+  if (productsResult.status === "fulfilled") sanityProducts = productsResult.value
+  if (categoriesResult.status === "fulfilled") {
+    categoryConfigs = categoriesResult.value
       .filter((c) => Boolean(c.id))
       .slice(0, 12)
       .map((c, i) => ({
@@ -234,8 +343,9 @@ export default async function ProductsPage({ params }: Props) {
         image: c.image,
         icon: categoryIcons[i % categoryIcons.length],
       }))
-  } catch {
-    // 无 Sanity 或未配置时使用空列表
+  }
+  if (categoryConfigs.length === 0 && sanityProducts.length > 0) {
+    categoryConfigs = buildFallbackCategoriesFromProducts(sanityProducts)
   }
 
   // 按分类分组，每个分类最多取前 6 个产品
@@ -284,21 +394,17 @@ export default async function ProductsPage({ params }: Props) {
 
       {/* ── Category Sections：每类展示前几个产品，主图与「更多」进入分类产品集 ── */}
       {productsByCategory.map(({ category, products }, i) => (
-        <div key={category.id}>
-          {i > 0 && (
-            <div className="mx-auto max-w-7xl px-6 lg:px-8">
-              <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
-            </div>
-          )}
-          <CategorySection
-            category={category}
-            products={products}
-            locale={locale}
-            bgClass={i % 2 === 1 ? "bg-secondary/50" : ""}
-            t={t}
-            tCommon={tCommon}
-          />
-        </div>
+        <CategorySection
+          key={category.id}
+          category={category}
+          products={products}
+          locale={locale}
+          reverse={i % 2 === 1}
+          altBackground={i % 2 === 1}
+          t={t}
+          tNav={tNav}
+          tCommon={tCommon}
+        />
       ))}
 
       {/* ── Materials & Yarns ── */}

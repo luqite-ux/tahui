@@ -12,6 +12,7 @@ const footerNav = {
     { key: "manufacturing", href: "/manufacturing" },
     { key: "factoryTour", href: "/factory-tour" },
     { key: "qualityCertifications", href: "/quality" },
+    { key: "blog", href: "/blog" },
   ],
   services: [
     { key: "oemServices", href: "/manufacturing#oem" },

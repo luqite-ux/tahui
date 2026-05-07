@@ -132,52 +132,63 @@ export default async function CategoryProductsPage({ params }: Props) {
 
       {/* Category Header */}
       <section className="pt-20 lg:pt-24">
-        <div className="relative w-full shadow-sm overflow-hidden">
-          <div
-            className="relative w-full h-[32vh] sm:h-[34vh] lg:h-[38vh] max-h-[40vh] min-h-[30vh]"
-          >
-            {headerImageUrl ? (
-              <Image
-                src={headerImageUrl}
-                alt={categoryTitle}
-                fill
-                priority
-                sizes="100vw"
-                className="object-cover [object-position:50%_30%] brightness-75"
-              />
-            ) : (
-              <div className="absolute inset-0 bg-primary/10" />
-            )}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/10 to-black/45" />
+        <div className="w-full rounded-2xl overflow-hidden bg-[#F3F0EB]">
+          <div className="mx-auto max-w-7xl px-6 lg:px-8">
+            <div className="flex flex-col md:flex-row items-center md:items-stretch gap-8 md:gap-10 py-8 sm:py-10 lg:py-12 min-h-[30vh] max-h-[40vh]">
+              <div className="w-full md:w-1/2 flex flex-col justify-center">
+                <p className="text-foreground/60 text-xs tracking-[0.22em] font-semibold uppercase">
+                  {category.number ? `${t("categoryLabel", { number: category.number })}` : t("category")}
+                </p>
+                <h1 className="mt-2 text-foreground font-bold tracking-tight text-3xl sm:text-4xl lg:text-5xl">
+                  {categoryTitle}
+                </h1>
+                <p className="mt-3 text-foreground/70 text-xs tracking-[0.28em] font-semibold">
+                  {t("categoryHeaderTagline")}
+                </p>
+                <nav className="mt-4 text-sm text-foreground/70">
+                  <ol className="flex flex-wrap items-center gap-2">
+                    <li>
+                      <Link href="/" className="hover:text-foreground transition-colors">
+                        {tNav("home")}
+                      </Link>
+                    </li>
+                    <li className="opacity-60">/</li>
+                    <li>
+                      <Link href="/products" className="hover:text-foreground transition-colors">
+                        {tNav("products")}
+                      </Link>
+                    </li>
+                    <li className="opacity-60">/</li>
+                    <li className="text-foreground font-semibold">{categoryTitle}</li>
+                  </ol>
+                </nav>
+                <div className="mt-6">
+                  <Link
+                    href="/products"
+                    className="inline-flex items-center gap-2 rounded-full border border-border/60 px-4 py-2 text-sm font-medium text-foreground hover:bg-white/70 transition-colors"
+                  >
+                    {t("viewMoreProducts")}
+                    <ArrowLeft className="h-4 w-4 rotate-180" />
+                  </Link>
+                </div>
+              </div>
 
-            <div className="absolute inset-0">
-              <div className="mx-auto max-w-7xl h-full px-6 lg:px-8 flex items-end">
-                <div className="pb-8 lg:pb-10 max-w-3xl">
-                  <p className="text-white/85 text-xs tracking-[0.28em] font-semibold">
-                    NEW COLLECTION
-                  </p>
-                  <h1 className="mt-2 text-white font-bold tracking-tight text-3xl sm:text-4xl lg:text-5xl">
-                    {categoryTitle}
-                  </h1>
-                  <nav className="mt-3 text-sm text-white/80">
-                    <ol className="flex flex-wrap items-center gap-2">
-                      <li>
-                        <Link href="/" className="hover:text-white transition-colors">
-                          {tNav("home")}
-                        </Link>
-                      </li>
-                      <li className="opacity-70">/</li>
-                      <li>
-                        <Link href="/products" className="hover:text-white transition-colors">
-                          {tNav("products")}
-                        </Link>
-                      </li>
-                      <li className="opacity-70">/</li>
-                      <li className="text-white font-semibold">
-                        {categoryTitle}
-                      </li>
-                    </ol>
-                  </nav>
+              <div className="w-full md:w-1/2 flex items-center justify-center">
+                <div className="w-full max-w-[400px]">
+                  <div className="relative aspect-square max-h-[400px] rounded-2xl bg-white overflow-hidden border border-stone-200/60">
+                    {headerImageUrl ? (
+                      <Image
+                        src={headerImageUrl}
+                        alt={categoryTitle}
+                        fill
+                        priority
+                        sizes="(max-width: 768px) 85vw, 400px"
+                        className="object-contain p-3 sm:p-4 [object-position:50%_35%]"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 rounded-2xl bg-primary/10" />
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -187,15 +198,7 @@ export default async function CategoryProductsPage({ params }: Props) {
 
       <section className="py-14 lg:py-20">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <Link
-            href="/products"
-            className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-accent transition-colors mb-8"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            {t("backToProducts")}
-          </Link>
-
-          <p className="text-muted-foreground max-w-2xl mb-12">
+          <p className="text-muted-foreground max-w-2xl mb-10">
             {t("allInCollection")}
           </p>
 

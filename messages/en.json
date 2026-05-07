@@ -22,6 +22,7 @@
     "manufacturing": "Manufacturing",
     "factoryTour": "Factory Tour",
     "qualityCertifications": "Quality & Certifications",
+    "blog": "Blog",
     "services": "Services",
     "oemServices": "OEM Services",
     "odmServices": "ODM Services",
@@ -217,7 +218,8 @@
     "noProducts": "No products in this category yet.",
     "productMetaFallbackTitle": "Product",
     "categoryMetaDescription": "Browse all {category} products. OEM & ODM knitwear manufacturing.",
-    "productMetaDescriptionFallback": "Product: {name}. OEM & ODM knitwear."
+    "productMetaDescriptionFallback": "Product: {name}. OEM & ODM knitwear.",
+    "categoryHeaderTagline": "NEW COLLECTION"
   },
   "common": {
     "getQuote": "Get a Quote",
