@@ -27,6 +27,7 @@ export default defineConfig({
             S.listItem().id('product').title('产品').child(S.documentTypeList('product')),
             S.listItem().id('case').title('案例').child(S.documentTypeList('case')),
             S.listItem().id('video').title('视频').child(S.documentTypeList('video')),
+            S.listItem().id('blogPost').title('博客').child(S.documentTypeList('blogPost')),
             S.listItem().id('inquiry').title('询盘').child(S.documentTypeList('inquiry')),
             S.divider(),
             S.listItem().id('factoryStep').title('工厂步骤').child(S.documentTypeList('factoryStep')),

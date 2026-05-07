@@ -97,3 +97,21 @@ export async function translateProductFields(
     descriptionFr: descriptionFr || null,
   }
 }
+
+export async function translateBlogFields(
+  title: string,
+  excerpt: string | null | undefined
+): Promise<{ titleZh: string; titleFr: string; excerptZh: string | null; excerptFr: string | null }> {
+  const [titleZh, titleFr, excerptZh, excerptFr] = await Promise.all([
+    title?.trim() ? translateText(title, "zh") : Promise.resolve(""),
+    title?.trim() ? translateText(title, "fr") : Promise.resolve(""),
+    excerpt?.trim() ? translateText(excerpt, "zh") : Promise.resolve(null),
+    excerpt?.trim() ? translateText(excerpt, "fr") : Promise.resolve(null),
+  ])
+  return {
+    titleZh: titleZh || "",
+    titleFr: titleFr || "",
+    excerptZh: excerptZh || null,
+    excerptFr: excerptFr || null,
+  }
+}

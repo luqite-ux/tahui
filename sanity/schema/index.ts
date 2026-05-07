@@ -8,6 +8,7 @@ import { caseDocument } from './case'
 import { video } from './video'
 import { inquiry } from './inquiry'
 import { honor } from './honor'
+import { blogPost } from './blogPost'
 
 export const schemaTypes = [
   homepage,
@@ -22,4 +23,5 @@ export const schemaTypes = [
   video,
   inquiry,
   honor,
+  blogPost,
 ]

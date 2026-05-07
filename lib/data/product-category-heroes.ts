@@ -3,6 +3,8 @@
  * 第一步：仅配置 seamless（无缝服装）；其余分类确认样式后在此数组追加条目即可统一渲染。
  */
 
+import { isSeamlessProductCategory, type SeamlessCategoryMeta } from "@/lib/is-seamless-product-category"
+
 export type ProductCategoryHeroLocaleCopy = {
   eyebrow: string
   /** 中文主标题（中文站为大标题） */
@@ -63,6 +65,16 @@ export function getProductCategoryHeroCopy(
   if (!def) return null
   const loc = locale === "zh" ? "zh" : locale === "fr" ? "fr" : "en"
   return def.locales[loc]
+}
+
+/** 与 Sanity id 不完全等于 seamless 时，仍可根据标题识别无缝大类并套用同一套 Hero */
+export function getProductCategoryHeroCopyResolved(
+  categoryId: string,
+  locale: string,
+  meta: SeamlessCategoryMeta
+): ProductCategoryHeroLocaleCopy | null {
+  if (!isSeamlessProductCategory(categoryId, meta)) return null
+  return getProductCategoryHeroCopy("seamless", locale)
 }
 
 export function pickHeroTitles(copy: ProductCategoryHeroLocaleCopy, locale: string) {

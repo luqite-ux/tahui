@@ -14,7 +14,8 @@ import { getProductDisplayName, getProductDisplayDescription } from "@/lib/produ
 import { PRODUCT_CATEGORIES_QUERY } from "@/sanity/lib/queries"
 import { getCategoryDisplayTitle } from "@/lib/category-locale"
 import { ProductCategoryHero } from "@/components/product-category-hero"
-import { getProductCategoryHeroCopy } from "@/lib/data/product-category-heroes"
+import { getProductCategoryHeroCopyResolved } from "@/lib/data/product-category-heroes"
+import { isSeamlessProductCategory } from "@/lib/is-seamless-product-category"
 
 type Props = { params: Promise<{ locale: string }> }
 
@@ -74,9 +75,8 @@ interface CategoryConfig {
 }
 const materialIds = ["wool", "cotton", "cashmere", "silk", "linen", "fancyYarns"] as const
 
-/** 仅 seamless 使用「一体成型」；其它分类用通用卖点，避免误导 */
-function getCategoryFeatures(locale: string, categoryId: string): string[] {
-  const isSeamless = categoryId === "seamless"
+/** 仅无缝大类使用「一体成型」；其它分类用通用卖点，避免误导 */
+function getCategoryFeatures(locale: string, isSeamless: boolean): string[] {
   if (locale === "zh") {
     return isSeamless
       ? ["一体成型", "高弹舒适", "支持定制"]
@@ -146,11 +146,17 @@ function CategorySection({
   const categoryHref = `/products/category/${encodeURIComponent(category.id)}`
   const title = getCategoryDisplayTitle(category, locale)
   const description = category.description?.trim() || "Timeless design meets exceptional comfort."
-  const features = getCategoryFeatures(locale, category.id)
+  const seamlessMeta = {
+    title: category.title,
+    titleZh: category.titleZh,
+    titleFr: category.titleFr,
+  }
+  const isSeamlessCategory = isSeamlessProductCategory(category.id, seamlessMeta)
+  const features = getCategoryFeatures(locale, isSeamlessCategory)
   const categoryImageUrl = category.image
     ? urlFor(category.image).width(1200).height(1200).url()
     : "/placeholder.svg"
-  const heroCopy = getProductCategoryHeroCopy(category.id, locale)
+  const heroCopy = getProductCategoryHeroCopyResolved(category.id, locale, seamlessMeta)
   const categoryNumberLabel = t("categoryLabel", { number: category.number })
 
   const productGrid =
@@ -216,7 +222,7 @@ function CategorySection({
               linkHref={categoryHref}
               buttonText={t("viewMoreProducts")}
               reverse={reverse}
-              imagePriority={category.id === "seamless"}
+              imagePriority={isSeamlessCategory}
             />
             {productGrid ? <div className="mt-12">{productGrid}</div> : null}
           </>
