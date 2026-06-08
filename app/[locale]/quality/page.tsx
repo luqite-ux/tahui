@@ -11,6 +11,43 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 
+/** 本地图片证书卡片（不依赖 Sanity） */
+function StaticHonorCard({
+  displayTitle,
+  imagePath,
+  orientation = 'landscape',
+}: {
+  displayTitle: string
+  imagePath: string
+  orientation?: string
+}) {
+  const aspectClass =
+    orientation === 'landscape'
+      ? 'aspect-[4/3]'
+      : orientation === 'square'
+        ? 'aspect-square'
+        : orientation === 'tall'
+          ? 'aspect-[2/3]'
+          : 'aspect-[3/4]'
+
+  return (
+    <div className="group bg-card rounded-2xl overflow-hidden border border-border/60 hover:border-accent/40 hover:shadow-xl transition-all duration-300 flex flex-col">
+      <div className={`${aspectClass} bg-muted/50 relative overflow-hidden min-h-[180px]`}>
+        <Image
+          src={imagePath}
+          alt={displayTitle}
+          fill
+          className="object-contain p-3 group-hover:scale-[1.02] transition-transform duration-300"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+        />
+      </div>
+      <div className="p-4 flex-1 flex flex-col">
+        <h4 className="font-bold text-foreground">{displayTitle}</h4>
+      </div>
+    </div>
+  )
+}
+
 type Props = { params: Promise<{ locale: string }> }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -135,6 +172,8 @@ function getGreenDedupeKey(h: {
   const t = `${h.title ?? ''} ${h.titleEn ?? ''} ${h.imageAlt ?? ''} ${h.fileName ?? ''}`.toLowerCase()
   if (t.includes('aaa') || t.includes('aaa级') || /信用评价aaa/i.test(t)) return 'green-aaa'
   if (t.includes('9996e34e') || t.includes('e33edd11')) return 'green-aaa'
+  // 碳中和承诺示范单位（铜牌/证书）各自保留，使用 _id 区分
+  if (t.includes('carbon neutral') || t.includes('碳中和')) return `green-carbon-neutral-${h._id ?? 'other'}`
   if (t.includes('示范') || t.includes('demonstration') || t.includes('5ac830a7')) return 'green-demo'
   return `green-${h._id ?? 'other'}`
 }
@@ -188,6 +227,48 @@ function groupHonorsByCategory(
   return map
 }
 
+/** 静态兜底：本地文件证书（不依赖 Sanity），在 Sanity 返回结果中不存在时追加到绿色分类末尾 */
+const STATIC_GREEN_HONORS: Array<{
+  _id: string
+  title: string
+  titleEn: string
+  description?: string | null
+  category: string
+  orientation: string
+  image: null
+  imageAlt: string | null
+  fileName: string | null
+  pdfUrl: null
+  staticImagePath: string
+}> = [
+  {
+    _id: 'static-carbon-neutral-01',
+    title: '碳中和承诺示范单位（铜牌）',
+    titleEn: 'Carbon Neutral Commitment Demonstration Unit (Plaque)',
+    description: null,
+    category: 'green',
+    orientation: 'landscape',
+    image: null,
+    imageAlt: null,
+    fileName: 'Honorary Certificate-01.jpg',
+    pdfUrl: null,
+    staticImagePath: '/Honors and Qualifications/新增证书/Honorary Certificate-01.jpg',
+  },
+  {
+    _id: 'static-carbon-neutral-02',
+    title: '碳中和承诺示范单位（证书）',
+    titleEn: 'Carbon Neutral Commitment Demonstration Unit (Certificate)',
+    description: null,
+    category: 'green',
+    orientation: 'landscape',
+    image: null,
+    imageAlt: null,
+    fileName: 'Honorary Certificate-02.jpg',
+    pdfUrl: null,
+    staticImagePath: '/Honors and Qualifications/新增证书/Honorary Certificate-02.jpg',
+  },
+]
+
 export default async function QualityPage() {
   let honors: Array<{
     _id: string
@@ -206,6 +287,23 @@ export default async function QualityPage() {
   } catch {
     // 无 Sanity 或未配置时忽略
   }
+
+  // 追加本地静态证书（若 Sanity 中尚无对应条目）
+  const existingIds = new Set(honors.map((h) => h._id))
+  const staticToAdd = STATIC_GREEN_HONORS.filter((s) => !existingIds.has(s._id))
+  const allHonors: Array<{
+    _id: string
+    title: string
+    titleEn: string
+    description?: string | null
+    category?: string | null
+    orientation?: string | null
+    image?: { asset?: { _ref?: string }; alt?: string | null } | null
+    imageAlt?: string | null
+    fileName?: string | null
+    pdfUrl?: string | null
+    staticImagePath?: string
+  }> = [...honors, ...staticToAdd]
 
   const t = await getTranslations("quality")
   const tCommon = await getTranslations("common")
@@ -288,7 +386,7 @@ export default async function QualityPage() {
       </section>
 
       {/* Honors & Qualifications Gallery - 按分类展示 */}
-      {honors.length > 0 && (
+      {allHonors.length > 0 && (
         <section className="py-24 lg:py-32">
           <div className="mx-auto max-w-7xl px-6 lg:px-8">
             <div className="text-center max-w-3xl mx-auto mb-20">
@@ -298,7 +396,7 @@ export default async function QualityPage() {
             </div>
 
             {(() => {
-              const byCategory = groupHonorsByCategory(honors)
+              const byCategory = groupHonorsByCategory(allHonors)
               return CATEGORY_ORDER.map((catKey) => {
                 const items = byCategory.get(catKey) ?? []
               if (items.length === 0) return null
@@ -315,23 +413,49 @@ export default async function QualityPage() {
                         : 'sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
                     }`}
                   >
-                    {items.map((honor) => (
-                      <HonorCard
-                        key={honor._id}
-                        _id={honor._id}
-                        displayTitle={honorDisplayTitle({
-                          ...honor,
-                          imageAlt: honor.imageAlt ?? honor.image?.alt,
-                        })}
-                        description={honor.description}
-                        image={honor.image}
-                        pdfUrl={honor.pdfUrl}
-                        orientation={
-                          honor.orientation ??
-                          (catKey === 'green' ? 'landscape' : catKey === 'other' ? 'tall' : undefined)
-                        }
-                      />
-                    ))}
+                    {items.map((honor) => {
+                      const h = honor as {
+                        _id: string
+                        title?: string | null
+                        titleEn?: string | null
+                        description?: string | null
+                        category?: string | null
+                        orientation?: string | null
+                        image?: { asset?: { _ref?: string }; alt?: string | null } | null
+                        imageAlt?: string | null
+                        fileName?: string | null
+                        pdfUrl?: string | null
+                        staticImagePath?: string
+                      }
+                      const staticPath = h.staticImagePath
+                      return staticPath ? (
+                        <StaticHonorCard
+                          key={h._id}
+                          displayTitle={honorDisplayTitle({
+                            ...h,
+                            imageAlt: h.imageAlt ?? h.image?.alt,
+                          })}
+                          imagePath={staticPath}
+                          orientation={h.orientation ?? 'landscape'}
+                        />
+                      ) : (
+                        <HonorCard
+                          key={h._id}
+                          _id={h._id}
+                          displayTitle={honorDisplayTitle({
+                            ...h,
+                            imageAlt: h.imageAlt ?? h.image?.alt,
+                          })}
+                          description={h.description}
+                          image={h.image}
+                          pdfUrl={h.pdfUrl}
+                          orientation={
+                            h.orientation ??
+                            (catKey === 'green' ? 'landscape' : catKey === 'other' ? 'tall' : undefined)
+                          }
+                        />
+                      )
+                    })}
                   </div>
                 </div>
               )
