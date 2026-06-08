@@ -13,6 +13,8 @@ import { Footer } from "@/components/footer"
 
 type Props = { params: Promise<{ locale: string }> }
 
+export const revalidate = 60
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: "quality" })
@@ -124,40 +126,21 @@ function isGreenRelated(h: {
   )
 }
 
-/** 绿色低碳 AAA 与 示范 各自仅保留一张（后两张 AAA 相同） */
-function getGreenDedupeKey(h: {
-  title?: string | null
-  titleEn?: string | null
-  imageAlt?: string | null
-  fileName?: string | null
-  _id?: string
-}): string {
-  const t = `${h.title ?? ''} ${h.titleEn ?? ''} ${h.imageAlt ?? ''} ${h.fileName ?? ''}`.toLowerCase()
-  if (t.includes('aaa') || t.includes('aaa级') || /信用评价aaa/i.test(t)) return 'green-aaa'
-  if (t.includes('9996e34e') || t.includes('e33edd11')) return 'green-aaa'
-  if (t.includes('示范') || t.includes('demonstration') || t.includes('5ac830a7')) return 'green-demo'
-  return `green-${h._id ?? 'other'}`
-}
-
-/** 按展示名去重；绿色分类内 AAA/示范 各仅保留一张 */
+/** 按展示名去重；显示名为兜底值或过短时按 _id 去重，避免误合并 */
 function dedupeHonors(
   honors: Array<{
     _id: string
     title?: string | null
     titleEn?: string | null
     imageAlt?: string | null
+    fileName?: string | null
   }>,
-  category?: string
+  _category?: string
 ): typeof honors {
   const seen = new Set<string>()
   return honors.filter((h) => {
-    let key: string
-    if (category === 'green') {
-      key = getGreenDedupeKey(h)
-    } else {
-      key = honorDisplayTitle(h).toLowerCase().replace(/\s+/g, '-')
-      if (key === 'certificate' || key.length < 3) key = h._id
-    }
+    let key = honorDisplayTitle(h).toLowerCase().replace(/\s+/g, '-')
+    if (key === 'certificate' || key.length < 3) key = h._id
     if (seen.has(key)) return false
     seen.add(key)
     return true
