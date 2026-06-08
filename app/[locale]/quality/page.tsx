@@ -106,7 +106,11 @@ const ISO_KEYWORDS = [
   'quality management', 'environmental', 'occupational',
 ]
 
-const GREEN_KEYWORDS = ['绿色', '低碳', 'green', 'low-carbon', 'credit rating', '信用评价']
+const GREEN_KEYWORDS = [
+  '绿色', '低碳', '碳中和', '承诺示范',
+  'green', 'low-carbon', 'low carbon', 'carbon neutral',
+  'credit rating', '信用评价',
+]
 
 function isIsoRelated(h: { title?: string | null; titleEn?: string | null }): boolean {
   const t = `${(h.title ?? '').toLowerCase()} ${(h.titleEn ?? '').toLowerCase()}`
@@ -160,11 +164,17 @@ function groupHonorsByCategory(
   const map = new Map<string, typeof honors>()
   for (const c of CATEGORY_ORDER) map.set(c, [])
   for (const h of honors) {
-    let cat = h.category && CATEGORY_ORDER.includes(h.category as (typeof CATEGORY_ORDER)[number])
-      ? h.category
-      : 'other'
-    if (isIsoRelated(h)) cat = 'iso'
-    else if (isGreenRelated(h)) cat = 'green'
+    // Sanity 后台显式设置的 category 优先级最高；未设置时再走关键字推断兜底
+    let cat: string
+    if (h.category && CATEGORY_ORDER.includes(h.category as (typeof CATEGORY_ORDER)[number])) {
+      cat = h.category
+    } else if (isIsoRelated(h)) {
+      cat = 'iso'
+    } else if (isGreenRelated(h)) {
+      cat = 'green'
+    } else {
+      cat = 'other'
+    }
     map.get(cat)?.push(h)
   }
   for (const [k, arr] of map) map.set(k, dedupeHonors(arr, k))
