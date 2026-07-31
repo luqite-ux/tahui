@@ -13,9 +13,7 @@ export function canonicalPath(path: string, locale: string): string {
 }
 
 export const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ||
-  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null) ||
-  'https://www.tahui-factory.cn'
+  process.env.NEXT_PUBLIC_SITE_URL || 'https://www.tahui-factory.cn'
 
 export const SITE_NAME = 'Tahui Sweater Factory'
 export const DEFAULT_TITLE = 'Tahui Sweater Factory | Seamless Knitwear Manufacturer in China'

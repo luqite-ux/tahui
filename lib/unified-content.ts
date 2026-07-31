@@ -33,6 +33,7 @@ export type UnifiedProduct = {
   categoryTitleZh?: string | null
   categoryTitleFr?: string | null
   images?: ContentImage[]
+  updatedAt?: string | null
 }
 
 export type UnifiedArticle = {
@@ -52,6 +53,7 @@ export type UnifiedArticle = {
   contentHtml?: string | null
   contentHtmlZh?: string | null
   contentHtmlFr?: string | null
+  updatedAt?: string | null
 }
 
 type I18n = Record<string, string> | null
@@ -106,7 +108,7 @@ export async function getUnifiedProducts(): Promise<UnifiedProduct[] | null> {
   if (!config) return null
   const { data, error } = await config.client
     .from("products")
-    .select("id,slug,name,name_i18n,description,description_i18n,category_slug,image_url,extra_data,sort_order")
+    .select("id,slug,name,name_i18n,description,description_i18n,category_slug,image_url,extra_data,sort_order,updated_at")
     .eq("tenant_id", config.tenantId)
     .eq("is_active", true)
     .order("sort_order")
@@ -132,6 +134,7 @@ export async function getUnifiedProducts(): Promise<UnifiedProduct[] | null> {
       categoryTitleZh: category?.titleZh,
       categoryTitleFr: category?.titleFr,
       images: urls.map((url, index) => image(url, typeof alts[index] === "string" ? alts[index] : row.name)).filter(Boolean) as ContentImage[],
+      updatedAt: row.updated_at,
     }
   })
 }
@@ -147,7 +150,7 @@ export async function getUnifiedArticles(): Promise<UnifiedArticle[] | null> {
   if (!config) return null
   const { data, error } = await config.client
     .from("articles")
-    .select("id,slug,title,title_i18n,excerpt,excerpt_i18n,content,content_i18n,featured_image,published_at")
+    .select("id,slug,title,title_i18n,excerpt,excerpt_i18n,content,content_i18n,featured_image,published_at,updated_at")
     .eq("tenant_id", config.tenantId)
     .eq("is_published", true)
     .order("published_at", { ascending: false })
@@ -166,6 +169,7 @@ export async function getUnifiedArticles(): Promise<UnifiedArticle[] | null> {
     contentHtml: localized(row.content_i18n, "en") ?? row.content,
     contentHtmlZh: localized(row.content_i18n, "zh"),
     contentHtmlFr: localized(row.content_i18n, "fr"),
+    updatedAt: row.updated_at,
   }))
 }
 
