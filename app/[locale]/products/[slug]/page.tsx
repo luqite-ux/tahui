@@ -58,10 +58,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export async function generateStaticParams() {
-  return []
-}
-
 export default async function ProductDetailPage({ params }: Props) {
   const { locale, slug } = await params
   let product: any = await getUnifiedProduct(slug)
