@@ -11,8 +11,10 @@ import { client } from "@/sanity/lib/client"
 import { urlFor } from "@/sanity/lib/image"
 import { getBlogDisplayBody, getBlogDisplayExcerpt, getBlogDisplayTitle } from "@/lib/blog-locale"
 import { SITE_URL, canonicalPath } from "@/lib/seo"
+import { contentImageUrl, getUnifiedArticle, type UnifiedArticle } from "@/lib/unified-content"
 
 export const revalidate = 60
+export const dynamicParams = true
 
 type Props = { params: Promise<{ locale: string; slug: string }> }
 
@@ -32,7 +34,8 @@ const META_FIELDS = `title, titleZh, titleFr, excerpt, excerptZh, excerptFr`
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params
   const tCommon = await getTranslations({ locale, namespace: "common" })
-  const post = await client.fetch<{
+  let post: any = await getUnifiedArticle(slug)
+  if (post === undefined || !post) post = await client.fetch<{
     title?: string
     titleZh?: string | null
     titleFr?: string | null
@@ -57,7 +60,8 @@ export default async function BlogDetailPage({ params }: Props) {
   const { locale, slug } = await params
   const tCommon = await getTranslations({ locale, namespace: "common" })
 
-  const post = await client.fetch<{
+  let post: any = await getUnifiedArticle(slug)
+  if (post === undefined || !post) post = await client.fetch<{
     _id: string
     slug: string
     title: string
@@ -75,9 +79,14 @@ export default async function BlogDetailPage({ params }: Props) {
 
   if (!post) notFound()
 
-  const title = getBlogDisplayTitle(post, locale)
-  const excerpt = getBlogDisplayExcerpt(post, locale)
+  const title = getBlogDisplayTitle(post as any, locale)
+  const excerpt = getBlogDisplayExcerpt(post as any, locale)
   const body = getBlogDisplayBody(post as any, locale)
+  const htmlBody = locale === "zh"
+    ? post.contentHtmlZh ?? post.contentHtml
+    : locale === "fr"
+      ? post.contentHtmlFr ?? post.contentHtml
+      : post.contentHtml
   const dateText = post.publishedAt
     ? new Date(post.publishedAt).toLocaleDateString(locale === "zh" ? "zh-CN" : locale === "fr" ? "fr-FR" : "en-US", {
         year: "numeric",
@@ -119,10 +128,10 @@ export default async function BlogDetailPage({ params }: Props) {
           </header>
 
           <div className="mt-10">
-            {post.coverImage?.asset ? (
+            {post.coverImage?.asset || contentImageUrl(post.coverImage) ? (
               <div className="relative aspect-[16/9] rounded-2xl overflow-hidden bg-warm/30 shadow-md ring-1 ring-border/20">
                 <Image
-                  src={urlFor(post.coverImage).width(1600).height(900).url()}
+                  src={contentImageUrl(post.coverImage) ?? urlFor(post.coverImage as any).width(1600).height(900).url()}
                   alt={post.coverImage?.alt ?? title}
                   fill
                   className="object-cover"
@@ -134,7 +143,9 @@ export default async function BlogDetailPage({ params }: Props) {
           </div>
 
           <div className="mt-10 prose prose-neutral dark:prose-invert max-w-none">
-            {body ? (
+            {htmlBody ? (
+              <div dangerouslySetInnerHTML={{ __html: htmlBody }} />
+            ) : body ? (
               <PortableText value={body} />
             ) : (
               <p className="text-muted-foreground">

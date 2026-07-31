@@ -9,6 +9,7 @@ import { BLOG_POSTS_QUERY } from "@/sanity/lib/queries"
 import { urlFor } from "@/sanity/lib/image"
 import { getBlogDisplayExcerpt, getBlogDisplayTitle } from "@/lib/blog-locale"
 import { SITE_URL, canonicalPath } from "@/lib/seo"
+import { contentImageUrl, getUnifiedArticles, type UnifiedArticle } from "@/lib/unified-content"
 
 export const revalidate = 60
 
@@ -36,7 +37,8 @@ export default async function BlogIndexPage({ params }: Props) {
   const tCommon = await getTranslations({ locale, namespace: "common" })
   const tNav = await getTranslations({ locale, namespace: "nav" })
 
-  const posts = await client.fetch<
+  const unifiedPosts = await getUnifiedArticles()
+  const posts = unifiedPosts ?? await client.fetch<
     Array<{
       _id: string
       slug: string
@@ -48,7 +50,7 @@ export default async function BlogIndexPage({ params }: Props) {
       excerptFr?: string | null
       publishedAt?: string | null
       coverImage?: { asset?: { _ref?: string }; alt?: string | null } | null
-    }>
+    } | UnifiedArticle>
   >(BLOG_POSTS_QUERY)
 
   const pageTitle = locale === "zh" ? "博客" : locale === "fr" ? "Blog" : "Blog"
@@ -88,8 +90,8 @@ export default async function BlogIndexPage({ params }: Props) {
           ) : (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {posts.map((post) => {
-                const title = getBlogDisplayTitle(post, locale)
-                const excerpt = getBlogDisplayExcerpt(post, locale)
+                const title = getBlogDisplayTitle(post as any, locale)
+                const excerpt = getBlogDisplayExcerpt(post as any, locale)
                 const dateText = post.publishedAt
                   ? new Date(post.publishedAt).toLocaleDateString(locale === "zh" ? "zh-CN" : locale === "fr" ? "fr-FR" : "en-US", {
                       year: "numeric",
@@ -105,9 +107,9 @@ export default async function BlogIndexPage({ params }: Props) {
                     className="group rounded-2xl border border-border bg-card overflow-hidden hover:shadow-lg transition-shadow"
                   >
                     <div className="relative aspect-[16/10] bg-warm/30">
-                      {post.coverImage?.asset ? (
+                      {post.coverImage?.asset || contentImageUrl(post.coverImage) ? (
                         <Image
-                          src={urlFor(post.coverImage).width(1200).height(750).url()}
+                          src={contentImageUrl(post.coverImage) ?? urlFor(post.coverImage as any).width(1200).height(750).url()}
                           alt={post.coverImage?.alt ?? title}
                           fill
                           className="object-cover group-hover:scale-[1.02] transition-transform duration-500"

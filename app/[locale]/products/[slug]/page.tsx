@@ -11,6 +11,7 @@ import { client } from "@/sanity/lib/client"
 import { urlFor } from "@/sanity/lib/image"
 import { getProductDisplayName, getProductDisplayDescription } from "@/lib/product-locale"
 import { getCategoryDisplayTitle } from "@/lib/category-locale"
+import { contentImageUrl, getUnifiedProduct, getUnifiedProducts, type ContentImage, type UnifiedProduct } from "@/lib/unified-content"
 
 const PRODUCT_FIELDS = `_id, name, nameZh, nameFr, "slug": slug.current, description, descriptionZh, descriptionFr, "categoryId": category->id, "categoryTitle": category->title, "categoryTitleZh": category->titleZh, "categoryTitleFr": category->titleFr, images`
 const PRODUCT_BY_SLUG_QUERY = `*[_type == "product" && slug.current == $slug][0] { ${PRODUCT_FIELDS} }`
@@ -20,6 +21,7 @@ const ALL_PRODUCT_SLUGS_QUERY = `*[_type == "product" && defined(slug.current)]{
 const ALL_PRODUCT_IDS_QUERY = `*[_type == "product" && !defined(slug.current)]{ "_id": _id }`
 
 export const revalidate = 60
+export const dynamicParams = true
 
 type Props = { params: Promise<{ locale: string; slug: string }> }
 
@@ -27,7 +29,8 @@ const META_PRODUCT_FIELDS = "name, nameZh, nameFr, description, descriptionZh, d
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params
   const tProducts = await getTranslations({ locale, namespace: "products" })
-  let product = await client.fetch<{
+  let product: any = await getUnifiedProduct(slug)
+  if (product === undefined) product = await client.fetch<{
     name?: string
     nameZh?: string | null
     nameFr?: string | null
@@ -38,7 +41,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     `*[_type == "product" && slug.current == $slug][0]{ ${META_PRODUCT_FIELDS} }`,
     { slug }
   )
-  if (!product) {
+  if (product === undefined || !product) {
     product = await client.fetch<typeof product>(
       `*[_type == "product" && _id == $id][0]{ ${META_PRODUCT_FIELDS} }`,
       { id: slug }
@@ -56,16 +59,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export async function generateStaticParams() {
-  const [bySlug, byId] = await Promise.all([
-    client.fetch<{ slug: string }[]>(ALL_PRODUCT_SLUGS_QUERY),
-    client.fetch<{ _id: string }[]>(ALL_PRODUCT_IDS_QUERY),
-  ])
-  return [...bySlug.map(({ slug }) => ({ slug })), ...byId.map(({ _id }) => ({ slug: _id }))]
+  return []
 }
 
 export default async function ProductDetailPage({ params }: Props) {
   const { locale, slug } = await params
-  let product = await client.fetch<{
+  let product: any = await getUnifiedProduct(slug)
+  if (product === undefined) product = await client.fetch<{
     _id: string
     name: string
     nameZh?: string | null
@@ -80,7 +80,7 @@ export default async function ProductDetailPage({ params }: Props) {
     categoryTitleFr?: string | null
     images?: Array<{ asset?: { _ref?: string }; alt?: string | null } | null>
   } | null>(PRODUCT_BY_SLUG_QUERY, { slug })
-  if (!product) {
+  if (product === undefined || !product) {
     product = await client.fetch<typeof product>(PRODUCT_BY_ID_QUERY, { id: slug })
   }
 
@@ -136,7 +136,7 @@ export default async function ProductDetailPage({ params }: Props) {
                 <>
                   <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-warm/30 shadow-md ring-1 ring-border/20">
                     <Image
-                      src={urlFor(product.images[0]).width(1200).height(900).url()}
+                      src={contentImageUrl(product.images[0]) ?? urlFor(product.images[0] as any).width(1200).height(900).url()}
                       alt={product.images[0]?.alt ?? displayName}
                       fill
                       className="object-cover"
@@ -146,14 +146,14 @@ export default async function ProductDetailPage({ params }: Props) {
                   </div>
                   {product.images.length > 1 && (
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                      {product.images.slice(1, 7).map((img, i) => (
+                      {product.images.slice(1, 7).map((img: ContentImage, i: number) => (
                         <div
                           key={i}
                           className="relative aspect-square rounded-xl overflow-hidden bg-warm/30 ring-1 ring-border/20"
                         >
-                          {img?.asset ? (
+                          {img?.asset || contentImageUrl(img) ? (
                             <Image
-                              src={urlFor(img).width(600).height(600).url()}
+                              src={contentImageUrl(img) ?? urlFor(img as any).width(600).height(600).url()}
                               alt={img?.alt ?? `${displayName} ${i + 2}`}
                               fill
                               className="object-cover"

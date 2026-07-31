@@ -1,7 +1,6 @@
 'use server'
 
-import { getServerClient } from '@/sanity/lib/serverClient'
-import { writeToken } from '@/sanity/env'
+import { createClient } from '@supabase/supabase-js'
 
 export type SubmitInquiryState = { ok: boolean; message: string }
 
@@ -19,30 +18,31 @@ export async function submitInquiry(_prev: SubmitInquiryState, formData: FormDat
     return { ok: false, message: '请填写必填项：联系人、邮箱、留言内容。' }
   }
 
-  if (!writeToken) {
-    console.error('[Sanity] SANITY_API_WRITE_TOKEN is not set. Inquiry not saved.')
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim()
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim()
+  const tenantId = process.env.NEXT_PUBLIC_TENANT_ID?.trim()
+  if (!url || !key || !tenantId) {
+    console.error('[Inquiry] Supabase public configuration is incomplete.')
     return { ok: false, message: '提交功能未配置，请稍后再试或直接通过邮件/WhatsApp 联系我们。' }
   }
 
-  const client = getServerClient()
-
   try {
-    await client.create({
-      _type: 'inquiry',
+    const client = createClient(url, key, { auth: { persistSession: false } })
+    const details = [message, productType && `Product: ${productType}`, quantity && `Quantity: ${quantity}`].filter(Boolean).join('\n')
+    const { error } = await client.from('inquiries').insert({
+      tenant_id: tenantId,
       name,
       email,
-      company: company || undefined,
-      phone: phone || undefined,
-      inquiryType: inquiryType || undefined,
-      productType: productType || undefined,
-      quantity: quantity || undefined,
-      message,
-      status: 'pending',
-      receivedAt: new Date().toISOString(),
+      company: company || null,
+      phone: phone || null,
+      subject: inquiryType || 'Website inquiry',
+      message: details,
+      status: 'unread',
     })
+    if (error) throw error
     return { ok: true, message: 'Thank you for your inquiry! We will respond within 24 hours.' }
   } catch (e) {
-    console.error('[Sanity] Failed to create inquiry:', e)
+    console.error('[Inquiry] Failed to save inquiry:', e)
     return { ok: false, message: '提交失败，请稍后再试或直接通过邮件/WhatsApp 联系我们。' }
   }
 }

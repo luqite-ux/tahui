@@ -16,6 +16,7 @@ import { getCategoryDisplayTitle } from "@/lib/category-locale"
 import { ProductCategoryHero } from "@/components/product-category-hero"
 import { getProductCategoryHeroCopyResolved } from "@/lib/data/product-category-heroes"
 import { isSeamlessProductCategory } from "@/lib/is-seamless-product-category"
+import { contentImageUrl, getUnifiedCategories, getUnifiedProducts, type UnifiedProduct } from "@/lib/unified-content"
 
 type Props = { params: Promise<{ locale: string }> }
 
@@ -49,19 +50,7 @@ const PRODUCTS_QUERY = `*[_type == "product"] | order(order asc, name asc) {
 /* ─── Category Data ─── */
 const categoryIcons = [Sparkles, Palette, Scissors]
 
-type SanityProduct = {
-  _id: string
-  name: string
-  nameZh?: string | null
-  nameFr?: string | null
-  slug?: string | null
-  description?: string | null
-  descriptionZh?: string | null
-  descriptionFr?: string | null
-  categoryId?: string | null
-  categoryTitle?: string | null
-  images?: Array<{ asset?: { _ref?: string }; alt?: string | null } | null>
-}
+type SanityProduct = UnifiedProduct
 
 interface CategoryConfig {
   id: string
@@ -153,9 +142,9 @@ function CategorySection({
   }
   const isSeamlessCategory = isSeamlessProductCategory(category.id, seamlessMeta)
   const features = getCategoryFeatures(locale, isSeamlessCategory)
-  const categoryImageUrl = category.image
+  const categoryImageUrl = contentImageUrl(category.image) ?? (category.image
     ? urlFor(category.image).width(1200).height(1200).url()
-    : "/placeholder.svg"
+    : "/placeholder.svg")
   const heroCopy = getProductCategoryHeroCopyResolved(category.id, locale, seamlessMeta)
   const categoryNumberLabel = t("categoryLabel", { number: category.number })
 
@@ -171,9 +160,9 @@ function CategorySection({
             <Link key={product._id} href={detailHref} className="block h-full">
               <Card className="group/card relative h-full overflow-hidden rounded-2xl border-border/40 bg-card shadow-sm transition-all duration-500 ease-out hover:-translate-y-0.5 hover:shadow-lg hover:shadow-accent/[0.04]">
                 <div className="relative aspect-[4/3] overflow-hidden bg-warm/30">
-                  {firstImage?.asset ? (
+                  {firstImage?.asset || contentImageUrl(firstImage) ? (
                     <Image
-                      src={urlFor(firstImage).width(800).height(600).url()}
+                      src={contentImageUrl(firstImage) ?? urlFor(firstImage as any).width(800).height(600).url()}
                       alt={firstImage?.alt ?? getProductDisplayName(product, locale)}
                       fill
                       className="object-cover transition-transform duration-700 ease-out group-hover/card:scale-105"
@@ -313,7 +302,12 @@ export default async function ProductsPage({ params }: Props) {
 
   let sanityProducts: SanityProduct[] = []
   let categoryConfigs: CategoryConfig[] = []
-  const [productsResult, categoriesResult] = await Promise.allSettled([
+  const [unifiedProducts, unifiedCategories] = await Promise.all([
+    getUnifiedProducts(),
+    getUnifiedCategories(),
+  ])
+  const [productsResult, categoriesResult] = unifiedProducts === null || unifiedCategories === null
+    ? await Promise.allSettled([
     client.fetch<SanityProduct[]>(PRODUCTS_QUERY),
     client.fetch<
       Array<{
@@ -327,10 +321,12 @@ export default async function ProductsPage({ params }: Props) {
         image?: unknown
       }>
     >(PRODUCT_CATEGORIES_QUERY),
-  ])
-  if (productsResult.status === "fulfilled") sanityProducts = productsResult.value
-  if (categoriesResult.status === "fulfilled") {
-    categoryConfigs = categoriesResult.value
+  ]) : [null, null]
+  if (unifiedProducts !== null) sanityProducts = unifiedProducts
+  else if (productsResult?.status === "fulfilled") sanityProducts = productsResult.value
+  const rawCategories = unifiedCategories ?? (categoriesResult?.status === "fulfilled" ? categoriesResult.value : [])
+  if (rawCategories.length > 0) {
+    categoryConfigs = rawCategories
       .filter((c) => Boolean(c.id))
       .slice(0, 12)
       .map((c, i) => ({

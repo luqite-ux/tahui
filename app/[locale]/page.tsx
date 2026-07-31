@@ -11,6 +11,9 @@ import { client } from "@/sanity/lib/client"
 import { urlFor } from "@/sanity/lib/image"
 import { PRODUCT_CATEGORIES_QUERY } from "@/sanity/lib/queries"
 import { CategorySection } from "@/components/CategorySection"
+import { getUnifiedCategories } from "@/lib/unified-content"
+
+export const revalidate = 60
 
 const statsKeys = [
   { value: "20+", key: "yearsExperience", icon: Calendar },
@@ -52,7 +55,7 @@ export default async function HomePage({ params }: Props) {
       heroSlides = homepage.heroSlides
         .filter((s): s is { image: unknown; alt?: string | null } => s != null && s.image != null)
         .map((s) => ({
-          src: urlFor(s.image).width(1200).url(),
+          src: urlFor(s.image as any).width(1200).url(),
           alt: s.alt ?? "",
         }))
     }
@@ -70,7 +73,9 @@ export default async function HomePage({ params }: Props) {
     titleFr?: string | null
     image?: unknown
   }> = []
-  try {
+  const unifiedCategories = await getUnifiedCategories()
+  if (unifiedCategories !== null) productCategories = unifiedCategories
+  else try {
     productCategories = await client.fetch(PRODUCT_CATEGORIES_QUERY)
   } catch {
     /* empty */

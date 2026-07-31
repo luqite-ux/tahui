@@ -3,6 +3,7 @@ import { ArrowRight } from "lucide-react"
 import { Link } from "@/i18n/routing"
 import { urlFor } from "@/sanity/lib/image"
 import { getCategoryDisplayTitle } from "@/lib/category-locale"
+import { contentImageUrl } from "@/lib/unified-content"
 
 export type ProductCategory = {
   _id: string
@@ -29,7 +30,7 @@ export function CategorySection({
       {items.map((cat, idx) => {
         const href = cat.id ? `/products/category/${encodeURIComponent(cat.id)}` : "/products"
         const title = getCategoryDisplayTitle(cat, locale)
-        const imageUrl = cat.image ? urlFor(cat.image).width(900).height(1125).url() : null
+        const imageUrl = contentImageUrl(cat.image) ?? (cat.image ? urlFor(cat.image).width(900).height(1125).url() : null)
 
         return (
           <Link

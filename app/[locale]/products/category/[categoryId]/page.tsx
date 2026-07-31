@@ -13,6 +13,7 @@ import { urlFor } from "@/sanity/lib/image"
 import { getProductDisplayName, getProductDisplayDescription } from "@/lib/product-locale"
 import { getCategoryDisplayTitle } from "@/lib/category-locale"
 import { normalizeId } from "@/lib/normalize-id"
+import { contentImageUrl, getUnifiedCategories, getUnifiedProducts, type UnifiedProduct } from "@/lib/unified-content"
 
 const PRODUCTS_BY_CATEGORY_QUERY = `*[_type == "product" && category->id == $categoryId] | order(order asc, name asc) {
   _id,
@@ -48,7 +49,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const t = await getTranslations({ locale, namespace: "products" })
   const normalizedCategoryId = normalizeId(categoryId)
   try {
-    const category = await client.fetch<{
+    const unified = await getUnifiedCategories()
+    const category = unified?.find((item) => item.id === normalizedCategoryId) ?? await client.fetch<{
       title?: string
       titleZh?: string | null
       titleFr?: string | null
@@ -95,25 +97,15 @@ export default async function CategoryProductsPage({ params }: Props) {
       }
     | null = null
 
-  let products:
-    | Array<{
-        _id: string
-        name: string
-        nameZh?: string | null
-        nameFr?: string | null
-        slug?: string | null
-        description?: string | null
-        descriptionZh?: string | null
-        descriptionFr?: string | null
-        categoryTitle?: string | null
-        images?: Array<{ asset?: { _ref?: string }; alt?: string | null } | null>
-      }>
-    | null = null
+  let products: UnifiedProduct[] = []
 
   try {
-    category = await client.fetch(CATEGORY_BY_ID_QUERY, { categoryId: normalizedCategoryId })
+    const [unifiedCategories, unifiedProducts] = await Promise.all([getUnifiedCategories(), getUnifiedProducts()])
+    category = unifiedCategories?.find((item) => item.id === normalizedCategoryId) ?? null
+    if (unifiedCategories === null) category = await client.fetch(CATEGORY_BY_ID_QUERY, { categoryId: normalizedCategoryId })
     if (!category?.id || !category.title) notFound()
-    products = await client.fetch(PRODUCTS_BY_CATEGORY_QUERY, { categoryId: normalizedCategoryId })
+    products = unifiedProducts?.filter((item) => item.categoryId === normalizedCategoryId) ?? []
+    if (unifiedProducts === null) products = await client.fetch(PRODUCTS_BY_CATEGORY_QUERY, { categoryId: normalizedCategoryId }) as UnifiedProduct[]
   } catch {
     notFound()
   }
@@ -122,9 +114,10 @@ export default async function CategoryProductsPage({ params }: Props) {
     { title: category.title, titleZh: category.titleZh, titleFr: category.titleFr },
     locale
   )
-  const headerImageUrl = (category as { image?: unknown } | null)?.image
-    ? urlFor((category as { image: unknown }).image).width(2400).height(1200).url()
-    : null
+  const categoryImage = (category as { image?: unknown } | null)?.image
+  const headerImageUrl = contentImageUrl(categoryImage) ?? (categoryImage
+    ? urlFor(categoryImage).width(2400).height(1200).url()
+    : null)
 
   return (
     <div className="min-h-screen">
@@ -217,9 +210,9 @@ export default async function CategoryProductsPage({ params }: Props) {
                       className="group/card h-full bg-card rounded-2xl border-border/40 shadow-sm hover:shadow-lg hover:shadow-accent/[0.04] hover:-translate-y-0.5 transition-all duration-500 ease-out overflow-hidden"
                     >
                       <div className="relative aspect-[4/3] overflow-hidden bg-warm/30">
-                        {firstImage?.asset ? (
+                        {firstImage?.asset || contentImageUrl(firstImage) ? (
                           <Image
-                            src={urlFor(firstImage).width(800).height(600).url()}
+                            src={contentImageUrl(firstImage) ?? urlFor(firstImage as any).width(800).height(600).url()}
                             alt={firstImage?.alt ?? getProductDisplayName(product, locale)}
                             fill
                             className="object-cover transition-transform duration-700 ease-out group-hover/card:scale-105"
