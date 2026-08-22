@@ -37,10 +37,12 @@ export async function submitInquiry(_prev: SubmitInquiryState, formData: FormDat
   if (!captchaSecret) return { ok: false, message: 'Verification service is unavailable. Please try again later.' }
   let captchaResult
   try {
-    const context = createSupabaseCaptchaContextFromEnv()
+    const { tenantId, siteScope, store } = createSupabaseCaptchaContextFromEnv()
     captchaResult = await verifyCaptchaSubmission({
       secret: captchaSecret,
-      ...context,
+      tenantId,
+      siteScope,
+      store,
       scope: captchaScope,
       token: captchaToken,
       answer: captchaAnswer,
