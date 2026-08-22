@@ -1,0 +1,16 @@
+import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
+import { fileURLToPath, pathToFileURL } from 'node:url'
+import path from 'node:path'
+import test from 'node:test'
+const root = fileURLToPath(new URL('..', import.meta.url)); const read = (file) => readFileSync(path.join(root, file), 'utf8'); process.env.NODE_ENV = 'test'
+const { issueCaptchaChallenge, verifyCaptchaSubmission } = await import(pathToFileURL(path.join(root, 'lib/inquiry-captcha.ts')).href)
+const secret = 'test-secret-'.repeat(4), tenantId = '11111111-1111-4111-8111-111111111111', siteScope = 'tahui-test', scope = 'captcha_11111111111111111111111111111111'
+function memoryStore() { const current = new Map(); return { async issue(r) { current.set(r.formScopeHash, { ...r, consumed: false }) }, async consume(r) { const s = current.get(r.formScopeHash); if (!s || s.consumed || !r.tokenHash || s.tokenHash !== r.tokenHash || s.challengeHash !== r.challengeHash || s.siteScopeHash !== r.siteScopeHash || s.tenantId !== r.tenantId || s.expiresAt <= (r.now ?? Date.now())) return false; s.consumed = true; return true } } }
+test('CAPTCHA is scoped, replaced on refresh, and atomically single-use', async () => { const store = memoryStore(); const first = await issueCaptchaChallenge({ secret, tenantId, siteScope, scope, store, now: 1000 }); const second = await issueCaptchaChallenge({ secret, tenantId, siteScope, scope, store, now: 1010 }); const base = { secret, tenantId, siteScope, scope, store, now: 1011 }; assert.deepEqual(await verifyCaptchaSubmission({ ...base, token: first.token, answer: first.testAnswer }), { ok: false, code: 'invalid' }); assert.deepEqual(await verifyCaptchaSubmission({ ...base, token: second.token, answer: second.testAnswer }), { ok: true }); assert.deepEqual(await verifyCaptchaSubmission({ ...base, token: second.token, answer: second.testAnswer }), { ok: false, code: 'invalid' }) })
+test('server action form carries CAPTCHA values and refreshes after its settled result', () => { const source = read('components/contact-form.tsx'); for (const term of ['InquiryCaptchaField', 'captchaToken', 'captchaAnswer', 'captchaScope', 'captchaRefreshKey']) assert.match(source, new RegExp(term)); assert.match(source, /useEffect[\s\S]{0,500}setCaptchaRefreshKey/) })
+test('server action verifies and consumes before the inquiry insert', () => { const action = read('app/actions/submitInquiry.ts'); const verify = action.indexOf('verifyCaptchaSubmission('), insert = action.indexOf("from('inquiries').insert"); assert.ok(verify >= 0 && insert > verify); assert.match(action, /if\s*\(\s*!captchaResult\.ok\s*\)/) })
+test('CAPTCHA secrets are server-only and challenge responses are non-cacheable', () => { const env = read('.env.example'); assert.match(env, /^CAPTCHA_SECRET=/m); assert.match(env, /^CAPTCHA_SITE_SCOPE=/m); assert.match(env, /^SUPABASE_SERVICE_ROLE_KEY=/m); assert.doesNotMatch(env, /^NEXT_PUBLIC_(?:CAPTCHA_SECRET|CAPTCHA_SITE_SCOPE|SUPABASE_SERVICE_ROLE_KEY)=/m); assert.match(read('app/api/captcha/route.ts'), /no-store, max-age=0/) })
+test('Next route exports only supported route-handler bindings', () => {
+  assert.doesNotMatch(read('app/api/captcha/route.ts'), /export\s+function\s+createCaptchaGetHandler/)
+})

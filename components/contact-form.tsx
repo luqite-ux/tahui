@@ -1,20 +1,23 @@
 "use client"
 
-import React, { useActionState, useState } from "react"
+import React, { useActionState, useEffect, useState } from "react"
 import { Send } from "lucide-react"
-import { useTranslations } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { submitInquiry } from "@/app/actions/submitInquiry"
+import { InquiryCaptchaField } from "@/components/inquiry-captcha-field"
 
 const productTypeKeys = ["sweaters", "cardigans", "hoodies", "dresses", "scarves", "other"] as const
 const inquiryTypeKeys = ["oem", "odm", "sample", "visit", "general"] as const
 
 export function ContactForm() {
   const t = useTranslations("contact")
+  const locale = useLocale()
+  const [captchaRefreshKey, setCaptchaRefreshKey] = useState(0)
   const [formData, setFormData] = useState({
     company: "",
     name: "",
@@ -27,6 +30,9 @@ export function ContactForm() {
   })
 
   const [state, formAction] = useActionState(submitInquiry, { ok: false, message: "" })
+  useEffect(() => {
+    if (state.message) setCaptchaRefreshKey((value) => value + 1)
+  }, [state])
   const showMessage = state.message && (state.ok || !state.ok)
   const isSuccess = state.ok
 
@@ -166,6 +172,14 @@ export function ContactForm() {
             className="border-border/60 focus:border-accent"
           />
         </div>
+
+        <InquiryCaptchaField
+          refreshKey={captchaRefreshKey}
+          language={locale === "zh" ? "zh" : "en"}
+          tokenName="captchaToken"
+          answerName="captchaAnswer"
+          scopeName="captchaScope"
+        />
 
         <Button type="submit" size="lg" className="w-full sm:w-auto bg-primary hover:bg-accent transition-all duration-300 hover:shadow-lg">
           <Send className="mr-2 h-4 w-4" />

@@ -1,6 +1,10 @@
 'use server'
 
 import { createClient } from '@supabase/supabase-js'
+import {
+  createSupabaseCaptchaContextFromEnv,
+  verifyCaptchaSubmission,
+} from '@/lib/inquiry-captcha'
 
 export type SubmitInquiryState = { ok: boolean; message: string }
 
@@ -13,6 +17,9 @@ export async function submitInquiry(_prev: SubmitInquiryState, formData: FormDat
   const productType = (formData.get('productType') as string)?.trim()
   const quantity = (formData.get('quantity') as string)?.trim()
   const message = (formData.get('message') as string)?.trim()
+  const captchaToken = String(formData.get('captchaToken') || '')
+  const captchaAnswer = String(formData.get('captchaAnswer') || '')
+  const captchaScope = String(formData.get('captchaScope') || '')
 
   if (!name || !email || !message) {
     return { ok: false, message: '请填写必填项：联系人、邮箱、留言内容。' }
@@ -24,6 +31,30 @@ export async function submitInquiry(_prev: SubmitInquiryState, formData: FormDat
   if (!url || !key || !tenantId) {
     console.error('[Inquiry] Supabase public configuration is incomplete.')
     return { ok: false, message: '提交功能未配置，请稍后再试或直接通过邮件/WhatsApp 联系我们。' }
+  }
+
+  const captchaSecret = process.env.CAPTCHA_SECRET?.trim()
+  if (!captchaSecret) return { ok: false, message: 'Verification service is unavailable. Please try again later.' }
+  let captchaResult
+  try {
+    const context = createSupabaseCaptchaContextFromEnv()
+    captchaResult = await verifyCaptchaSubmission({
+      secret: captchaSecret,
+      ...context,
+      scope: captchaScope,
+      token: captchaToken,
+      answer: captchaAnswer,
+    })
+  } catch {
+    return { ok: false, message: 'Verification service is unavailable. Please try again later.' }
+  }
+  if (!captchaResult.ok) {
+    return {
+      ok: false,
+      message: captchaResult.code === 'expired'
+        ? 'The verification code has expired. Please enter the new code.'
+        : 'The verification code is incorrect. Please try again.',
+    }
   }
 
   try {

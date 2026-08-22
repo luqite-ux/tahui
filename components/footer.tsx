@@ -46,15 +46,14 @@ export async function Footer() {
       <div className="relative mx-auto max-w-7xl px-6 py-20 lg:px-8">
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-4">
           <div className="lg:col-span-1">
-            <Link href="/" className="inline-flex items-center gap-3 group">
-              <div className="h-12 w-12 bg-white rounded-lg p-1.5 flex items-center justify-center group-hover:shadow-lg transition-shadow duration-300">
+            <Link href="/" aria-label="TAHUI home" className="inline-flex max-w-full items-center gap-3 group">
+              <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-lg bg-white p-1.5 transition-shadow duration-300 group-hover:shadow-lg">
                 <Image
                   src="/logo.png"
                   alt="Tahui Sweater Factory"
-                  width={40}
-                  height={40}
-                  className="object-contain"
-                  style={{ width: "auto", height: "auto" }}
+                  width={52}
+                  height={52}
+                  className="h-[52px] w-[52px] max-w-full object-contain"
                 />
               </div>
               <div>
