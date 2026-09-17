@@ -1,3 +1,5 @@
+import { NextResponse as ServiceGuardNextResponse, type NextRequest as ServiceGuardRequest } from 'next/server'
+import { isServiceGuardExcludedPath, isWebsiteServiceAvailable } from './lib/service-status'
 import createMiddleware from 'next-intl/middleware'
 import { NextResponse, type NextRequest } from 'next/server'
 import { routing } from './i18n/routing'
@@ -5,7 +7,7 @@ import { SESSION_COOKIE } from './lib/admin-session'
 
 const intlMiddleware = createMiddleware(routing)
 
-export default function middleware(request: NextRequest) {
+function existingServiceExpiryIntegration(request: NextRequest) {
   const { pathname } = request.nextUrl
   if (pathname.startsWith('/admin')) {
     const isPublic = pathname.startsWith('/admin/login') || pathname.startsWith('/admin/logout')
@@ -22,4 +24,9 @@ export default function middleware(request: NextRequest) {
 
 export const config = {
   matcher: ['/admin/:path*', '/((?!api|admin|_next|_vercel|studio|.*\\..*).*)'],
+}
+
+export async function middleware(request: ServiceGuardRequest) {
+  if (!isServiceGuardExcludedPath(request.nextUrl.pathname) && !await isWebsiteServiceAvailable()) return ServiceGuardNextResponse.rewrite(new URL('/service-expired', request.url))
+  return existingServiceExpiryIntegration(request)
 }
