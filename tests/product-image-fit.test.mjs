@@ -15,3 +15,15 @@ test('product catalog and detail images preserve the complete product', async ()
     assert.doesNotMatch(source, /className="[^"]*object-cover[^"]*"/, relative)
   }
 })
+
+test('product images use the full image stage without inset padding', async () => {
+  for (const relative of productViews) {
+    const source = await readFile(`${root}/${relative}`, 'utf8')
+    const imageClasses = source.match(/className="[^"]*object-contain[^"]*"/g) ?? []
+
+    assert.ok(imageClasses.length > 0, `${relative} should contain product images`)
+    for (const className of imageClasses) {
+      assert.doesNotMatch(className, /(?:^|\s)(?:sm:)?p-\d+/, `${relative}: ${className}`)
+    }
+  }
+})

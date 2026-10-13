@@ -165,7 +165,7 @@ function CategorySection({
                       src={contentImageUrl(firstImage) ?? urlFor(firstImage as any).width(800).height(600).url()}
                       alt={firstImage?.alt ?? getProductDisplayName(product, locale)}
                       fill
-                      className="object-contain p-3 sm:p-4"
+                      className="object-contain"
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     />
                   ) : (
@@ -277,7 +277,7 @@ function CategorySection({
                     src={categoryImageUrl}
                     alt={t("categoryImageAlt", { category: title })}
                     fill
-                    className="object-contain p-4 sm:p-6"
+                    className="object-contain"
                   />
                 </div>
               </Link>

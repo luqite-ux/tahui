@@ -176,7 +176,7 @@ export default async function CategoryProductsPage({ params }: Props) {
                         fill
                         priority
                         sizes="(max-width: 768px) 85vw, 400px"
-                        className="object-contain p-3 sm:p-4 [object-position:50%_35%]"
+                        className="object-contain [object-position:50%_35%]"
                       />
                     ) : (
                       <div className="absolute inset-0 rounded-2xl bg-primary/10" />
@@ -215,7 +215,7 @@ export default async function CategoryProductsPage({ params }: Props) {
                             src={contentImageUrl(firstImage) ?? urlFor(firstImage as any).width(800).height(600).url()}
                             alt={firstImage?.alt ?? getProductDisplayName(product, locale)}
                             fill
-                            className="object-contain p-3 sm:p-4"
+                            className="object-contain"
                             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                           />
                         ) : (

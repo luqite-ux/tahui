@@ -135,7 +135,7 @@ export default async function ProductDetailPage({ params }: Props) {
                       src={contentImageUrl(product.images[0]) ?? urlFor(product.images[0] as any).width(1200).height(900).url()}
                       alt={product.images[0]?.alt ?? displayName}
                       fill
-                      className="object-contain p-4 sm:p-6"
+                      className="object-contain"
                       sizes="(max-width: 1024px) 100vw, 50vw"
                       priority
                     />
@@ -152,7 +152,7 @@ export default async function ProductDetailPage({ params }: Props) {
                               src={contentImageUrl(img) ?? urlFor(img as any).width(600).height(600).url()}
                               alt={img?.alt ?? `${displayName} ${i + 2}`}
                               fill
-                              className="object-contain p-2"
+                              className="object-contain"
                               sizes="(max-width: 640px) 50vw, 20vw"
                             />
                           ) : null}
