@@ -25,8 +25,8 @@ export function Header() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-lg border-b border-border/40 shadow-[0_1px_3px_0_rgba(0,0,0,0.04)]">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3.5 lg:px-8">
-        <div className="flex lg:flex-1">
+      <nav className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-6 py-3.5 lg:px-8">
+        <div className="flex shrink-0">
           <Link href="/" className="-m-1.5 p-1.5 flex items-center gap-3 group">
             <Image
               src="/logo.png"
@@ -59,21 +59,21 @@ export function Header() {
           </button>
         </div>
         
-        <div className="hidden lg:flex lg:gap-x-8">
+        <div className="hidden min-w-0 flex-1 justify-center lg:flex lg:gap-x-4 xl:gap-x-8">
           {navKeys.map((item) => (
             <Link
               key={item.key}
               href={item.href}
-              className="text-sm font-medium text-foreground/70 hover:text-primary transition-colors duration-300 relative after:absolute after:bottom-[-6px] after:left-1/2 after:-translate-x-1/2 after:h-[1.5px] after:w-0 after:bg-accent after:rounded-full after:transition-all after:duration-300 after:ease-out hover:after:w-full"
+              className="relative whitespace-nowrap text-[13px] font-medium text-foreground/70 transition-colors duration-300 after:absolute after:bottom-[-6px] after:left-1/2 after:h-[1.5px] after:w-0 after:-translate-x-1/2 after:rounded-full after:bg-accent after:transition-all after:duration-300 after:ease-out hover:text-primary hover:after:w-full xl:text-sm"
             >
               {t(item.key)}
             </Link>
           ))}
         </div>
         
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-x-4 lg:items-center">
+        <div className="hidden shrink-0 items-center justify-end gap-x-3 lg:flex">
           <LanguageSwitcher />
-          <Button className="bg-primary hover:bg-primary/90 hover:scale-[1.03] hover:shadow-md active:scale-[0.98] transition-all duration-300 ease-out" asChild>
+          <Button className="hidden whitespace-nowrap bg-primary transition-all duration-300 ease-out hover:scale-[1.03] hover:bg-primary/90 hover:shadow-md active:scale-[0.98] xl:inline-flex" asChild>
             <Link href="/contact">
               <Phone className="mr-2 h-4 w-4" />
               {t("getQuote")}

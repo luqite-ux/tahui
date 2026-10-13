@@ -15,13 +15,13 @@ export function LanguageSwitcher() {
   const pathname = usePathname()
 
   return (
-    <div className="flex items-center gap-1 rounded-lg border border-border/60 bg-card/60 p-0.5">
+    <div className="flex shrink-0 items-center gap-1 whitespace-nowrap rounded-lg border border-border/60 bg-card/60 p-0.5">
       {LOCALES.map(({ code, label }) => (
         <button
           key={code}
           type="button"
           onClick={() => router.replace(pathname, { locale: code })}
-          className={`px-2.5 py-1 text-xs font-medium rounded-md transition-colors ${
+          className={`min-w-10 shrink-0 whitespace-nowrap rounded-md px-2.5 py-1 text-xs font-medium leading-5 transition-colors ${
             locale === code
               ? "bg-accent text-accent-foreground"
               : "text-muted-foreground hover:text-foreground hover:bg-warm"
