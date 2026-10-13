@@ -158,8 +158,8 @@ function CategorySection({
             ? `/products/${encodeURIComponent(product.slug)}`
             : `/products/${encodeURIComponent(product._id)}`
           return (
-            <Link key={product._id} href={detailHref} className="block h-full">
-              <Card className="group/card relative h-full overflow-hidden rounded-2xl border-border/40 bg-card shadow-sm transition-all duration-500 ease-out hover:-translate-y-1 hover:shadow-lg hover:shadow-accent/[0.04]">
+            <Link key={product._id} href={detailHref} className="block">
+              <Card className="group/card relative overflow-hidden rounded-2xl border-border/40 bg-card shadow-sm transition-all duration-500 ease-out hover:-translate-y-1 hover:shadow-lg hover:shadow-accent/[0.04]">
                 <div
                   className="relative overflow-hidden bg-[#F7F4EE]"
                   style={{ aspectRatio: resolveProductImageAspectRatio(product.mainImageWidth, product.mainImageHeight) }}

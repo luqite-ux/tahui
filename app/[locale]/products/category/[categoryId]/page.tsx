@@ -206,9 +206,9 @@ export default async function CategoryProductsPage({ params }: Props) {
                   ? `/products/${encodeURIComponent(product.slug)}`
                   : `/products/${encodeURIComponent(product._id)}`
                 return (
-                  <Link key={product._id} href={detailHref} className="block h-full">
+                  <Link key={product._id} href={detailHref} className="block">
                     <Card
-                      className="group/card h-full overflow-hidden rounded-2xl border-border/40 bg-card shadow-sm transition-all duration-500 ease-out hover:-translate-y-1 hover:shadow-lg hover:shadow-accent/[0.04]"
+                      className="group/card overflow-hidden rounded-2xl border-border/40 bg-card shadow-sm transition-all duration-500 ease-out hover:-translate-y-1 hover:shadow-lg hover:shadow-accent/[0.04]"
                     >
                       <div
                         className="relative overflow-hidden bg-[#F7F4EE]"

@@ -31,9 +31,19 @@ test('falls back to a portrait stage when dimensions are missing or invalid', as
 
 test('uses balanced product grids for sparse category sections', async () => {
   const { resolveProductGridClassName } = await loadSubject()
+  assert.match(resolveProductGridClassName(3), /items-start/)
   assert.match(resolveProductGridClassName(1), /max-w-sm/)
   assert.match(resolveProductGridClassName(2), /lg:grid-cols-2/)
   assert.match(resolveProductGridClassName(4), /lg:grid-cols-2/)
   assert.match(resolveProductGridClassName(5), /lg:grid-cols-3/)
   assert.doesNotMatch(resolveProductGridClassName(4), /columns-/)
+})
+
+test('product cards do not stretch to the tallest card in their row', async () => {
+  const productsPage = await readFile(`${root}/app/[locale]/products/page.tsx`, 'utf8')
+  const categoryPage = await readFile(`${root}/app/[locale]/products/category/[categoryId]/page.tsx`, 'utf8')
+  for (const source of [productsPage, categoryPage]) {
+    assert.doesNotMatch(source, /href=\{detailHref\} className="block h-full"/)
+    assert.doesNotMatch(source, /group\/card[^"\n]*\bh-full\b/)
+  }
 })
