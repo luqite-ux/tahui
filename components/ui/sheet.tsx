@@ -58,10 +58,9 @@ interface SheetContentProps
 const SheetContent = React.forwardRef<
   React.ElementRef<typeof SheetPrimitive.Content>,
   SheetContentProps
->(({ side = 'right', className, children, ...props }, ref) => (
-  (() => {
-    const t = useTranslations('common')
-    return (
+>(({ side = 'right', className, children, ...props }, ref) => {
+  const t = useTranslations('common')
+  return (
       <SheetPortal>
         <SheetOverlay />
         <SheetPrimitive.Content
@@ -76,9 +75,8 @@ const SheetContent = React.forwardRef<
           </SheetPrimitive.Close>
         </SheetPrimitive.Content>
       </SheetPortal>
-    )
-  })()
-))
+  )
+})
 SheetContent.displayName = SheetPrimitive.Content.displayName
 
 const SheetHeader = ({

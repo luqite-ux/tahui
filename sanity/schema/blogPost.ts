@@ -92,7 +92,7 @@ export const blogPost = defineType({
       media: 'coverImage',
       publishedAt: 'publishedAt',
     },
-    prepare: ({ title, media, publishedAt }: { title?: string; media?: unknown; publishedAt?: string }) => ({
+    prepare: ({ title, media, publishedAt }) => ({
       title: title || '未命名博客',
       subtitle: publishedAt ? `发布：${new Date(publishedAt).toLocaleDateString()}` : '未设置发布时间',
       media,

@@ -131,16 +131,16 @@ function isGreenRelated(h: {
 }
 
 /** 按展示名去重；显示名为兜底值或过短时按 _id 去重，避免误合并 */
-function dedupeHonors(
-  honors: Array<{
+function dedupeHonors<T extends {
     _id: string
     title?: string | null
     titleEn?: string | null
     imageAlt?: string | null
     fileName?: string | null
-  }>,
+  }>(
+  honors: T[],
   _category?: string
-): typeof honors {
+): T[] {
   const seen = new Set<string>()
   return honors.filter((h) => {
     let key = honorDisplayTitle(h).toLowerCase().replace(/\s+/g, '-')
@@ -151,17 +151,15 @@ function dedupeHonors(
   })
 }
 
-function groupHonorsByCategory(
-  honors: Array<{
+function groupHonorsByCategory<T extends {
     category?: string | null
     title?: string | null
     titleEn?: string | null
     imageAlt?: string | null
     fileName?: string | null
     _id: string
-  }>
-): Map<string, typeof honors> {
-  const map = new Map<string, typeof honors>()
+  }>(honors: T[]): Map<string, T[]> {
+  const map = new Map<string, T[]>()
   for (const c of CATEGORY_ORDER) map.set(c, [])
   for (const h of honors) {
     // Sanity 后台显式设置的 category 优先级最高；未设置时再走关键字推断兜底

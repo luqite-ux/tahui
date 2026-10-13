@@ -5,14 +5,12 @@ export const heroSlide = defineType({
   name: 'heroSlide',
   title: 'Hero 轮播项',
   type: 'object',
-  options: {
-    preview: {
-      select: { alt: 'alt', media: 'image' },
-      prepare: ({ alt, media }: { alt?: string; media?: unknown }) => ({
-        title: alt || '轮播图',
-        media,
-      }),
-    },
+  preview: {
+    select: { alt: 'alt', media: 'image' },
+    prepare: ({ alt, media }) => ({
+      title: alt || '轮播图',
+      media,
+    }),
   },
   fields: [
     defineField({
@@ -36,13 +34,11 @@ export const homepage = defineType({
   name: 'homepage',
   title: '首页设置',
   type: 'document',
-  options: {
-    preview: {
-      prepare: () => ({
-        title: '首页设置',
-        subtitle: '轮播图与统计数据',
-      }),
-    },
+  preview: {
+    prepare: () => ({
+      title: '首页设置',
+      subtitle: '轮播图与统计数据',
+    }),
   },
   fields: [
     defineField({
@@ -59,13 +55,11 @@ export const homepage = defineType({
       of: [
         defineArrayMember({
           type: 'object',
-          options: {
-            preview: {
-              select: { label: 'label', value: 'value' },
-              prepare: ({ label, value }: { label?: string; value?: string }) => ({
-                title: label || value || '统计项',
-              }),
-            },
+          preview: {
+            select: { label: 'label', value: 'value' },
+            prepare: ({ label, value }) => ({
+              title: label || value || '统计项',
+            }),
           },
           fields: [
             defineField({ name: 'value', type: 'string', title: '数值' }),
