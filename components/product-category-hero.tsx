@@ -46,7 +46,7 @@ export function ProductCategoryHero({
           <p className="mt-4 text-xs font-semibold uppercase tracking-[0.16em] text-accent">
             {categoryNumberLabel}
           </p>
-          <h2 className="mt-5 text-4xl font-bold tracking-tight text-foreground sm:text-5xl sm:leading-[1.08]">
+          <h2 className="mt-5 max-w-[18ch] text-balance text-3xl font-bold leading-[1.08] tracking-tight text-foreground sm:text-4xl lg:text-[2.65rem]">
             {primary}
           </h2>
           <p className="mt-3 text-base font-light leading-relaxed text-muted-foreground sm:text-lg">

@@ -28,3 +28,12 @@ test('falls back to a portrait stage when dimensions are missing or invalid', as
   assert.equal(resolveProductImageAspectRatio(0, 1200), '3 / 4')
   assert.equal(resolveProductImageAspectRatio(1200, -1), '3 / 4')
 })
+
+test('uses balanced product grids for sparse category sections', async () => {
+  const { resolveProductGridClassName } = await loadSubject()
+  assert.match(resolveProductGridClassName(1), /max-w-sm/)
+  assert.match(resolveProductGridClassName(2), /lg:grid-cols-2/)
+  assert.match(resolveProductGridClassName(4), /lg:grid-cols-2/)
+  assert.match(resolveProductGridClassName(5), /lg:grid-cols-3/)
+  assert.doesNotMatch(resolveProductGridClassName(4), /columns-/)
+})

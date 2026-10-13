@@ -14,7 +14,7 @@ import { getProductDisplayName, getProductDisplayDescription } from "@/lib/produ
 import { getCategoryDisplayTitle } from "@/lib/category-locale"
 import { normalizeId } from "@/lib/normalize-id"
 import { contentImageUrl, getUnifiedCategories, getUnifiedProducts, type UnifiedProduct } from "@/lib/unified-content"
-import { resolveProductImageAspectRatio } from "@/lib/product-image-layout"
+import { resolveProductGridClassName, resolveProductImageAspectRatio } from "@/lib/product-image-layout"
 
 const PRODUCTS_BY_CATEGORY_QUERY = `*[_type == "product" && category->id == $categoryId] | order(order asc, name asc) {
   _id,
@@ -199,16 +199,16 @@ export default async function CategoryProductsPage({ params }: Props) {
           {products.length === 0 ? (
             <p className="text-muted-foreground py-12">{t("noProducts")}</p>
           ) : (
-            <div className="columns-1 gap-6 sm:columns-2 lg:columns-3 lg:gap-8">
+            <div className={resolveProductGridClassName(products.length)}>
               {products.map((product) => {
                 const firstImage = product.images?.[0]
                 const detailHref = product.slug
                   ? `/products/${encodeURIComponent(product.slug)}`
                   : `/products/${encodeURIComponent(product._id)}`
                 return (
-                  <Link key={product._id} href={detailHref} className="mb-6 block break-inside-avoid lg:mb-8">
+                  <Link key={product._id} href={detailHref} className="block h-full">
                     <Card
-                      className="group/card overflow-hidden rounded-2xl border-border/40 bg-card shadow-sm transition-all duration-500 ease-out hover:-translate-y-1 hover:shadow-lg hover:shadow-accent/[0.04]"
+                      className="group/card h-full overflow-hidden rounded-2xl border-border/40 bg-card shadow-sm transition-all duration-500 ease-out hover:-translate-y-1 hover:shadow-lg hover:shadow-accent/[0.04]"
                     >
                       <div
                         className="relative overflow-hidden bg-[#F7F4EE]"
