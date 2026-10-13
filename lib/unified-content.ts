@@ -33,6 +33,8 @@ export type UnifiedProduct = {
   categoryTitleZh?: string | null
   categoryTitleFr?: string | null
   images?: ContentImage[]
+  mainImageWidth?: number | null
+  mainImageHeight?: number | null
   updatedAt?: string | null
 }
 
@@ -134,6 +136,8 @@ export async function getUnifiedProducts(): Promise<UnifiedProduct[] | null> {
       categoryTitleZh: category?.titleZh,
       categoryTitleFr: category?.titleFr,
       images: urls.map((url, index) => image(url, typeof alts[index] === "string" ? alts[index] : row.name)).filter(Boolean) as ContentImage[],
+      mainImageWidth: typeof extra.main_image_width === "number" ? extra.main_image_width : null,
+      mainImageHeight: typeof extra.main_image_height === "number" ? extra.main_image_height : null,
       updatedAt: row.updated_at,
     }
   })

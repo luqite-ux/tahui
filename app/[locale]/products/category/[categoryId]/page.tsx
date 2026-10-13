@@ -14,6 +14,7 @@ import { getProductDisplayName, getProductDisplayDescription } from "@/lib/produ
 import { getCategoryDisplayTitle } from "@/lib/category-locale"
 import { normalizeId } from "@/lib/normalize-id"
 import { contentImageUrl, getUnifiedCategories, getUnifiedProducts, type UnifiedProduct } from "@/lib/unified-content"
+import { resolveProductImageAspectRatio } from "@/lib/product-image-layout"
 
 const PRODUCTS_BY_CATEGORY_QUERY = `*[_type == "product" && category->id == $categoryId] | order(order asc, name asc) {
   _id,
@@ -198,18 +199,21 @@ export default async function CategoryProductsPage({ params }: Props) {
           {products.length === 0 ? (
             <p className="text-muted-foreground py-12">{t("noProducts")}</p>
           ) : (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
+            <div className="columns-1 gap-6 sm:columns-2 lg:columns-3 lg:gap-8">
               {products.map((product) => {
                 const firstImage = product.images?.[0]
                 const detailHref = product.slug
                   ? `/products/${encodeURIComponent(product.slug)}`
                   : `/products/${encodeURIComponent(product._id)}`
                 return (
-                  <Link key={product._id} href={detailHref} className="block h-full">
+                  <Link key={product._id} href={detailHref} className="mb-6 block break-inside-avoid lg:mb-8">
                     <Card
-                      className="group/card h-full bg-card rounded-2xl border-border/40 shadow-sm hover:shadow-lg hover:shadow-accent/[0.04] hover:-translate-y-0.5 transition-all duration-500 ease-out overflow-hidden"
+                      className="group/card overflow-hidden rounded-2xl border-border/40 bg-card shadow-sm transition-all duration-500 ease-out hover:-translate-y-1 hover:shadow-lg hover:shadow-accent/[0.04]"
                     >
-                      <div className="relative aspect-[4/3] overflow-hidden bg-[#F5F3EF]">
+                      <div
+                        className="relative overflow-hidden bg-[#F7F4EE]"
+                        style={{ aspectRatio: resolveProductImageAspectRatio(product.mainImageWidth, product.mainImageHeight) }}
+                      >
                         {firstImage?.asset || contentImageUrl(firstImage) ? (
                           <Image
                             src={contentImageUrl(firstImage) ?? urlFor(firstImage as any).width(800).height(600).url()}
