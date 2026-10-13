@@ -209,13 +209,13 @@ export default async function CategoryProductsPage({ params }: Props) {
                     <Card
                       className="group/card h-full bg-card rounded-2xl border-border/40 shadow-sm hover:shadow-lg hover:shadow-accent/[0.04] hover:-translate-y-0.5 transition-all duration-500 ease-out overflow-hidden"
                     >
-                      <div className="relative aspect-[4/3] overflow-hidden bg-warm/30">
+                      <div className="relative aspect-[4/3] overflow-hidden bg-[#F5F3EF]">
                         {firstImage?.asset || contentImageUrl(firstImage) ? (
                           <Image
                             src={contentImageUrl(firstImage) ?? urlFor(firstImage as any).width(800).height(600).url()}
                             alt={firstImage?.alt ?? getProductDisplayName(product, locale)}
                             fill
-                            className="object-cover transition-transform duration-700 ease-out group-hover/card:scale-105"
+                            className="object-contain p-3 sm:p-4"
                             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                           />
                         ) : (

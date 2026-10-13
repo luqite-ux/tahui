@@ -159,13 +159,13 @@ function CategorySection({
           return (
             <Link key={product._id} href={detailHref} className="block h-full">
               <Card className="group/card relative h-full overflow-hidden rounded-2xl border-border/40 bg-card shadow-sm transition-all duration-500 ease-out hover:-translate-y-0.5 hover:shadow-lg hover:shadow-accent/[0.04]">
-                <div className="relative aspect-[4/3] overflow-hidden bg-warm/30">
+                <div className="relative aspect-[4/3] overflow-hidden bg-[#F5F3EF]">
                   {firstImage?.asset || contentImageUrl(firstImage) ? (
                     <Image
                       src={contentImageUrl(firstImage) ?? urlFor(firstImage as any).width(800).height(600).url()}
                       alt={firstImage?.alt ?? getProductDisplayName(product, locale)}
                       fill
-                      className="object-cover transition-transform duration-700 ease-out group-hover/card:scale-105"
+                      className="object-contain p-3 sm:p-4"
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     />
                   ) : (
@@ -173,7 +173,6 @@ function CategorySection({
                       {tCommon("noImage")}
                     </div>
                   )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-foreground/5 via-transparent to-transparent" />
                 </div>
                 <div className="absolute left-1/2 top-0 h-[2px] w-0 -translate-x-1/2 rounded-b-full bg-gradient-to-r from-transparent via-accent to-transparent transition-all duration-500 group-hover/card:w-2/3" />
                 <CardContent className="p-5">
@@ -278,7 +277,7 @@ function CategorySection({
                     src={categoryImageUrl}
                     alt={t("categoryImageAlt", { category: title })}
                     fill
-                    className="object-cover [object-position:50%_28%] transition-transform duration-700 ease-out group-hover:scale-105"
+                    className="object-contain p-4 sm:p-6"
                   />
                 </div>
               </Link>

@@ -130,12 +130,12 @@ export default async function ProductDetailPage({ params }: Props) {
             <div className="space-y-4">
               {product.images && product.images.length > 0 ? (
                 <>
-                  <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-warm/30 shadow-md ring-1 ring-border/20">
+                  <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-[#F5F3EF] shadow-md ring-1 ring-border/20">
                     <Image
                       src={contentImageUrl(product.images[0]) ?? urlFor(product.images[0] as any).width(1200).height(900).url()}
                       alt={product.images[0]?.alt ?? displayName}
                       fill
-                      className="object-cover"
+                      className="object-contain p-4 sm:p-6"
                       sizes="(max-width: 1024px) 100vw, 50vw"
                       priority
                     />
@@ -145,14 +145,14 @@ export default async function ProductDetailPage({ params }: Props) {
                       {product.images.slice(1, 7).map((img: ContentImage, i: number) => (
                         <div
                           key={i}
-                          className="relative aspect-square rounded-xl overflow-hidden bg-warm/30 ring-1 ring-border/20"
+                          className="relative aspect-square rounded-xl overflow-hidden bg-[#F5F3EF] ring-1 ring-border/20"
                         >
                           {img?.asset || contentImageUrl(img) ? (
                             <Image
                               src={contentImageUrl(img) ?? urlFor(img as any).width(600).height(600).url()}
                               alt={img?.alt ?? `${displayName} ${i + 2}`}
                               fill
-                              className="object-cover"
+                              className="object-contain p-2"
                               sizes="(max-width: 640px) 50vw, 20vw"
                             />
                           ) : null}
