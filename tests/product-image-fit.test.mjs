@@ -6,7 +6,7 @@ const root = new URL('..', import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '
 const productViews = [
   'app/[locale]/products/page.tsx',
   'app/[locale]/products/category/[categoryId]/page.tsx',
-  'app/[locale]/products/[slug]/page.tsx',
+  'components/product-gallery.tsx',
 ]
 
 test('product catalog and detail images preserve the complete product', async () => {

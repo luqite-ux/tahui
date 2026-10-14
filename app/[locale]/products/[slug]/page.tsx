@@ -1,5 +1,4 @@
 import type { Metadata } from "next"
-import Image from "next/image"
 import { Link } from "@/i18n/routing"
 import { notFound } from "next/navigation"
 import { SITE_URL, canonicalPath } from "@/lib/seo"
@@ -7,18 +6,16 @@ import { getTranslations } from "next-intl/server"
 import { ArrowLeft } from "lucide-react"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
+import { ProductGallery } from "@/components/product-gallery"
 import { client } from "@/sanity/lib/client"
 import { urlFor } from "@/sanity/lib/image"
 import { getProductDisplayName, getProductDisplayDescription } from "@/lib/product-locale"
 import { getCategoryDisplayTitle } from "@/lib/category-locale"
-import { contentImageUrl, getUnifiedProduct, getUnifiedProducts, type ContentImage, type UnifiedProduct } from "@/lib/unified-content"
+import { contentImageUrl, getUnifiedProduct } from "@/lib/unified-content"
 
 const PRODUCT_FIELDS = `_id, name, nameZh, nameFr, "slug": slug.current, description, descriptionZh, descriptionFr, "categoryId": category->id, "categoryTitle": category->title, "categoryTitleZh": category->titleZh, "categoryTitleFr": category->titleFr, images`
 const PRODUCT_BY_SLUG_QUERY = `*[_type == "product" && slug.current == $slug][0] { ${PRODUCT_FIELDS} }`
 const PRODUCT_BY_ID_QUERY = `*[_type == "product" && _id == $id][0] { ${PRODUCT_FIELDS} }`
-
-const ALL_PRODUCT_SLUGS_QUERY = `*[_type == "product" && defined(slug.current)]{ "slug": slug.current }`
-const ALL_PRODUCT_IDS_QUERY = `*[_type == "product" && !defined(slug.current)]{ "_id": _id }`
 
 export const revalidate = 60
 export const dynamicParams = true
@@ -101,6 +98,18 @@ export default async function ProductDetailPage({ params }: Props) {
         locale
       )
     : null
+  const galleryImages = (product.images ?? [])
+    .slice(0, 7)
+    .map((image: any, index: number) => {
+      const src = contentImageUrl(image) ?? (image?.asset ? urlFor(image).width(index === 0 ? 1200 : 800).url() : null)
+      return src
+        ? {
+            src,
+            alt: image?.alt ?? `${displayName} ${index + 1}`,
+          }
+        : null
+    })
+    .filter((image: { src: string; alt: string } | null): image is { src: string; alt: string } => Boolean(image))
 
   return (
     <div className="min-h-screen">
@@ -127,40 +136,9 @@ export default async function ProductDetailPage({ params }: Props) {
 
           <div className="grid lg:grid-cols-2 gap-10 lg:gap-14">
             {/* 图片区：多图展示 */}
-            <div className="space-y-4">
-              {product.images && product.images.length > 0 ? (
-                <>
-                  <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-[#F5F3EF] shadow-md ring-1 ring-border/20">
-                    <Image
-                      src={contentImageUrl(product.images[0]) ?? urlFor(product.images[0] as any).width(1200).height(900).url()}
-                      alt={product.images[0]?.alt ?? displayName}
-                      fill
-                      className="object-contain"
-                      sizes="(max-width: 1024px) 100vw, 50vw"
-                      priority
-                    />
-                  </div>
-                  {product.images.length > 1 && (
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                      {product.images.slice(1, 7).map((img: ContentImage, i: number) => (
-                        <div
-                          key={i}
-                          className="relative aspect-square rounded-xl overflow-hidden bg-[#F5F3EF] ring-1 ring-border/20"
-                        >
-                          {img?.asset || contentImageUrl(img) ? (
-                            <Image
-                              src={contentImageUrl(img) ?? urlFor(img as any).width(600).height(600).url()}
-                              alt={img?.alt ?? `${displayName} ${i + 2}`}
-                              fill
-                              className="object-contain"
-                              sizes="(max-width: 640px) 50vw, 20vw"
-                            />
-                          ) : null}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </>
+            <div>
+              {galleryImages.length > 0 ? (
+                <ProductGallery images={galleryImages} productName={displayName} locale={locale} />
               ) : (
                 <div className="aspect-[4/3] rounded-2xl bg-warm/30 flex items-center justify-center text-muted-foreground">
                   {tCommon("noImage")}
