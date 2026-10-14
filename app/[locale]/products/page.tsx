@@ -14,10 +14,11 @@ import { getProductDisplayName, getProductDisplayDescription } from "@/lib/produ
 import { PRODUCT_CATEGORIES_QUERY } from "@/sanity/lib/queries"
 import { getCategoryDisplayTitle } from "@/lib/category-locale"
 import { ProductCategoryHero } from "@/components/product-category-hero"
+import { MasonryGrid } from "@/components/masonry-grid"
 import { getProductCategoryHeroCopyResolved } from "@/lib/data/product-category-heroes"
 import { isSeamlessProductCategory } from "@/lib/is-seamless-product-category"
 import { contentImageUrl, getUnifiedCategories, getUnifiedProducts, type UnifiedProduct } from "@/lib/unified-content"
-import { resolveProductGridClassName, resolveProductImageAspectRatio } from "@/lib/product-image-layout"
+import { resolveProductImageAspectRatio } from "@/lib/product-image-layout"
 
 type Props = { params: Promise<{ locale: string }> }
 
@@ -151,7 +152,7 @@ function CategorySection({
 
   const productGrid =
     products.length > 0 ? (
-      <div className={resolveProductGridClassName(products.length)}>
+      <MasonryGrid>
         {products.map((product) => {
           const firstImage = product.images?.[0]
           const detailHref = product.slug
@@ -197,7 +198,7 @@ function CategorySection({
             </Link>
           )
         })}
-      </div>
+      </MasonryGrid>
     ) : null
 
   return (

@@ -8,13 +8,14 @@ import { ArrowLeft } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
+import { MasonryGrid } from "@/components/masonry-grid"
 import { client } from "@/sanity/lib/client"
 import { urlFor } from "@/sanity/lib/image"
 import { getProductDisplayName, getProductDisplayDescription } from "@/lib/product-locale"
 import { getCategoryDisplayTitle } from "@/lib/category-locale"
 import { normalizeId } from "@/lib/normalize-id"
 import { contentImageUrl, getUnifiedCategories, getUnifiedProducts, type UnifiedProduct } from "@/lib/unified-content"
-import { resolveProductGridClassName, resolveProductImageAspectRatio } from "@/lib/product-image-layout"
+import { resolveProductImageAspectRatio } from "@/lib/product-image-layout"
 
 const PRODUCTS_BY_CATEGORY_QUERY = `*[_type == "product" && category->id == $categoryId] | order(order asc, name asc) {
   _id,
@@ -199,7 +200,7 @@ export default async function CategoryProductsPage({ params }: Props) {
           {products.length === 0 ? (
             <p className="text-muted-foreground py-12">{t("noProducts")}</p>
           ) : (
-            <div className={resolveProductGridClassName(products.length)}>
+            <MasonryGrid>
               {products.map((product) => {
                 const firstImage = product.images?.[0]
                 const detailHref = product.slug
@@ -248,7 +249,7 @@ export default async function CategoryProductsPage({ params }: Props) {
                   </Link>
                 )
               })}
-            </div>
+            </MasonryGrid>
           )}
         </div>
       </section>

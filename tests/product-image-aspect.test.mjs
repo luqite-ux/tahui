@@ -16,6 +16,16 @@ async function loadSubject() {
   return testModule.exports
 }
 
+async function loadMasonrySubject() {
+  const source = await readFile(`${root}/lib/masonry-layout.ts`, 'utf8')
+  const output = ts.transpileModule(source, {
+    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
+  }).outputText
+  const testModule = { exports: {} }
+  vm.runInNewContext(`(function (exports, module) { ${output} })(testModule.exports, testModule)`, { testModule })
+  return testModule.exports
+}
+
 test('uses real product image dimensions for the masonry stage', async () => {
   const { resolveProductImageAspectRatio } = await loadSubject()
   assert.equal(resolveProductImageAspectRatio(1200, 1800), '1200 / 1800')
@@ -46,4 +56,24 @@ test('product cards do not stretch to the tallest card in their row', async () =
     assert.doesNotMatch(source, /href=\{detailHref\} className="block h-full"/)
     assert.doesNotMatch(source, /group\/card[^"\n]*\bh-full\b/)
   }
+})
+
+test('masonry rows follow each card measured height without clipping', async () => {
+  const { resolveMasonrySpan } = await loadMasonrySubject()
+  assert.equal(resolveMasonrySpan(401, 4, 20), 106)
+  assert.equal(resolveMasonrySpan(0, 4, 20), 1)
+})
+
+test('product collections use the responsive masonry grid', async () => {
+  const productsPage = await readFile(`${root}/app/[locale]/products/page.tsx`, 'utf8')
+  const categoryPage = await readFile(`${root}/app/[locale]/products/category/[categoryId]/page.tsx`, 'utf8')
+  for (const source of [productsPage, categoryPage]) {
+    assert.match(source, /MasonryGrid/)
+    assert.doesNotMatch(source, /resolveProductGridClassName\(products\.length\)/)
+  }
+})
+
+test('masonry grid densely fills the earliest available column gap', async () => {
+  const source = await readFile(`${root}/components/masonry-grid.tsx`, 'utf8')
+  assert.match(source, /grid-flow-row-dense/)
 })
