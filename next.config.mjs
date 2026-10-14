@@ -13,7 +13,10 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    unoptimized: true,
+    remotePatterns: [
+      { protocol: 'https', hostname: '**.r2.dev' },
+      { protocol: 'https', hostname: 'cdn.sanity.io' },
+    ],
   },
   turbopack: {
     // Fix: ensure Turbopack resolves Next.js from repo root
